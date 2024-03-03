@@ -12,7 +12,6 @@
   "description": "",
   "version": "1.0.0",
   "main": "app.js",
-  "devDependencies": {},
   "scripts": {
     "start": "nodemon app.js",
     "dev": "npm app.js",
