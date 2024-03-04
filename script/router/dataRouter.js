@@ -3,6 +3,16 @@ const router = express.Router();
 
 router.use(express.json());
 
+// 獲取後臺資料 V
+router.get('/reports', (req, res) => {
+    const { date } = req.query;
+    // 實際應用中，這裡應該有一段邏輯來從資料庫查詢指定日期的銷售總額
+    res.json({
+        date: date,
+        totalSales: 10000 // 示意數值
+    });
+});
+
 // 獲取每日銷售額 API
 router.get('/sales/daily-total', (req, res) => {
     const { date } = req.query;
