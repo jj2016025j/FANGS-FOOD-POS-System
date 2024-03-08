@@ -63,7 +63,7 @@ const dbOperations = {
     });
   },
 
-  // // 創建 menu_items 表，移除與 stores 表的外鍵關聯
+  // // 創建 menu_items 表
   // connection.query(`
   //   CREATE TABLE IF NOT EXISTS menu_items (
   //     item_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -77,7 +77,20 @@ const dbOperations = {
   //   if (err) throw err;
   //   console.log('menu_items 表創建成功或已存在');
   // });
-  createTable: function () {
+
+  // 一次創建一個表
+  createTable: function (sql) {
+    try {
+      const results = connection.query(sql)
+      console.log("成功創建表")
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Server error');
+    }
+  },
+
+  // 一次創建很多個表
+  createTables: function () {
     queries.forEach((_query, index) => {
       connection.query(_query, function (err, results) {
         if (err) throw err;
@@ -118,37 +131,121 @@ const dbOperations = {
   //   }
   // );
 
-  // 插入資料到表
-  insertIntoTable: function (tableName, columns, values) {
-    let placeholders = columns.map(() => '?').join(',');
-    let insertSql = `INSERT INTO ${tableName} (${columns.join(',')}) VALUES (${placeholders})`;
-    connection.query(insertSql, values, (err, results) => {
-      if (err) throw err;
-      console.log('插入資料成功，插入的記錄數：', results.affectedRows);
+  insertIntoDataToTable: function (sql, values) {
+    try {
+      connection.query(sql, values, (err) => {
+        if (err) throw err;
+        console.log("成功插入資料");
+      });
+    } catch (error) {
+      // 加入如果錯誤就新增資料表或是資料庫
+      console.log(error);
+      console.log('錯誤');
+    }
+  },
+
+  insertIntoMenuItems: function (values) {
+    return new Promise((resolve, reject) => {
+      let sql = `
+        INSERT INTO MenuItems (
+          Name, 
+          Description, 
+          Price, 
+          CategoryId, 
+          Insupply
+        ) VALUES (?, ?, ?, ?, ?)
+      `;
+      // 构建一个数组，包含要插入的值
+      const params = [values.Name, values.Description, values.Price, values.CategoryId, values.Insupply];
+
+      connection.query(sql, params, (err, results) => {
+        if (err) {
+          console.error("插入数据时发生错误: ", err);
+          reject(err);
+        } else {
+          console.log("成功插入資料, 插入的ID: ", results.insertId);
+          resolve(results);
+        }
+      });
+    });
+  },
+  // 插入多筆資料到表
+  // insertIntoDatasToTable: function (tableName, columns, values) {
+  //   let placeholders = columns.map(() => '?').join(',');
+  //   let insertSql = `INSERT INTO ${tableName} (${columns.join(',')}) VALUES (${placeholders})`;
+  //   connection.query(insertSql, values, (err, results) => {
+  //     if (err) throw err;
+  //     console.log('插入資料成功，插入的記錄數：', results.affectedRows);
+  //   });
+  // },
+
+  selectFromTable: function (row, tableName, whereClause = '', whereValues = []) {
+    // 返回一个新的Promise
+    return new Promise((resolve, reject) => {
+      let selectSql = `SELECT ${row} FROM ${tableName}` + (whereClause ? ` WHERE ${whereClause}` : '');
+      connection.query(selectSql, whereValues, (err, results) => {
+        if (err) {
+          console.error(err);
+          reject(err); // 如果有错误，拒绝Promise
+        } else {
+          console.log(results);
+          resolve(results); // 如果成功，解析Promise
+        }
+      });
     });
   },
 
-  // 查詢表中的資料
-  selectFromTable: function (tableName, whereClause = '', whereValues = []) {
-    let selectSql = `SELECT * FROM ${tableName}` + (whereClause ? ` WHERE ${whereClause}` : '');
-    connection.query(selectSql, whereValues, (err, results) => {
-      if (err) throw err;
-      console.log(results);
+  updateMenuItems: function (values) {
+    return new Promise((resolve, reject) => {
+      let sql = `
+      UPDATE MenuItems SET Name = ?, Description = ?, Price = ?, CategoryId = ?, Insupply = ? WHERE MenuItemId = ? 
+      `;
+      // 构建一个数组，包含要插入的值
+      const params = [values.Name, values.Description, values.Price, values.CategoryId, values.Insupply, values.MenuItemId];
+
+      connection.query(sql, params, (err, results) => {
+        if (err) {
+          console.error("插入数据时发生错误: ", err);
+          reject(err);
+        } else {
+          console.log("更新資料成功，影響的行數：" + results.affectedRows);
+          resolve(results);
+        }
+      });
     });
   },
 
-  // 更新表中的資料
-  updateTable: function (tableName, updateMapping, whereClause, values) {
-    let setClause = Object.keys(updateMapping).map(key => `${key} = ?`).join(',');
-    let updateValues = [...Object.values(updateMapping), ...values];
-    let updateSql = `UPDATE ${tableName} SET ${setClause} WHERE ${whereClause}`;
-    connection.query(updateSql, updateValues, (err, results) => {
-      if (err) throw err;
-      console.log('更新資料成功，影響的行數：', results.affectedRows);
+  updateFromTable: function (tableName, columns, whereKey, whereValue) {
+    // 构建SET子句
+    const setClause = Object.keys(columns).map(key => `${key} = ?`).join(', ');
+    // 提取列值
+    const columnValues = Object.values(columns);
+    // 添加唯一值到查询值数组中
+    const queryValues = [...columnValues, whereValue];
+    // 构建完整的SQL语句
+    let sql = `UPDATE ${tableName} SET ${setClause} WHERE ${whereKey} = ?`;
+
+    // 执行SQL更新
+    connection.query(sql, queryValues, (error, results) => {
+      if (error) {
+        console.error('執行更新失敗:', error);
+        return;
+      }
+      console.log(`更新資料成功，影響的行數：${results.affectedRows}`);
     });
   },
+  // 更新表中的資料 不好用乾脆直接寫
+  // updateTableDatas: function (tableName, updateMapping, whereClause, values) {
+  //   let setClause = Object.keys(updateMapping).map(key => `${key} = ?`).join(',');
+  //   let updateValues = [...Object.values(updateMapping), ...values];
+  //   let updateSql = `UPDATE ${tableName} SET ${setClause} WHERE ${whereClause}`;
+  //   connection.query(updateSql, updateValues, (err, results) => {
+  //     if (err) throw err;
+  //     console.log('更新資料成功，影響的行數：', results.affectedRows);
+  //   });
+  // },
 
-  // 增加列表欄
+  // 增加列表欄 表名稱 列名稱 資料型別
   addColumn: function (tableName, columnName, dataType) {
     let alterSql = `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${dataType}`;
     connection.query(alterSql, (err, results) => {
@@ -157,7 +254,7 @@ const dbOperations = {
     });
   },
 
-  // 移除列表欄
+  // 移除列表欄 表名稱 列名稱 
   removeColumn: function (tableName, columnName) {
     let alterSql = `ALTER TABLE ${tableName} DROP COLUMN ${columnName}`;
     connection.query(alterSql, (err, results) => {
@@ -171,7 +268,25 @@ const dbOperations = {
   deleteFromTable: function (tableName, dataName, values) {
     connection.query(`DELETE FROM ${tableName} WHERE ${dataName} = ?`, values, (err, results) => {
       if (err) throw err;
-      console.log('刪除資料成功，影響的行數：', results.affectedRows);
+      console.log('刪除資料成功，影響的行數：' + results.affectedRows);
+    });
+  },
+
+  // 刪除表中的資料
+  deleteMenuItems: function (values) {
+    return new Promise((resolve, reject) => {
+      let sql = `DELETE FROM MenuItems WHERE MenuItemId = ? `;
+      const params = [values.MenuItemId];
+
+      connection.query(sql, params, (err, results) => {
+        if (err) {
+          console.error("刪除資料时发生错误: ", err);
+          reject(err);
+        } else {
+          console.log("刪除資料成功，影響的行數：" + results.affectedRows);
+          resolve(results);
+        }
+      });
     });
   },
 
@@ -200,7 +315,7 @@ const dbOperations = {
   }
 };
 
-
+// 一次灌入資料表
 const queries = [
   `CREATE TABLE IF NOT EXISTS Users (
     UserId INT AUTO_INCREMENT PRIMARY KEY,
@@ -232,7 +347,7 @@ const queries = [
     Description TEXT,
     Price DECIMAL(10, 2) NOT NULL,
     CategoryId INT,
-    IsActive BOOLEAN DEFAULT TRUE,
+    Insupply BOOLEAN DEFAULT TRUE,
     CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId)

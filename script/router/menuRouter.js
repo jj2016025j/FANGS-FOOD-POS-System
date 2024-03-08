@@ -1,70 +1,78 @@
 const express = require('express');
-const pool = require('./dbPool'); // 假設你已經有一個設定好的MySQL連接池
+const dbOperations = require('../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
 const router = express.Router();
+dbOperations.useDatabase('fangs_food_pos_system');
 
-// 獲取菜單列表
-router.get('/menu', (req, res) => {
-    const { category } = req.query;
-    let query = 'SELECT * FROM MenuItems WHERE IsActive = 1';
-    const params = [];
-
-    if (category) {
-        query += ' AND CategoryId = ?';
-        params.push(category);
+// http://localhost:3000/menu/items
+router.get('/items', async (req, res) => {
+    try {
+        // 直接等待异步方法的结果
+        const results =
+            await dbOperations.selectFromTable(
+                "MenuItemId, Name, Description, Price, CategoryId, InSupply",
+                "MenuItems"
+            );
+        res.json(results); // 将结果发送回客户端
+    } catch (error) {
+        // 处理可能发生的任何错误
+        console.error(error);
+        res.status(500).send('Server error'); // 发送一个服务器错误响应
     }
-
-    pool.query(query, params, (error, results) => {
-        if (error) {
-            return res.status(500).json({ success: false, message: error.message });
-        }
-        res.json({ success: true, data: results });
-    });
 });
 
+const Items = {
+    MenuItemId: 20,
+    Name: "Name",
+    Description: "Description",
+    Price: 0.33,
+    CategoryId: 2,
+    Insupply: true,
+    PostmanTest: false
+};
 // 新增菜單項目
-router.post('/items', (req, res) => {
-    const { Name, Description, Price, CategoryId, IsActive } = req.body;
-    const sql = 'INSERT INTO MenuItems (Name, Description, Price, CategoryId, IsActive, CreateTime, UpdateTime) VALUES (?, ?, ?, ?, ?, NOW(), NOW())';
-
-    pool.query(sql, [Name, Description, Price, CategoryId, IsActive], (error, results) => {
-        if (error) {
-            return res.status(500).json({ success: false, message: error.message });
-        }
-        res.status(201).json({ success: true, message: '新增菜單成功', MenuItemId: results.insertId });
-    });
+// http://localhost:3000/menu/items
+router.post('/items', async (req, res) => {
+    req.body = Items.PostmanTest ? Items : req.body;
+    const Item = req.body
+    try {
+        // 直接等待异步方法的结果
+        const results = await dbOperations.insertIntoMenuItems(Items)
+        res.status(201).send("成功插入資料, 插入的ID: " + results.insertId);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
 });
 
 // 修改菜單項目
-router.put('/items/:itemId', (req, res) => {
-    const { itemId } = req.params;
-    const { Name, Description, Price, CategoryId, IsActive } = req.body;
-    const sql = 'UPDATE MenuItems SET Name = ?, Description = ?, Price = ?, CategoryId = ?, IsActive = ?, UpdateTime = NOW() WHERE MenuItemId = ?';
-
-    pool.query(sql, [Name, Description, Price, CategoryId, IsActive, itemId], (error, results) => {
-        if (error) {
-            return res.status(500).json({ success: false, message: error.message });
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ success: false, message: '菜單項目未找到' });
-        }
-        res.json({ success: true, message: '修改菜單成功' });
-    });
+// http://localhost:3000/menu/items
+router.put('/items', async (req, res) => {
+    req.body = Items.PostmanTest ? Items : req.body;
+    const Item = req.body
+    try {
+        // 直接等待异步方法的结果
+        const results = await dbOperations.updateMenuItems(Item)
+        res.status(201).send("更新資料成功，影響的行數：" + results.affectedRows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
 });
 
 // 刪除菜單項目
-router.delete('/items/:itemId', (req, res) => {
-    const { itemId } = req.params;
-    const sql = 'DELETE FROM MenuItems WHERE MenuItemId = ?';
-
-    pool.query(sql, [itemId], (error, results) => {
-        if (error) {
-            return res.status(500).json({ success: false, message: error.message });
-        }
-        if (results.affectedRows === 0) {
-            return res.status(404).json({ success: false, message: '菜單項目未找到' });
-        }
-        res.json({ success: true, message: '刪除菜單成功' });
-    });
+// http://localhost:3000/menu/items
+router.delete('/items', async (req, res) => {
+    req.body = Items.PostmanTest ? Items : req.body;
+    const Item = req.body
+    console.log(req.body)
+    try {
+        // 直接等待异步方法的结果
+        const results = await dbOperations.deleteMenuItems(Item)
+        res.status(201).send("刪除資料成功，影響的行數：" + results.affectedRows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Server error');
+    }
 });
 
 module.exports = router;
