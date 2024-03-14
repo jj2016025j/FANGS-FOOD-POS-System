@@ -17,19 +17,25 @@ connection.connect(err => {
 
 const dbOperations = {
   // 建立資料庫連接
-  createConnection: function (host = 'localhost', user = 'root', password = '', database = null, charset = 'utf8mb4') {
+  // dbOperations.createConnection('localhost', 'root', '', '', 'utf8mb4')
+  createConnection: function (host = 'localhost', user = 'root', password = '', database = "", charset = 'utf8mb4') {
     const connection = mysql.createConnection({
-      host: host, // 資料庫伺服器地址
-      user: user, // 資料庫用戶名
-      password: password, // 資料庫密碼
-      // database: database // 要操作的数据库名 庫名不一定要
-      charset: charset // 確保使用 utf8mb4
+      host: host,
+      user: user,
+      password: password,
+      database: database,
+      charset: charset
     })
+    return connection
   },
+
+  // 直接返回SQL物件
+  // dbOperations.Connection()
   Connection: function () { return connection },
 
-  // 連接到資料庫
-  connectToDatabase: function () {
+  // 建立連接
+  // dbOperations.connectToSQL()
+  connectToSQL: function () {
     connection.connect(err => {
       if (err) {
         console.error('連接資料庫失敗: ' + err.stack);
@@ -40,14 +46,16 @@ const dbOperations = {
   },
 
   // 創建資料庫（如果不存在）
+  // dbOperations.createDatabase("databaseName")
   createDatabase: function (databaseName) {
-    connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (err, results) => {
+    connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (err) => {
       if (err) throw err;
       console.log(`${databaseName} 資料庫已創建或已存在`);
     });
   },
 
-  // -- 轉換數據庫編碼
+  // 轉換數據庫編碼
+  // dbOperations.alterDatabaseCharset("databaseName", "utf8mb4", "utf8mb4_unicode_ci")
   alterDatabaseCharset: function (databaseName, charset = 'utf8mb4', collate = 'utf8mb4_unicode_ci') {
     connection.query(`ALTER DATABASE ${databaseName} CHARACTER SET = ${charset} COLLATE = ${collate}`, err => {
       if (err) throw err;
@@ -56,6 +64,7 @@ const dbOperations = {
   },
 
   // 選擇資料庫
+  // dbOperations.useDatabase("databaseName")
   useDatabase: function (databaseName) {
     connection.query(`USE ${databaseName}`, err => {
       if (err) throw err;
@@ -63,33 +72,9 @@ const dbOperations = {
     });
   },
 
-  // // 創建 menu_items 表
-  // connection.query(`
-  //   CREATE TABLE IF NOT EXISTS menu_items (
-  //     item_id INT AUTO_INCREMENT PRIMARY KEY,
-  //     name VARCHAR(255) NOT NULL,
-  //     description TEXT,
-  //     price DECIMAL(10, 2),
-  //     category VARCHAR(100),
-  //     photo_url VARCHAR(2083)
-  //   ) ENGINE=InnoDB;
-  // `, (err, results) => {
-  //   if (err) throw err;
-  //   console.log('menu_items 表創建成功或已存在');
-  // });
-
-  // 一次創建一個表
-  createTable: function (sql) {
-    try {
-      const results = connection.query(sql)
-      console.log("成功創建表")
-    } catch (error) {
-      console.log(error);
-      res.status(500).send('Server error');
-    }
-  },
 
   // 一次創建很多個表
+  // dbOperations.createTables(sql[])
   createTables: function () {
     queries.forEach((_query, index) => {
       connection.query(_query, function (err, results) {
@@ -103,6 +88,7 @@ const dbOperations = {
   },
 
   // 轉換表編碼
+  // dbOperations.alterTableCharset("databaseName")
   alterTableCharset: function (tableName, charset = 'utf8mb4', collate = 'utf8mb4_unicode_ci') {
     connection.query(`ALTER TABLE ${tableName} CONVERT TO CHARACTER SET ${charset} COLLATE ${collate}`, err => {
       if (err) throw err;
@@ -110,38 +96,13 @@ const dbOperations = {
     });
   },
 
-  // // 插入資料到 menu_items
-  // connection.query(
-  //   `INSERT INTO menu_items (name, description, price, category, photo_url) VALUES 
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?)`,
-  // [
-  //     '漢堡', '經典美式牛肉漢堡，配生菜、番茄、起司和特製醬料', 99.00, '主餐', 'http://example.com/burger.jpg',
-  // '薯條', '酥脆金黃的薯條，外酥內軟', 30.00, '小吃', 'http://example.com/fries.jpg',
-  // '可樂', '冰涼的可樂，解渴首選', 20.00, '飲料', 'http://example.com/cola.jpg',
-  // '壽司盛合', '新鮮的壽司組合，包括鮭魚、吞拿魚和黃瓜卷', 180.00, '主餐', 'http://example.com/sushi.jpg',
-  // '綠茶', '香醇的日式綠茶', 25.00, '飲料', 'http://example.com/greentea.jpg'
-  //   ],
-  //   (err, results) => {
-  //     if (err) throw err;
-  //     console.log('插入資料成功，插入的記錄數：', results.affectedRows);
-  //   }
-  // );
-
-  insertIntoDataToTable: function (sql, values) {
-    try {
-      connection.query(sql, values, (err) => {
-        if (err) throw err;
-        console.log("成功插入資料");
-      });
-    } catch (error) {
-      // 加入如果錯誤就新增資料表或是資料庫
-      console.log(error);
-      console.log('錯誤');
-    }
+  // 使用sql
+  // dbOperations.UseMySQL(sql, values)
+  UseMySQL: function (sql, values="") {
+    connection.query(sql, values, (err) => {
+      if (err) throw err;
+      console.log("成功使用SQL")
+    })
   },
 
   insertIntoMenuItems: function (values) {
@@ -381,7 +342,37 @@ const queries = [
   `CREATE TABLE IF NOT EXISTS Tables (
     TableId INT AUTO_INCREMENT PRIMARY KEY,
     TableName VARCHAR(50) NOT NULL
-  );`
+  );`,
+  `  CREATE TABLE IF NOT EXISTS menu_items (
+    item_id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    price DECIMAL(10, 2),
+    category VARCHAR(100),
+    photo_url VARCHAR(2083)
+  ) ENGINE=InnoDB;`
 ];
-
+// 桌子還要加入用餐中或是空桌
 module.exports = dbOperations;
+
+
+  // // 插入資料到 menu_items
+  // connection.query(
+  //   `INSERT INTO menu_items (name, description, price, category, photo_url) VALUES 
+  //   (?, ?, ?, ?, ?),
+  //   (?, ?, ?, ?, ?),
+  //   (?, ?, ?, ?, ?),
+  //   (?, ?, ?, ?, ?),
+  //   (?, ?, ?, ?, ?)`,
+  // [
+  //     '漢堡', '經典美式牛肉漢堡，配生菜、番茄、起司和特製醬料', 99.00, '主餐', 'http://example.com/burger.jpg',
+  // '薯條', '酥脆金黃的薯條，外酥內軟', 30.00, '小吃', 'http://example.com/fries.jpg',
+  // '可樂', '冰涼的可樂，解渴首選', 20.00, '飲料', 'http://example.com/cola.jpg',
+  // '壽司盛合', '新鮮的壽司組合，包括鮭魚、吞拿魚和黃瓜卷', 180.00, '主餐', 'http://example.com/sushi.jpg',
+  // '綠茶', '香醇的日式綠茶', 25.00, '飲料', 'http://example.com/greentea.jpg'
+  //   ],
+  //   (err, results) => {
+  //     if (err) throw err;
+  //     console.log('插入資料成功，插入的記錄數：', results.affectedRows);
+  //   }
+  // );

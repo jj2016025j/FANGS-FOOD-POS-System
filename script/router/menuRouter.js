@@ -3,6 +3,12 @@ const dbOperations = require('../mynodesql'); // 假設你已經有一個設定�
 const router = express.Router();
 dbOperations.useDatabase('fangs_food_pos_system');
 
+// 用於確認路由器連接成功
+// http://localhost:3000/menu
+router.get('/', (req, res) => {
+    res.render("menu.ejs");//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
+})
+
 // http://localhost:3000/menu/items
 router.get('/items', async (req, res) => {
     try {
