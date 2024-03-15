@@ -43,9 +43,9 @@ app.get("/seathome", function (req, res) {
 // const webRouter = require('./script/router/webRouter');
 // app.use('/web', webRouter);
 
-// const menuRouter = require('./script/router/menuRouter');
-// app.use('/menu', menuRouter);
 // http://localhost:5001/menu
+const menuRouter = require('./script/router/menuRouter');
+app.use('/menu', menuRouter);
 
 // POS系統路由
 // http://localhost:5001/pos
@@ -53,8 +53,8 @@ const posRouter = require('./script/router/posRouter');
 app.use('/pos', posRouter);
 
 // 手機點餐路由
-// const mobileRouter = require('./script/router/mobileRouter'); 
 // http://localhost:5001/mobile
+// const mobileRouter = require('./script/router/mobileRouter'); 
 // app.use('/mobile', mobileRouter);
 
 app.listen(port, () => {
