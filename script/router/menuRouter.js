@@ -6,12 +6,12 @@ dbOperations.createDatabase("fangs_food_pos_system")
 dbOperations.useDatabase('fangs_food_pos_system');
 
 // 用於確認路由器連接成功
-// http://localhost:8080/menu
+// http://localhost:5001/menu
 router.get('/', (req, res) => {
     res.render("menu.ejs");//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
 })
 
-// http://localhost:8080/menu/items
+// http://localhost:5001/menu/items
 router.get('/items', async (req, res) => {
     try {
         // 直接等待异步方法的结果
@@ -38,7 +38,7 @@ const Items = {
     PostmanTest: false
 };
 // 新增菜單項目
-// http://localhost:8080/menu/items
+// http://localhost:5001/menu/items
 router.post('/items', async (req, res) => {
     req.body = Items.PostmanTest ? Items : req.body;
     const Item = req.body
@@ -53,7 +53,7 @@ router.post('/items', async (req, res) => {
 });
 
 // 修改菜單項目
-// http://localhost:8080/menu/items
+// http://localhost:5001/menu/items
 router.put('/items', async (req, res) => {
     req.body = Items.PostmanTest ? Items : req.body;
     const Item = req.body
@@ -68,7 +68,7 @@ router.put('/items', async (req, res) => {
 });
 
 // 刪除菜單項目
-// http://localhost:8080/menu/items
+// http://localhost:5001/menu/items
 router.delete('/items', async (req, res) => {
     req.body = Items.PostmanTest ? Items : req.body;
     const Item = req.body
