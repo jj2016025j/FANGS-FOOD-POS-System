@@ -1,0 +1,84 @@
+.right-container {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(48, 48, 48, 1);;
+}
+
+.turnover-content {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 80px;
+}
+
+.turnover-info {
+    border: 1px solid rgb(135, 135, 135);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5em;
+    font-weight: 600;
+    padding: 20px;
+    width: 40%;
+    border-radius: 10px;
+    background-color: rgba(247, 230, 174, 1);
+    box-shadow: inset 0px 0px 15px 5px rgb(239, 211, 118), 
+    3px 3px 10px 3px rgba(130, 130, 130, 0.5);
+}
+
+.turnover-info-title {
+    margin-bottom: 10px;
+}
+
+.turnover {
+    font-size: 1.5em;
+}
+
+.bottom-content {
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.sales-ranking {
+    background-color:rgba(247, 230, 174, 1);
+    padding: 20px;
+    border-radius: 10px;
+    font-weight: 600;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.sales-ranking-title {
+    font-size: 1.5em;
+}
+
+.sales-ranking ol {
+    padding-left: 18px;
+    width: 100%;
+}
+
+.sales-ranking-list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.25em;
+    width: 100%;
+    margin-top: 8px;
+    border-bottom: 1px solid rgba(54, 27, 18, 1);
+    padding: 3px 0px;
+}
+
+.sales-ranking-list > img {
+    height: 1.25em;
+}
+
+.bar-chart-content {
+    background-color: #fff;
+    border-radius: 5px;
+}

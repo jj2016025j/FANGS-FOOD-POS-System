@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯菜單</title>
+    <link rel="icon" href="../Logo.png"/><!--webLOGO-->
+    <!--導覽列及右側排版-->
+    <link rel="stylesheet" href="../navbar-layout.css"> 
+    <link rel="stylesheet" href="../businessReport/businessReport.css">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="navbar-container">
+            <img class="navbar-img" src="../Logo.png"/>
+            <a class="navbar-link" href="../seatHome/seatHome.html">訂單紀錄</a>
+            <a class="navbar-link" href="../editMenu/editMenu.html">編輯菜單</a>
+            <a class="navbar-link" href="#">報表統計</a>
+            <a class="navbar-link" href="#">其他</a>
+        </div>
+         <!-- end of container -->
+        <div class="right-container">
+            <div class="turnover-content">
+                <div class="turnover-info">
+                    <div class="turnover-info-title">日營業額</div>
+                    <div class="turnover" id="day-turnover">$22222</div>
+                </div>
+                <div class="turnover-info">
+                    <div class="turnover-info-title">月營業額</div>
+                    <div class="turnover" id="month-turnover">$222222</div>
+                </div>
+            </div>
+            
+            <div class="bottom-content">
+                <div class="sales-ranking">
+                    <div class="sales-ranking-title">銷售排行榜</div>
+                    <ol>
+                        <li>
+                            <div class="sales-ranking-list">
+                                <span class="sales-ranking-item">日本和牛</span>
+                                <img src="./crown.svg">
+                            </div>
+                        </li>
+                        <li>
+                            <div class="sales-ranking-list">
+                                <span class="sales-ranking-item">澳洲和牛</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="sales-ranking-list">
+                                <span class="sales-ranking-item">日本干貝</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="sales-ranking-list">
+                                <span class="sales-ranking-item">蛤蠣</span>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="sales-ranking-list">
+                                <span class="sales-ranking-item">貢丸</span>
+                            </div>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="bar-chart-content" style="width: 700px;">
+                    <canvas id="bar-chart-content">
+                        <!-- Chart.js 生成-->
+                    </canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="./businessReport.js"></script>
+    
+</body>
+</html>

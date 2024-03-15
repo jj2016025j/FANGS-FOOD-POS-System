@@ -1,0 +1,356 @@
+.form-layout {
+    position: relative;
+    overflow: hidden;
+}
+
+.tab {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(247, 230, 174, 1); 
+    padding-left: 20px;
+    height: 75px;
+    background-color: rgba(48, 48, 48, 1);
+}
+
+.tablinks {
+    outline: none;
+    border: none;
+    font-size: 2em;
+    /* width: 200px; */
+    padding: 10px 15px;
+    text-align: center;
+    background-color: transparent;
+    border-bottom: 5px solid transparent;
+    color: #fff;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.tablinks:hover, .tablinks:focus {
+    border-bottom: 5px solid rgba(247, 230, 174, 1);
+    color: rgba(247, 230, 174, 1);
+}
+/* 品項種類導覽列結束 */
+
+.tabcontent {
+    width: 100%;
+    background-color: rgba(48, 48, 48, 1);
+    height: calc(100% - 75px);
+    overflow-y: scroll;
+    padding: 0px 100px 150px 10px;
+}
+
+
+/* scrollbar自定義 */
+.tabcontent::-webkit-scrollbar {
+    width: 10px;
+}
+  
+
+.tabcontent::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+
+.tabcontent::-webkit-scrollbar-thumb {
+    background: rgba(247, 230, 174, 1);
+    border-radius: 10px;
+}
+
+.tabcontent::-webkit-scrollbar-thumb:hover {
+    background: rgba(230, 151, 98, 1);
+}
+
+.tabcontent::-webkit-scrollbar-button {
+    background: none;
+}
+/* scrollbar自定義 */
+
+.row {
+    margin: 0 !important;
+}
+
+.item {
+    margin-top: 20px;
+}
+
+.mycard {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    background: #fff;
+    height: 100px;
+}
+
+.menu-img {
+    object-fit: cover;
+}
+
+.mycard-body {
+    display: flex;
+    width: 100%;
+    gap: 10px;
+    align-items: center;
+}
+
+.body-info {
+    flex: 55%;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-size: 1.25em;
+    margin-left: 10px;
+}
+
+.card-text {
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.card-btn-group {
+    font-size: 1.75em;
+    display: flex;
+    gap: 20px;
+    padding-right: 15px;
+}
+
+.card-btn-group > * {
+    cursor: pointer;
+}
+
+.bi-trash {
+    color: red;
+}
+
+.plus-icon {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 60px;
+    height: 60px;
+    right: 35px;
+    bottom: 30px;
+    background-color: rgba(247, 230, 174, 1);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.bi-plus-lg {
+    font-size: 40px;
+    width: 100%;
+    /* height: 72px; */
+    display: inline-block;
+    text-align: center;
+}
+
+
+/* =============================側邊表單開始============================= */
+.form-page {
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 76px;
+    flex-direction: column;
+    /* width: 400px; */
+    width: 50%;
+    height: calc(100vh - 76px);
+    border: 1px solid black;
+    padding: 10px 20px 50px 20px;
+    justify-content: space-between;
+    background-color: #fff;
+    transform: translateX(100%);
+    transition: transform .5s ease-in-out;
+    z-index: 99;
+}
+
+.form-title {
+    font-size: 1.5em;
+    text-align: center;
+    font-weight: 600;
+    padding-top: 10px;
+    padding-bottom: 20px;
+}
+
+.form-option {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    gap: 30px;
+}
+
+.item-input {
+    width: 100%;
+    height: 30px;
+    display: flex;
+    align-items: center;
+}
+
+.item-input > input {
+    width: 85%;
+    outline: none;
+    border: none;
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    height: 100%;
+    border-radius: 5px;
+    /* outline: 2px solid rgba(255, 0, 0, .7); */
+}
+.item-input > label {
+    width: 15%;
+    font-size: 1.25em;
+    font-weight: 600;
+    /* height: 100%; */
+}
+
+/* 下拉式開始 */
+.custom-select {
+    position: relative;
+    width: 100%;
+    height: auto;
+    font-weight: 600;
+    /* padding: 0px 5px; */
+    /* background-color: rgba(247, 230, 174, 1); */
+}
+
+/* 隱藏原本select box */
+.custom-select select {
+    display: none;
+}
+
+.select-selected {
+    background-color: rgba(247, 230, 174, 1);   
+}
+
+.select-selected:after {
+    position: absolute;
+    content: "";
+    top: 14px;
+    right: 10px;
+    width: 0;
+    height: 0;
+    border: 8px solid transparent;
+    border-color: black transparent transparent transparent;
+    transform-origin: top;
+    transition: all .3s linear;
+}
+
+.select-selected.select-arrow-active:after {
+    /* border-color: transparent transparent black transparent; */
+    top: 22px;
+    transform: rotate(180deg);
+}
+
+.select-items div,.select-selected {
+    color: black;
+    padding: 8px 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, .2);
+    cursor: pointer;
+    user-select: none;
+}
+
+.select-items {
+    position: absolute;
+    background-color: rgba(247, 230, 174, 1);
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 99;
+}
+
+.select-hide {
+    display: none;
+}
+
+.select-items div:hover, .same-as-selected {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+/* 下拉式結束 */
+
+/* 檔案選擇按鈕 */
+input[type="file"] {
+    display: none;
+}
+
+.upload-item-img {
+    padding: 10px;
+    background-color: rgba(228, 228, 228, 1);
+    box-shadow: 3px 3px 5px 1px rgba(0, 0, 0, .2);
+    border-radius: 10px;
+    font-size: 1.25em;
+    text-align: center;
+    cursor: pointer;
+}
+
+.upload-item-img:hover,.upload-item-img:focus {
+    background-color: rgba(247, 230, 174, 1);
+    outline: 1px solid rgba(0, 0, 0, .2);
+}
+
+.bi-file-earmark-image {
+    margin-right: 5px;
+}
+
+#file-name {
+    height: auto;
+}
+
+#file-img {
+    width: 100px;
+}
+
+.form-btn-group {
+    margin-top: auto;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.form-btn {
+    border: none;
+    outline: none;
+    background-color: rgba(247, 230, 174, 1);
+    padding: 10px 30px;
+    border-radius: 30px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* 提示訊息 */
+.message {
+    display: none;
+    background-color: #fff;
+    position: fixed;
+    bottom: 30px;
+    left: 25%;
+    /* transform: translateX(50%); */
+    padding: 10px 15px;
+    font-size: 1.25em;
+    border-radius: 5px;
+    text-align: center;
+    min-width: 250px;
+    z-index: 50;
+}
+
+.message.show {
+    display: block;
+    animation: fadein 0.5s, fadeout 0.5s 2.5s;
+}
+@keyframes fadein {
+    from {bottom: 0; opacity: 0;}
+    to {bottom: 30px; opacity: 1;}
+}
+@keyframes fadeout {
+    from {bottom: 30px; opacity: 1;}
+    to {bottom: 0; opacity: 0;}
+}
+
+.bi-check-circle-fill {
+    margin-left: 10px;
+    color: rgba(25, 135, 84, 1);
+}
