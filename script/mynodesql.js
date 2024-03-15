@@ -10,7 +10,7 @@ const local  = mysql.createConnection({
 });
 
 const aws  = mysql.createConnection({
-  host: 'fangfoodrds-instance-1.cd08s4082uws.ap-northeast-1.rds.amazonaws.com', // RDS终端节点
+  host: 'fangfoodbackend-v2-instance-1.cd08s4082uws.ap-northeast-1.rds.amazonaws.com', // RDS终端节点
   user: "admin",
   password: "j19981116", 
   charset: "utf8mb4",
