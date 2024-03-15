@@ -1,8 +1,8 @@
 const mysql = require('mysql');
 const connection = mysql.createConnection({
   host: "localhost", // 資料庫伺服器地址
-  user: "root", // 資料庫用戶名
-  password: "", // 資料庫密碼
+  user: "admin", // 資料庫用戶名
+  password: "j19981116", // 資料庫密碼
   // database: database // 要操作的数据库名 庫名不一定要
   charset: "utf8mb4" // 確保使用 utf8mb4
 });
