@@ -1,11 +1,23 @@
 const mysql = require('mysql');
-const connection = mysql.createConnection({
+
+const local  = mysql.createConnection({
   host: "localhost", // 資料庫伺服器地址
-  user: "admin", // 資料庫用戶名
-  password: "j19981116", // 資料庫密碼
-  // database: database // 要操作的数据库名 庫名不一定要
-  charset: "utf8mb4" // 確保使用 utf8mb4
+  user: "root",
+  password: "", 
+  // database: database
+  charset: "utf8mb4",
+  port: 3306
 });
+
+const aws  = mysql.createConnection({
+  host: 'fangfoodrds-instance-1.cd08s4082uws.ap-northeast-1.rds.amazonaws.com', // RDS终端节点
+  user: "admin",
+  password: "j19981116", 
+  charset: "utf8mb4",
+  port: 3306
+});
+
+const connection = aws
 
 connection.connect(err => {
   if (err) {
