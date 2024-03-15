@@ -44,8 +44,8 @@ app.get("/seathome", function (req, res) {
 // app.use('/web', webRouter);
 
 // http://localhost:5001/menu
-const menuRouter = require('./script/router/menuRouter');
-app.use('/menu', menuRouter);
+// const menuRouter = require('./script/router/menuRouter');
+// app.use('/menu', menuRouter);
 
 // POS系統路由
 // http://localhost:5001/pos

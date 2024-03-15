@@ -17,7 +17,7 @@ const aws  = mysql.createConnection({
   port: 3306
 });
 
-const connection = aws
+const connection = local
 
 connection.connect(err => {
   if (err) {
