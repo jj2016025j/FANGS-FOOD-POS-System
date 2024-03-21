@@ -2,9 +2,10 @@ require('dotenv').config()
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
-const dataRep = require('./script/router/data_repository');
+const dataRep = require('./script/data_repository');
 const bodyParser = require('body-parser')
 const port = 3000;
+const { initPrinter } = require('./script/printer');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -13,6 +14,9 @@ app.set('view engine', 'ejs');
 app.use(express.static('public'))
 const path = require('path');
 app.set('views', path.join(__dirname, 'views'));
+
+// 初始化打印機
+// initPrinter()
 
 // 付款測試用
 // http://localhost:5001/index
@@ -71,24 +75,24 @@ app.listen(port, () => {
 });
 
 // 404
-app.get('/order/:trade_no', async(req, res) => {
+app.get('/order/:trade_no', async (req, res) => {
     const trade_no = req.params['trade_no'];
     var foods = await dataRep.getFoods();
     var categories = await dataRep.getFoodCateories();
     var order = await dataRep.getOrderByTradeNo(trade_no);
 
-    if(order){
+    if (order) {
         return res.render('pages/order/index', {
             foods: foods,
             categories: categories,
             order: order
         });
-    }else{
+    } else {
         return res.send('訂單不存在唷!');
     }
 });
 
 // 404
-app.get('/order', async(req, res) => {
+app.get('/order', async (req, res) => {
     return res.send('請透過Qrcode掃描進入點餐!');
 });

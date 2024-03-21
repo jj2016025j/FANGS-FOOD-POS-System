@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const dataRep = require('./data_repository');
+const dataRep = require('../data_repository');
 
 // 點餐首頁
 // http://localhost:3000/pos

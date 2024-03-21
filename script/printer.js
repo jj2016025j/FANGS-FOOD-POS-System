@@ -4,9 +4,15 @@ const Jimp = require('jimp');
 const qr = require('qr-image');
 const streamToBuffer = require('stream-to-buffer');
 
-const device = new escpos.USB();
-const options = { encoding: "Big5", width: 42 }
-const printer = new escpos.Printer(device, options);
+const device = {}
+const options = {}
+const printer = {}
+
+function initPrinter() {
+    device = new escpos.USB();
+    options = { encoding: "Big5", width: 42 }
+    printer = new escpos.Printer(device, options);
+}
 
 function printOrderWithQR(url, orderNumber, tableNumber, contents) {
     device.open(function (error) {
@@ -365,4 +371,4 @@ const invoiceData = {
 // printInvoice(invoiceData);
 
 
-module.exports = { printMergedQRCodes, printReturnPolicy, printInvoiceItems };
+module.exports = { printMergedQRCodes, printReturnPolicy, printInvoiceItems, initPrinter };

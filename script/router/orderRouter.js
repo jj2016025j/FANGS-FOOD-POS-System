@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const dataRep = require('./script/router/data_repository');
-const { printOrder, printOrderWithQR } = require('./script/printer');
+const dataRep = require('../data_repository');
+const { printOrder, printOrderWithQR, initPrinter } = require('../printer');
 
 const mysql = require('mysql');
 const connection = mysql.createConnection({
@@ -130,29 +130,29 @@ router.get('/sub-order', (req, res) => {
 });
 
 //刪除食物
-router.delete('/api/order/foods/:order_id/:food_id', async(req, res) => {
+router.delete('/api/order/foods/:order_id/:food_id', async (req, res) => {
     const order_id = req.params['order_id']
     const food_id = req.params['food_id']
 
-    try{
+    try {
         var result = await dataRep.deleteOrderFood(order_id, food_id)
         console.log('delete result', result)
         return res.status(200).json(true);
-    }catch(e){
+    } catch (e) {
         return res.status(400).json({
             error: e
         });
-    }    
+    }
 });
 
 //進入點餐頁面      
-router.post('/:order_id', async(req, res) => {
+router.post('/:order_id', async (req, res) => {
     let formData = req.body;
     const orderId = req.params['order_id']
-    try{
+    try {
         await dataRep.appendOrderFoods(orderId, formData)
         return res.status(200).send(true);
-    }catch(e){
+    } catch (e) {
         return res.status(400).json({
             error: e
         });
@@ -160,12 +160,12 @@ router.post('/:order_id', async(req, res) => {
 });
 
 //取得訂單產品
-router.get('/order/:order_id', async(req, res) => {
+router.get('/order/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
-    try{
+    try {
         var foods = await dataRep.getOrderFoods(orderId)
         return res.status(200).json(foods);
-    }catch(e){
+    } catch (e) {
         return res.status(400).json({
             error: e
         });

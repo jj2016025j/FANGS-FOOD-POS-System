@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { printInvoice } = require('./script/printer');
+const { printInvoice, initPrinter } = require('./script/printer');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host: "localhost", // 資料庫伺服器地址
