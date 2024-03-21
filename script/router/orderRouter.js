@@ -122,7 +122,6 @@ router.get('/sub-order', (req, res) => {
     });
 });
 
-<<<<<<< Updated upstream
 //刪除食物
 router.delete('/api/order/foods/:order_id/:food_id', async(req, res) => {
     const order_id = req.params['order_id']
@@ -137,21 +136,6 @@ router.delete('/api/order/foods/:order_id/:food_id', async(req, res) => {
             error: e
         });
     }    
-=======
-// 結帳
-router.post('/pay', (req, res) => {
-    const { orderId, paymentMethod, amount } = req.body;
-    const receiptId = `receipt${Object.keys(orders).length + 1}`;
-    const receipt = {
-        receiptId,
-        amount,
-        paymentMethod,
-        status: "已支付"
-    };
-    orders[orderId].receipt = receipt;
-    // 返回支付成功或失敗
-    res.json({ success: true, message: "支付成功", receipt });
->>>>>>> Stashed changes
 });
 
 //進入點餐頁面      
@@ -168,7 +152,6 @@ router.post('/:order_id', async(req, res) => {
     }
 });
 
-<<<<<<< Updated upstream
 //取得訂單產品
 router.get('/order/:order_id', async(req, res) => {
     const orderId = req.params['order_id']
@@ -182,8 +165,6 @@ router.get('/order/:order_id', async(req, res) => {
     }
 });
 
-=======
->>>>>>> Stashed changes
 module.exports = router;
 
 // 假設 orders 和 dishes 是從某處獲得的數據，這裡為了簡化直接定義了

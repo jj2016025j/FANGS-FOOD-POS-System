@@ -6,16 +6,11 @@ const dataRep = require('./data_repository');
 // http://localhost:3000/pos
 router.get('/', async (req, res) => {
     var orders = await dataRep.getPendingTableOrders();
-<<<<<<< Updated upstream
-    return res.render('home', {
-=======
     return res.render('poshome', {
->>>>>>> Stashed changes
         orders: orders
     });
 });
 
-<<<<<<< Updated upstream
 //新增訂單
 router.post('/', async(req, res) => {
     let formData = req.body;
@@ -32,8 +27,6 @@ router.post('/', async(req, res) => {
     }
 });
 
-=======
->>>>>>> Stashed changes
 // 品項編輯
 // http://localhost:3000/pos/Edit
 router.get('/Edit', async (req, res) => {
@@ -56,15 +49,9 @@ router.get('/report', async (req, res) => {
     });
 });
 
-<<<<<<< Updated upstream
 //進入點餐畫面
 // http://localhost:3000/pos/order
 router.get('/order/:trade_no', async (req, res) => {
-=======
-//訂單編輯
-// http://localhost:3000/pos
-router.get('/shop/tableOrder/:trade_no', async (req, res) => {
->>>>>>> Stashed changes
     var categories = await dataRep.getFoodCateories()
     var foods = await dataRep.getFoods()
     var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);

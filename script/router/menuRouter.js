@@ -97,11 +97,7 @@ router.post('/', foodsUpload.single('item-img'), async (req, res) => {
     return res.status(200).send(formData);
 });
 
-<<<<<<< Updated upstream
-//編輯食物
-=======
 //編輯品項
->>>>>>> Stashed changes
 router.post('/:id', foodsUpload.single('item-img'), async (req, res) => {
     const id = req.params['id']
     let formData = req.body;
@@ -110,11 +106,7 @@ router.post('/:id', foodsUpload.single('item-img'), async (req, res) => {
     return res.status(200).send(true);
 });
 
-<<<<<<< Updated upstream
-//刪除食物
-=======
 //刪除品項
->>>>>>> Stashed changes
 router.delete('/:id', async (req, res) => {
     const id = req.params['id']
     await dataRep.deleteFood(id)

@@ -2,56 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-<<<<<<< Updated upstream
-    <title>訂單紀錄</title>
-    <link rel="icon" href="/assets/image/Logo.png"/><!--webLOGO-->
-    <!--導覽列及右側排版-->
-    <link rel="stylesheet" href="/assets/menu/navbar-layout.css"> 
-    <link rel="stylesheet" href="/assets/page_tables/index.css">
-    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="/assets/js/jQuery3.7.1.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-</head>
-<body>
-    <div class="page-wrapper">
-        <div class="navbar-container">
-            <img class="navbar-img" src="/assets/image/Logo.png"/>
-            <a class="navbar-link" href="/pos/">座位</a>
-            <a class="navbar-link" href="/pos/Edit">編輯菜單</a>
-            <a class="navbar-link" href="/pos/report">報表統計</a>
-        </div>
-         <!-- end of container -->
-        <div id="seat-container" class="right-container seat-flex">
-            <!-- 自動生成座位表 -->
-            <div class="seat-layout">
-                <div class="seat">
-                    <div class="seat-number">${seatNum}</div>
-                    <div class="seat-state">${isMeal ? "<span style='color: red;'>用餐中</span>" : "<span style='color: green;'>空桌</span>"}</div>
-                </div>
-                <div class="seat-option-content">
-                    <a class="seat-option" href="/edit">點餐/結帳</a>
-                    <a class="seat-option"><img src="">生成QR code</a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-    <script src="/assets/page_tables/seatList.js"></script>
-    <script>
-        let pendingOrders = <%- JSON.stringify(orders) %>;
-    </script>
-    <script src="/assets/page_tables/index.js"></script>
-
-    <script>
-        // $.ajax({
-        //     url: "",
-        //     method: "POST",
-        //     data: ,
-        // })
-    </script>
-=======
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="./image/圖層 0.png" />
     <title>芳鍋</title>
@@ -365,6 +315,5 @@
 </script>
 <script src="./js/card.js"></script>
 
->>>>>>> Stashed changes
 </body>
 </html>
