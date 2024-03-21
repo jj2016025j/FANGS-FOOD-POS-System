@@ -1,14 +1,19 @@
 const express = require('express');
 const dbOperations = require('../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
 const router = express.Router();
+const multer = require('multer')
+const foodsUpload = multer({
+    dest: "./public/uploads/tmp"
+});
 
-dbOperations.createDatabase("fangs_food_pos_system")
-dbOperations.useDatabase('fangs_food_pos_system');
+const storyName = "fangs_food_"
+// dbOperations.createDatabase("pos_system")
+// dbOperations.useDatabase('pos_system');
 
 // 用於確認路由器連接成功
 // http://localhost:5001/menu
 router.get('/', (req, res) => {
-    res.render("menu.ejs");//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
+    res.render("menu.ejs");//不用設定 views 路徑，會自動找到views路徑底下的檔案，有router.set('view engine', 'ejs')的話可以不用打附檔名
 })
 
 // http://localhost:5001/menu/items
@@ -81,6 +86,32 @@ router.delete('/items', async (req, res) => {
         console.error(error);
         res.status(500).send('Server error');
     }
+});
+
+//新增品項
+router.post('/', foodsUpload.single('item-img'), async (req, res) => {
+    let formData = req.body;
+
+    await dataRep.uploadFood(formData, req.file)
+
+    return res.status(200).send(formData);
+});
+
+//編輯食物
+router.post('/:id', foodsUpload.single('item-img'), async (req, res) => {
+    const id = req.params['id']
+    let formData = req.body;
+    await dataRep.editFood(id, formData, req.file)
+
+    return res.status(200).send(true);
+});
+
+//刪除食物
+router.delete('/:id', async (req, res) => {
+    const id = req.params['id']
+    await dataRep.deleteFood(id)
+
+    return res.status(200).send(true);
 });
 
 module.exports = router;

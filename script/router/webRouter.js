@@ -1,6 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
+// http://localhost:3000/
+router.get('/', (req, res) => {
+    return res.send('成功進入首頁');
+});
+
 router.get('/', (req, res) => {
     res.render('index');
 })
@@ -33,7 +38,7 @@ router.get('/menber', (req, res) => {
 
 
 
-app.get('/home', (req, res) => {
+router.get('/home', (req, res) => {
     // 示範數據，實際應用中可能來自於數據庫或其他服務
     const homeContent = {
         brandImage: 'url_to_image',
@@ -54,12 +59,12 @@ app.get('/home', (req, res) => {
     res.json({ data: "這是首頁" });
 });
 
-app.get('/menu', (req, res) => {
+router.get('/menu', (req, res) => {
     // 假設這些菜品數據存在於先前的實現中
     res.json({ success: true, data: dishes });
 });
 
-app.get('/menu/dishes/:dishId', (req, res) => {
+router.get('/menu/dishes/:dishId', (req, res) => {
     const { dishId } = req.params;
     const dish = dishes.find(d => d.dishId === dishId);
     if (dish) {
@@ -69,7 +74,7 @@ app.get('/menu/dishes/:dishId', (req, res) => {
     }
 });
 
-app.get('/about', (req, res) => {
+router.get('/about', (req, res) => {
     const aboutUsContent = {
         history: '火鍋店成立於xxxx年，擁有豐富的歷史與文化。',
         philosophy: '我們致力於提供最優質的食材和服務。',
@@ -78,7 +83,7 @@ app.get('/about', (req, res) => {
     res.json({ success: true, data: aboutUsContent });
 });
 
-app.get('/contact', (req, res) => {
+router.get('/contact', (req, res) => {
     const contactInfo = {
         location: 'xx市xx路xx號',
         phone: '123-456-7890',
@@ -87,7 +92,7 @@ app.get('/contact', (req, res) => {
     res.json({ success: true, data: contactInfo });
 });
 
-app.get('/stores', (req, res) => {
+router.get('/stores', (req, res) => {
     const storesInfo = [
         { storeId: '1', location: 'xx市xx路xx號', contact: '123-456-7890', hours: '每日 10:00 - 22:00' },
         // 其他門市資訊...

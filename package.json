@@ -19,9 +19,8 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon app.js",
-    "start2": "nodemon index",
-    "dev": "npm app.js",
-    "build": "node app.js",
+    "dev": "nodemon index",
+    "update": "npm install",
     "init": ""
   },
   "keywords": [],
