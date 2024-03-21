@@ -12,7 +12,7 @@ let generateSeat = () => {
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/order/' + search.trade_no : ''
-        const orderUrl = search ? '/shop/tableOrder/' + search.trade_no: ''
+        const orderUrl = search ? '/pos/order/' + search.trade_no: ''
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -84,7 +84,7 @@ let generateQRcode = (e) => {
             let seatID = (e.target.getAttribute('data-seatnum')) ? e.target.getAttribute('data-seatnum') : "1";
             console.log(seatID)
             $.ajax({
-                url: "/api/table/order",
+                url: "/pos",
                 method: "POST",
                 data: {
                     seatID: seatID
@@ -95,7 +95,7 @@ let generateQRcode = (e) => {
                 },
                 error: function(error){
                     if(error.responseJSON && error.responseJSON.error){
-                        alert(error.responseJSON.error)
+                        // alert(error.responseJSON.error)
                         location.reload();
                         
                     }

@@ -11,6 +11,22 @@ router.get('/', async (req, res) => {
     });
 });
 
+//新增訂單
+router.post('/', async(req, res) => {
+    let formData = req.body;
+    const tableNum = formData.seatID
+
+    try{
+        await dataRep.addTableOrder(tableNum)
+        var orders = await dataRep.getPending   ();
+        return res.status(200).json(orders);
+    }catch(e){
+        return res.status(400).json({
+            error: e
+        });
+    }
+});
+
 // 品項編輯
 // http://localhost:3000/pos/Edit
 router.get('/Edit', async (req, res) => {
@@ -33,9 +49,9 @@ router.get('/report', async (req, res) => {
     });
 });
 
-//訂單編輯
-// http://localhost:3000/pos
-router.get('/shop/tableOrder/:trade_no', async (req, res) => {
+//進入點餐畫面
+// http://localhost:3000/pos/order
+router.get('/order/:trade_no', async (req, res) => {
     var categories = await dataRep.getFoodCateories()
     var foods = await dataRep.getFoods()
     var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);

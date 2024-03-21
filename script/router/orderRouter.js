@@ -122,35 +122,47 @@ router.get('/sub-order', (req, res) => {
     });
 });
 
-// 結帳
-router.post('/pay', (req, res) => {
-    const { orderId, paymentMethod, amount } = req.body;
-    const receiptId = `receipt${Object.keys(orders).length + 1}`;
-    const receipt = {
-        receiptId,
-        amount,
-        paymentMethod,
-        status: "已支付"
-    };
-    orders[orderId].receipt = receipt;
-    // 返回支付成功或失敗
-    res.json({ success: true, message: "支付成功", receipt });
+//刪除食物
+router.delete('/api/order/foods/:order_id/:food_id', async(req, res) => {
+    const order_id = req.params['order_id']
+    const food_id = req.params['food_id']
+
+    try{
+        var result = await dataRep.deleteOrderFood(order_id, food_id)
+        console.log('delete result', result)
+        return res.status(200).json(true);
+    }catch(e){
+        return res.status(400).json({
+            error: e
+        });
+    }    
 });
 
-// 發票開具 X
-router.post('/invoice', (req, res) => {
-    const { orderId, receiptId, invoiceType, carrier } = req.body;
-    const invoiceId = `invoice${Object.keys(orders).length + 1}`;
-    const invoice = {
-        invoiceId,
-        orderId,
-        receiptId,
-        invoiceType,
-        carrier,
-        status: "已開具"
-    };
-    if (orders[orderId]) orders[orderId].invoice = invoice;
-    res.json({ success: true, message: "發票已開具", invoice });
+//進入點餐頁面      
+router.post('/:order_id', async(req, res) => {
+    let formData = req.body;
+    const orderId = req.params['order_id']
+    try{
+        await dataRep.appendOrderFoods(orderId, formData)
+        return res.status(200).send(true);
+    }catch(e){
+        return res.status(400).json({
+            error: e
+        });
+    }
+});
+
+//取得訂單產品
+router.get('/order/:order_id', async(req, res) => {
+    const orderId = req.params['order_id']
+    try{
+        var foods = await dataRep.getOrderFoods(orderId)
+        return res.status(200).json(foods);
+    }catch(e){
+        return res.status(400).json({
+            error: e
+        });
+    }
 });
 
 module.exports = router;
