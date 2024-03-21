@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <%- include ("partials/header") %>
+    <title>個人檔案頁面</title>
+    <style>
+      .posts {
+        padding: 2rem;
+      }
+      section.user-info img {
+        border-radius: 50%;
+        display: inline-block;
+        padding: 1rem 0.5rem;
+      }
+      section.user-info h1 {
+        padding: 1rem 0.5rem;
+      }
+      .flex-container {
+        display: flex;
+        align-items: center;
+      }
+
+      section.user-info img {
+        display: inline-block;
+        padding: 1rem 0.5rem;
+        object-fit: cover; /* 使圖片完全顯示在圖片框中，同時保持比例不變 */
+        width: 100px; /* 設定圖片寬度 */
+        height: 100px; /* 設定圖片高度 */
+      }
+    </style>
+  </head>
+  <body>
+    <%- include ("partials/nav") %>
+    <section class="user-info">
+      <div class="flex-container">
+        <img src="<%= user.thumbnail %>" alt="個人圖片" />
+        <h1><%= user.name %>的個人檔案頁面</h1>
+      </div>
+      <ul>
+        <% if(user.googleID){%>
+        <li>Google的ID為： <%= user.googleID %></li>
+        <%}%> <% if(user.lineID){%>
+        <li>Line的ID為： <%= user.lineID %></li>
+        <%}%>
+        <li>時間為：<%= user.date %></li>
+      </ul>
+    </section>
+  </body>
+</html>

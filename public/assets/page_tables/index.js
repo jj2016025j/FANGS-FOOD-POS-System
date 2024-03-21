@@ -12,7 +12,11 @@ let generateSeat = () => {
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/order/' + search.trade_no : ''
+<<<<<<< Updated upstream
         const orderUrl = search ? '/pos/order/' + search.trade_no: ''
+=======
+        const orderUrl = search ? '/shop/tableOrder/' + search.trade_no: ''
+>>>>>>> Stashed changes
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -84,7 +88,11 @@ let generateQRcode = (e) => {
             let seatID = (e.target.getAttribute('data-seatnum')) ? e.target.getAttribute('data-seatnum') : "1";
             console.log(seatID)
             $.ajax({
+<<<<<<< Updated upstream
                 url: "/pos",
+=======
+                url: "/api/table/order",
+>>>>>>> Stashed changes
                 method: "POST",
                 data: {
                     seatID: seatID
@@ -95,7 +103,11 @@ let generateQRcode = (e) => {
                 },
                 error: function(error){
                     if(error.responseJSON && error.responseJSON.error){
+<<<<<<< Updated upstream
                         // alert(error.responseJSON.error)
+=======
+                        alert(error.responseJSON.error)
+>>>>>>> Stashed changes
                         location.reload();
                         
                     }

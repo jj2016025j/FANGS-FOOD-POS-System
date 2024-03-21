@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>訂單紀錄</title>
+    <link rel="icon" href="../Logo.png"/><!--webLOGO-->
+    <link rel="stylesheet" href="../navbar-layout.css"><!--導覽列及右側排版-->
+    <link rel="stylesheet" href="./seatHome.css">
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    
+</head>
+<body>
+    <div class="page-wrapper">
+        <div class="navbar-container">
+            <img class="navbar-img" src="../Logo.png"/>
+            <a class="navbar-link" href="#">訂單紀錄</a>
+            <a class="navbar-link" href="../editMenu/editMenu.html">編輯菜單</a>
+            <a class="navbar-link" href="../businessReport/businessReport.html">報表統計</a>
+            <a class="navbar-link" href="#">其他</a>
+        </div>
+         <!-- end of container -->
+        <div id="seat-container" class="right-container seat-flex">
+            <!-- 自動生成座位表 -->
+            <div class="seat-layout">
+                <div class="seat">
+                    <div class="seat-number">${seatNum}</div>
+                    <div class="seat-state">${isMeal ? "<span style='color: red;'>用餐中</span>" : "<span style='color: green;'>空桌</span>"}</div>
+                </div>
+                <div class="seat-option-content">
+                    <a class="seat-option" href="../seatOrder/seatOrder.html">點餐/結帳</a>
+                    <a class="seat-option">生成QR code</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/seatList.js"></script>
+    <script src="./seatHome.js"></script>
+</body>
+</html>

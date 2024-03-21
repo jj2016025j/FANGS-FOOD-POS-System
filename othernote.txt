@@ -35,6 +35,11 @@ const limiter = rateLimit({
 app.use(limiter); // 應用限流中間件
 ////////////////////////////////////////////////////
 
+<<<<<<< Updated upstream
+=======
+app.use(login);
+
+>>>>>>> Stashed changes
 const login = function(req, res, next){
     // 取得用戶目前角色
     const role = req.body.role;

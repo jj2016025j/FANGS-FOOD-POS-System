@@ -18,10 +18,14 @@
   "version": "1.0.0",
   "main": "app.js",
   "scripts": {
+<<<<<<< Updated upstream
     "start": "nodemon app.js",
     "dev": "nodemon index",
     "update": "npm install",
     "init": ""
+=======
+    "start": "nodemon app.js"
+>>>>>>> Stashed changes
   },
   "keywords": [],
   "author": "",

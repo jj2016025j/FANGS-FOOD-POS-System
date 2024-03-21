@@ -59,8 +59,11 @@ Copy code
 請根據您的項目需求調整上述模板的內容。記得替換連結、郵件地址和其他特定信息，以反映您的實際項目情況。
 
 ```
+<<<<<<< Updated upstream
 
 
+=======
+>>>>>>> Stashed changes
 1. 本機mysql 新增database  fang_project
 2. .env 輸入password
 3. 開啟終端機輸入

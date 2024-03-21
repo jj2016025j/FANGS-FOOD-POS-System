@@ -10,20 +10,34 @@ router.get('/', (req, res) => {
     res.render('index');
 })
 
-router.get('/menu', (req, res) => {
-    res.render('menu');
+// http://localhost:3000/home
+router.get("/home", function (req, res) {
+    res.render("home");
 })
 
+// http://localhost:3000/news
 router.get('/news', (req, res) => {
     res.render('news');
 })
 
-router.get('/aboutus', (req, res) => {
-    res.render('aboutus');
+// http://localhost:3000/menu_base
+router.get('/menu_base', (req, res) => {
+    res.render('menu_base');
 })
 
+// http://localhost:3000/menu_meat
+router.get('/menu_meat', (req, res) => {
+    res.render('menu_meat');
+})
+
+// http://localhost:3000/contactus
 router.get('/contactus', (req, res) => {
     res.render('contactus');
+})
+
+// http://localhost:3000/aboutus
+router.get('/aboutus', (req, res) => {
+    res.render('aboutus');
 })
 
 router.get('/qa', (req, res) => {
