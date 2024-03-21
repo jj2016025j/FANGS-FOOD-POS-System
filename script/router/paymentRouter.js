@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { printInvoice } = require('./script/printer');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host: "localhost", // 資料庫伺服器地址
@@ -45,7 +46,9 @@ router.post('/invoice', (req, res) => {
         status: "已開具"
     };
     if (orders[orderId]) orders[orderId].invoice = invoice;
-    res.json({ success: true, message: "發票已開具", invoice });
+    const isSuccess = printInvoice(invoiceData);
+
+    res.json({ success: isSuccess, message: "發票已開具", invoice });
 });
 
 //現金結帳

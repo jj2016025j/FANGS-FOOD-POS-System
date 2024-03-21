@@ -1,6 +1,7 @@
 const express = require('express');
 const dbOperations = require('../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
 const router = express.Router();
+const dataRep = require('./script/router/data_repository');
 const multer = require('multer')
 const foodsUpload = multer({
     dest: "./public/uploads/tmp"

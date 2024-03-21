@@ -1,5 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const dataRep = require('./script/router/data_repository');
+const { printOrder, printOrderWithQR } = require('./script/printer');
+
 const mysql = require('mysql');
 const connection = mysql.createConnection({
     host: "localhost", // 資料庫伺服器地址
@@ -24,6 +27,8 @@ router.post('/master-order', (req, res) => {
     const { userId, items, tableNumber } = req.body;
     // 返回 建立失敗
     // 返回建立成功 訂單ID 訂單資訊
+    const isSuccess = printOrderWithQR(url + orderid, orderid, tableNumber, contents);
+
     res.json({
         success: true,
         orderId: "order123",
@@ -51,6 +56,8 @@ router.post('/sub-order/:master-order-id', (req, res) => {
     const { userId, items, tableNumber } = req.body;
     // 新建子訂單
     // 新建子訂單及品項、數量、是否取消對照表
+    const isSuccess = printOrder(orderData);
+
     res.json({
         success: true,
         orderId: "order123",

@@ -3,11 +3,7 @@ const router = express.Router();
 
 // http://localhost:3000/
 router.get('/', (req, res) => {
-    return res.send('成功進入首頁');
-});
-
-router.get('/', (req, res) => {
-    res.render('index');
+    res.redirect('home');
 })
 
 // http://localhost:3000/home
