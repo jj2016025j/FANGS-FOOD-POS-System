@@ -1,0 +1,68 @@
+.seat-layout {
+    /* width: 16.6666666666666667%; */
+    width: 25%;
+    display: flex;
+    align-self: center;
+    justify-content: start;
+    position: relative;
+}
+
+.seat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;   
+    background-color: rgba(247, 230, 174, 1);
+    border-radius: 10px;
+    border: 1px solid rgba(0, 0, 0, .7);
+}
+
+.seat-state > span{
+    font-size: 1.25em;
+    font-weight: 600;
+}
+
+.seat-number {
+    font-size: 2em;
+    font-weight: 600;
+}
+
+.seat-option-content {
+    position: absolute;
+    background-color: rgb(230, 151, 98);
+    top: 0px;
+    left: 100px;
+    border-radius: 10px;
+    padding: 5px 3px;
+    z-index: 99;
+    display: none;
+}
+
+.seat-order-btn {
+    display: block;
+    text-decoration: none;
+    color: black;
+    font-size: 1em;
+    font-weight: 600;
+    padding: 5px;
+    border-bottom: 1px solid black;
+    user-select: none;
+}
+
+.generate-table-order-btn,
+.seat-qrcode-btn {
+    display: block;
+    text-decoration: none;
+    color: black;
+    font-size: 1em;
+    font-weight: 600;
+    padding: 5px;
+    user-select: none;
+}
+
+.qr-img {
+    width: 100px;
+    height: 100px;
+}

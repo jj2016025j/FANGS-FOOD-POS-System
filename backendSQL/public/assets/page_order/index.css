@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+:root {
+    --doc-height: 100%
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    position: relative;
+    top: 0;
+    width: 100%;
+    height: var(--doc-height);
+}
+
+.card {
+    flex-direction: row;
+}
+
+.page-wrapper {
+    position: relative;
+    top: 135px;
+    height: calc(100% - 120px);
+    width: 100%;
+    background-color: #fff;
+    overflow: auto;
+}
+
+.list {
+    list-style: none;
+    display: flex;
+    height: min-content;
+    top: 70px;
+    padding: 0;
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    justify-content: space-evenly;
+    border-bottom: 1px solid rgba(54, 27, 18, 1);
+    position: fixed;
+    width: 100%;
+    background-color: white;
+    z-index: 99;
+}
+
+.list a {
+    text-decoration: none;
+    color: black;
+    border-bottom: 5px solid transparent;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.list a:hover {
+    border-bottom: 5px solid rgba(247, 230, 174, 1);
+}
+
+.product-title {
+    text-align: center;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(54, 27, 18, 1);
+    padding-bottom: 10px;
+}
+
+.item > a {
+    text-decoration: none;
+    color: black;
+}
+
+.item {
+    height: 100%;
+}
+
+.mycard {
+    display: flex;
+    flex-direction: row;
+    border-bottom: 1px solid rgba(54, 27, 18, 1);
+    padding-bottom: 8px;
+}
+
+.card-img {
+    width: 100px;
+    object-fit: cover;
+}
+
+.mycard-body {
+    display: flex;
+    width: 100%;
+    height: 180px;
+    gap: 10px;
+    align-items: center;
+}
+
+.body-info {
+    flex: 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.card-title {
+    margin-left: 10px;
+}
+
+.card-text {
+    margin-left: 10px;
+    font-size: 20px;
+}
+
+.project-btn-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 35px;
+    flex: 45%;
+}
+
+.bi-dash, .bi-plus {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* display: inline-block; */
+    text-align: center;
+    border: none;
+    background-color: black;
+    color: #fff;
+    height: 100%;
+    /* width: 25px; */
+    padding: 9.5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+
+.bi-dash:hover, .bi-plus:hover {
+    background-color: #d68102;
+    color: black;
+    border: 1px solid rgba(27, 27, 27, 0.5);
+}
+
+.project-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
+    border-top: 1px solid rgba(27, 27, 27, 0.5);
+    border-bottom: 1px solid rgba(27, 27, 27, 0.5);
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+.project-count:focus {
+    border: none;
+    outline: 1px solid #d68102;
+}
+
+#cart-page {
+    background-color: rgba(224, 217, 217, 0.7);
+    position: fixed;
+    bottom: 0px;
+    padding: 0px 5px;
+    height: calc(100% - 119px);
+    width: 100%;
+    transform: translateY(120%);
+    transition: transform ease-in-out .5s;
+}
+
+#cart-container {
+    height: 60vh;
+    margin-bottom: 100px;
+    /* border-bottom: 1px solid black; */
+}
+
+.order-info {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    z-index: 100;
+    /* background-color: grey; */
+}
+
+.order-info > div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 30px;
+    height: 61px;
+    width: 100%;
+    background-color: rgba(54, 27, 18, 1);
+    color: #fff;
+    font-size: 1em;
+}
+
+.order-info div .order-text {
+    width: max-content;
+    margin-inline: 10px;
+}
+
+#order-count, #order-price {
+    display: inline-block;
+    text-align: center;
+    margin-right: 5px;
+}
+
+/* 鍋物 */
+
+input[name="hotPot"] {
+    visibility: hidden;
+    display: none;
+}
+
+input[name="hotPot"]:checked + .hotPot-label .hotPot-radio::after{
+    opacity: 1;
+}
+
+.hotPot-label {
+    display: flex;
+    margin-bottom: 10px;
+    position: relative;
+    border-bottom: 1px solid rgba(54, 27, 18, 1);
+}
+
+.hotPot-radio {
+    border: 4px solid rgba(247, 230, 174, 1);
+    border-radius: 100%;
+    width: 1.5em;
+    height: 1.5em;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.hotPot-radio::after {
+    content: "";
+    display: inline-block;
+    aspect-ratio: 1 / 1;
+    height: 0.75em;
+    border-radius: 100%;
+    background-color: rgba(247, 230, 174, 1);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: inset 0 0 5px 1px rgb(220, 188, 93);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}

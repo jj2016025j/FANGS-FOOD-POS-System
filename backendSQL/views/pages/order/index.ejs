@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>芳鍋 FANGS</title>
+    <link rel="icon" href="../image/Logo.png"><!--webLOGO-->
+    <!--style-->
+    <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/assets/page_order/header_style.css">
+    <link rel="stylesheet" href="/assets/page_order/index.css">
+    <link rel="stylesheet" href="/assets/page_order/footer_style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="page-wrapper" id="page-wrapper">
+
+        <!-- header開始 -->
+        <header class="navbar-menu">
+            <nav class="menu-bar">
+                <a class="logo" href="/">
+                    <img src="/assets/image/Logo.png" alt="logo">
+                </a>
+                
+                <div class="login">
+                    <span id="table-number">桌號 1</span>
+                    <a class="login-btn" onclick="openOrder()">
+                        <i class="bi bi-receipt-cutoff"></i>
+                    </a>
+                </div>
+            </nav>
+
+            <div id="order-page">
+                <i onclick="closeOrder()" class="bi bi-x-lg"></i>
+                <div class="cart">訂單紀錄</div>
+                <div id="order-content" class="shopping-cart">
+                    <!-- 自動生成 -->
+                </div>
+
+                <div class="order-price-content" id="order-price-content">
+                    <div class="order-price-info">訂單金額:<span></span></div>
+                    <div class="order-price-info">服務費:<span></span></div>
+                    <div class="order-price-info">總金額:<span></span></div>
+                </div>
+
+                <!-- <div class="cart-btn-group">
+                    <button class="gobuy" id="gobuy">結帳<i class="bi bi-bag-check"></i></button>
+                    <button onclick="clearCart()" class="clearcart" id="clearcart">清除購物車<i class="bi bi-trash"></i></button>
+                </div> -->
+            </div>
+        </header>
+        <!-- header結尾 -->
+
+        <!-- 商品頁開始 -->
+        <ul class="list">
+            <% categories.forEach(function(category, idx) { %>
+                <a onclick="scrollToAnchor('category_<%= category.id %>')"><li><%= category.category %></li></a>
+            <% }) %>
+            <!-- <a onclick="scrollToAnchor('hotPot')"><li>鍋類</li></a>
+            <a onclick="scrollToAnchor('meat')"><li>肉類</li></a>
+            <a onclick="scrollToAnchor('seafood')"><li>海鮮</li></a>
+            <a onclick="scrollToAnchor('vegetable')"><li>蔬菜</li></a>
+            <a onclick="scrollToAnchor('dumplings')"><li>火鍋餃</li></a> -->
+        </ul>
+
+        <div class="container">
+            <% categories.forEach(function(category, idx) { %>
+                <h1 id="category_<%= category.id %>" class="product-title"><%= category.category %></h1>
+                <div class="row" id="category_inner_<%= category.id %>"></div>
+            <% }) %>
+            <!-- <h1 id="hotPot" class="product-title">鍋類</h1>
+            <div class="row" id="shop-hotPot">
+                
+            </div>
+
+            <h1 id="meat" class="product-title">肉類</h1>
+            <div class="row" id="shop-meat">
+                
+            </div>
+            
+            <h1 id="seafood" class="product-title">海鮮</h1>
+            <div class="row" id="shop-seafood">
+                
+            </div>
+
+            <h1 id="vegetable" class="product-title">蔬菜</h1>
+            <div class="row" id="shop-vegetable">
+                
+            </div>
+
+            <h1 id="dumplings" class="product-title">火鍋餃</h1>
+            <div class="row" id="shop-dumplings">
+                
+            </div> -->
+        </div>
+
+        <!-- 商品頁結尾 -->
+
+        <div id="cart-page">
+            <i class="bi bi-x-lg" style="color: black;" onclick="hideCart()"></i>
+            <div class="cart">購物車</div>
+            <div id="cart-container" class="shopping-cart"></div>
+        </div>
+        
+        
+        <!-- footer開始 -->
+        <footer>
+          <div class="container-fluid info-footer">
+              
+              <h4 class="meal-rules">用餐時間90分鐘，酌收10%清潔費</h4>
+                  <div class="row justify-content-center">
+                      <div class="col-sm-6">
+                          <div class="footer-item">
+                              <ul class="info-link-group">
+                                  <li>官方信箱 : <a href="#">proteinboy@gmail.com</a></li>
+                                  <li>客服電話 : <a href="#">0987-000-000</a></li>
+                              </ul>
+                              <div class="info-icon-grop">
+                                  <span class="info-icon"><a href="#"><i class="bi bi-facebook"></i></a></span>
+                                  <span class="info-icon"><a href="#"><i class="bi bi-instagram"></i></a></span>
+                                  <span class="info-icon"><a href="#"><i class="bi bi-line"></i></a></span>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <p class="company">2023 Protein Boy Inc. All Rights Reserved</p>
+              
+          </div>
+        </footer>
+        <!-- footer結尾 -->
+    </div>
+    <!-- 送出訂單按鈕 -->
+    <div class="order-info" id="order-info" >
+        <div onclick="displayCart()">
+            <div class="order-text">
+                <span id="order-title">目前</span>
+                <span id="order-count">1</span>訂單
+            </div>
+            <div class="order-text">共
+                <span id="order-price">199</span>元
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let foods = <%- JSON.stringify(foods) %>;
+    let categories = <%- JSON.stringify(categories) %>;
+    let order = <%- JSON.stringify(order) %>;
+    let projectDataList = foods.map((food)=>{
+        return {
+            id: food.id,
+            product: food.name,
+            price: food.price,
+            type: food.category_id,
+            img: food.image_url
+        }
+    })     
+</script>
+<!-- <script src="/assets/page_order/data.js"></script> -->
+<script src="/assets/page_order/index.js"></script>
+<script>
+    // $.get("/menulist", function(data) {
+
+    // })
+
+    // $.ajax({
+    //     url: "",
+    //     method: "POST",
+    //     data: JSON.stringify(),
+    //     contentType: "application/json"
+    // })
+</script>
+</html>

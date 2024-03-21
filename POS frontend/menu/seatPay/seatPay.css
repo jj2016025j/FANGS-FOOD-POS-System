@@ -1,0 +1,181 @@
+.order-width {
+    width: 50%;
+}
+
+.goback-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0px 10px;
+    width: 100%;
+    font-size: 1.5em;
+    background-color: rgba(247, 230, 174, 1);
+}
+
+.goback-content > div {
+    font-weight: 600;
+}
+
+#table-number {
+    margin-left: 5px;
+}
+
+.goback-content > a {
+    text-decoration: none;
+    color: black;
+}
+
+.bi-arrow-left-short {
+    font-size: 2em;
+}
+/* 桌號區結束 */
+
+/* 訂單開始 */
+.order-content {
+    background-color: #fff;
+    width: 100%;
+    height: 100%;
+    height: calc(100% - 72px);
+    padding: 5px;
+    display: flex;
+    flex-direction: column;
+}
+
+.order-title {
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 600;
+    padding: 5px;
+    border-bottom: 1px solid black;
+}
+
+.order-list {
+    margin-top: 10px;
+    /* height: calc(100% - 406px); */
+    height: 100%;
+    padding: 5px;
+    overflow: auto;
+}
+
+/* scrollbar自定義 */
+.order-list::-webkit-scrollbar {
+    width: 10px;
+}
+  
+
+.order-list::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 5px grey;
+    border-radius: 10px;
+}
+
+
+.order-list::-webkit-scrollbar-thumb {
+    background: rgba(247, 230, 174, 1);
+    border-radius: 10px;
+}
+
+.order-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(230, 151, 98, 1);
+}
+
+.order-list::-webkit-scrollbar-button {
+    background: none;
+}
+/* scrollbar自定義 */
+
+.order-price-info {
+    margin-top: auto;
+    border-top: 1px solid black;
+    padding: 10px 0px;
+}
+
+.order-price-title {
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.5em;
+    font-weight: 600;
+    padding: 5px;
+}
+
+.no-item {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.order-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    padding: 0px 15px 0px 0px;
+    margin-bottom: 10px;
+    width: 100%;
+    height: 80px;
+    color: black;
+    border-bottom: 1px solid rgba(0, 0, 0, .5);
+}
+
+.order-item-img {
+    height: 100%;
+    object-fit: cover;
+}
+
+.order-info  {
+    margin-left: 8px;
+    /* margin-right: auto; */
+}
+
+.order-info-title {
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+
+.order-item-quantity {
+    background-color: rgba(247, 230, 174, 1);
+    font-size: 1em;
+    width: 1.75em;
+    height: 1.75em;
+    border-radius: 100vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-left: auto;
+}
+
+/* 訂單結束 */
+
+.pay-page {
+    /* background-color: cadetblue; */
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+}
+
+.pay-title {
+    font-size: 1.5em;
+    font-weight: 600;
+    text-align: center;
+    padding: 10px;
+    border-bottom: 1px solid black;
+}
+
+.pay-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2em;
+    font-weight: 600;
+
+    background-color: rgba(54, 54, 54, 1);
+    color: #fff;
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.pay-button > i {
+    font-size: 1.5em;
+}

@@ -1,0 +1,68 @@
+footer {
+    margin-top: 20px;
+}
+
+.footer-item {
+    text-align: center;
+    margin: 20px 0 20px 0;
+}
+
+.info-footer {
+    background-color: rgba(27, 27, 27, 1);
+    padding-bottom: 60px;
+}
+
+.footer-item .info-link-group,
+.footer-item .info-link-group .info-icon-grop {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    color: #fff;
+}
+
+.footer-item .info-link-group li > a {
+    text-decoration: none;
+    color: #fff;
+    display: inline-block;
+    padding: 5px;
+}
+
+.footer-item .info-link-group > li:hover > a {
+    color: #d68102;
+}
+
+.info-icon-grop .info-icon > a {
+    display: inline-block;
+    text-decoration: none;
+    color: #fff;
+    margin: 10px;
+    font-size: 1.5em;
+}
+
+.info-icon-grop .info-icon {
+    display: inline-block;
+}
+.info-icon-grop .info-icon:hover > a {
+    color: #d68102;
+    animation: icon-ani 300ms ease-out;
+}
+@keyframes icon-ani {
+    0%{transform: translateY(-10px);}
+    50%{transform: translateY(0px);}
+    80%{transform: translateY(-5px);}
+    100%{transform: translateY(0px);}
+}
+
+.meal-rules {
+    padding-top: 20px;
+    color: #fff;
+    text-align: center;
+}
+
+.company {
+    padding-top: 20px;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    border-top: 1px solid #fff;
+}
