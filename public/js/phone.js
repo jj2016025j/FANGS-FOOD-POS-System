@@ -253,7 +253,7 @@ let generateOrderItem = () => {
     let orderPriceContent = document.getElementById("order-price-content");
 
     $.ajax({
-        url: "/api/order/foods/" + order.id,
+        url: "/order/list/" + order.id,
         method: "GET",
         data: {},
         contentType: "application/json",
@@ -409,7 +409,7 @@ let hideCart = () => {
 let sendCart = () => {
     console.log("sendCart", basket);  
     $.ajax({
-        url: "/api/order/foods/append/" + order.id,
+        url: "/order/" + order.id,
         method: "POST",
         data: JSON.stringify(basket),
         dataType: "json",
@@ -417,6 +417,7 @@ let sendCart = () => {
         success: ()=> {
             alert('訂單已送出！')
             clearCart();
+            hideCart();
             generateOrderItem();
         }
     })

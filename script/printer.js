@@ -14,7 +14,7 @@ function initPrinter() {
     printer = new escpos.Printer(device, options);
 }
 
-function printOrderWithQR(url, orderNumber, tableNumber, contents) {
+function printOrderWithQR(url = "http://localhost:3000/pos", orderNumber = 1, tableNumber = 1, contents = defaultContents) {
     device.open(function (error) {
         if (error) {
             console.error('打印機連接錯誤:', error);
@@ -63,7 +63,7 @@ function printOrderWithQR(url, orderNumber, tableNumber, contents) {
     });
 }
 
-function printOrder(order) {
+function printOrder(order = defaultOrderData) {
     device.open(function (error) {
         if (error) {
             console.error('打印機連接錯誤:', error);
@@ -118,7 +118,12 @@ function printOrder(order) {
     });
 }
 
-async function printInvoice(invoiceData) {
+async function printInvoice(insertInvoiceData = defaultInvoiceData) {
+    // 定義預設參數
+    const defaultInvoiceData = defaultInvoiceData
+
+    // 合併預設參數和傳入的自訂物件參數
+    const invoiceData = { ...defaultInvoiceData, ...insertInvoiceData };
     // 組合左側二維條碼內容
     const leftQRContent = `${invoiceData.invoiceNumber}:${invoiceData.date}:${invoiceData.randomCode}:${invoiceData.salesAmount}:${invoiceData.totalAmount}:${invoiceData.buyerId}:${invoiceData.sellerId}:${invoiceData.encryptionInfo}`;
 
@@ -148,7 +153,7 @@ async function printInvoice(invoiceData) {
             .style(`NORMAL`)
             .size(0, 0)
             .text(`     ${invoiceData.dateTime}`)
-            .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.totalAmount}`, 22))
+            .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.total}`, 22))
             .text(fillSpaces(`賣方:${invoiceData.sellerId}`, `買方:${invoiceData.buyerId}`, 22))
             .barcode(barcodeContent, `CODE39`, {
                 width: 1,
@@ -308,7 +313,7 @@ function formatInvoiceDate(dateTime) {
 // 使用範例
 const dateTime = '2024-03-18 11:22:33';
 
-const orderData = {
+const defaultOrderData = {
     orderNumber: 'H123456789',
     orderDate: '2024-03-19',
     address: '台北市大安區忠孝東路100號',
@@ -323,12 +328,12 @@ const orderData = {
     serviceChargeRate: 10,
     serviceCharge: 125,
     paymentMethod: '信用卡',
-    specialRequests: '牛肉片請分開盛裝。'
+    specialRequests: '這裡是客人要求內容'
 };
 
-const contents = ["本店酌收清潔費10%", "手機掃碼 立即點餐", "Fangs Food 芳鍋", "祝您用餐愉快"]
+const defaultContents = ["本店酌收清潔費10%", "手機掃碼 立即點餐", "Fangs Food 芳鍋", "祝您用餐愉快"]
 
-const invoiceData = {
+const defaultInvoiceData = {
     header: 'FangFood 芳鍋',
     dateTime: '2024-03-18 11:22:33',
     invoicePeriod: '10404',

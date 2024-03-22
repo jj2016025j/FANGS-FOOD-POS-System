@@ -287,7 +287,7 @@ let generateOrderItem = () => {
 
 
     $.ajax({
-        url: "/order/" + order.id,
+        url: "/order/list/" + order.id,
         method: "GET",
         data: {},
         contentType: "application/json",
@@ -359,7 +359,7 @@ let deleteOrder = (food_id) => {
     if(confirm('確定刪除？')){
 
         $.ajax({
-            url: "/api/order/foods/" + order.id + "/" + food_id,
+            url: "/order/foods/" + order.id + "/" + food_id,
             method: "DELETE",
             data: {},
             contentType: "application/json",

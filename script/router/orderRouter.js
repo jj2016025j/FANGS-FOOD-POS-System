@@ -130,7 +130,7 @@ router.get('/sub-order', (req, res) => {
 });
 
 //刪除食物
-router.delete('/api/order/foods/:order_id/:food_id', async (req, res) => {
+router.delete('/foods/:order_id/:food_id', async (req, res) => {
     const order_id = req.params['order_id']
     const food_id = req.params['food_id']
 
@@ -145,13 +145,117 @@ router.delete('/api/order/foods/:order_id/:food_id', async (req, res) => {
     }
 });
 
+//新增訂單
+// http://localhost:3000/order
+router.post('/', async (req, res) => {
+    let formData = req.body;
+    const tableNum = formData.seatID
+
+    try {
+        var result = await dataRep.addTableOrder(tableNum)
+        console.log(result.insertId)
+        var orders = await dataRep.getPendingTableOrders();
+        const obj = await dataRep.getTradeNoById(result.insertId)
+        const trade_no = obj.trade_no
+        const protocol = req.protocol; // 'http' 或 'https'
+        const host = req.get('host'); // 'localhost:3000', 'example.com' 等
+        const url = req.originalUrl; // 请求的路径和查询字符串 '/some-path?query=value'
+        phone
+        const fullUrl = `${protocol}://${host}${url}/${trade_no}`;
+        console.log(fullUrl);
+        try {
+            initPrinter()
+            printOrderWithQR(fullUrl, trade_no, tableNum, contents)
+        } catch (e) {
+            console.log(e)
+        }
+        return res.status(200).json(orders);
+    } catch (e) {
+        console.log(e)
+        return res.status(400).json({
+            error: e
+        });
+    }
+});
+
+//進入點餐畫面
+// http://localhost:3000/order/:trade_no
+router.get('/:trade_no', async (req, res) => {
+    var categories = await dataRep.getFoodCateories()
+    var foods = await dataRep.getFoods()
+    var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
+    return res.render('tables_order', {
+        categories: categories,
+        foods: foods,
+        order: order
+    });
+});
+// 手機點餐
+// http://localhost:3000/order/phone/:trade_no
+router.get('/phone/:trade_no', async (req, res) => {
+    const trade_no = req.params['trade_no'];
+    var foods = await dataRep.getFoods();
+    var categories = await dataRep.getFoodCateories();
+    var order = await dataRep.getOrderByTradeNo(trade_no);
+
+    if (order) {
+        return res.render('phone', {
+            foods: foods,
+            categories: categories,
+            order: order
+        });
+    } else {
+        return res.send('訂單不存在唷!');
+    }
+});
+
 //送出訂單
 // http://localhost:3000/order/12
 router.post('/:order_id', async (req, res) => {
     let formData = req.body;
     const orderId = req.params['order_id']
     try {
+        const [orders] = await pool.query(
+            `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
+            [orderId]
+        );
+        if (orders.length === 0) {
+            return res.status(404).send('Order not found');
+        }
+
+        const orderInfo = orders[0];
+        console.log(orderInfo)
+
+        const [orderItems] = await pool.query(
+            `SELECT od.food_id, od.quantity, od.unit_price, f.name 
+                FROM orders_items od 
+                JOIN foods f ON od.food_id = f.id 
+                WHERE od.order_id = ?`,
+            [orderInfo.id]
+        );
+        console.log(orderItems)
+
         await dataRep.appendOrderFoods(orderId, formData)
+        const orderData = {
+            orderNumber: 'H123456789',
+            orderDate: orderInfo.created_at,
+            items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                unitPrice: item.unit_price,
+                totalPrice: item.quantity * item.unit_price
+            })),
+            subTotal: orderInfo.food_price,
+            total: orderInfo.trade_amt,
+            tax: orderInfo.service_fee,
+            specialRequests: '牛肉片請分開盛裝。'
+        };
+        try {
+            initPrinter()
+            printOrder(orderData)
+        } catch (e) {
+            console.log(e)
+        }
         return res.status(200).send(true);
     } catch (e) {
         return res.status(400).json({
@@ -160,13 +264,14 @@ router.post('/:order_id', async (req, res) => {
     }
 });
 
-//取得訂單產品
+// 取得訂單產品
 // http://localhost:3000/order/12
-router.get('/:order_id', async (req, res) => {
+router.get('/list/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
+    console.log('foods')
     try {
         var foods = await dataRep.getOrderFoods(orderId)
-        // console.log('foods', foods)
+        console.log('foods', foods)
         return res.status(200).json(foods);
     } catch (e) {
         return res.status(400).json({

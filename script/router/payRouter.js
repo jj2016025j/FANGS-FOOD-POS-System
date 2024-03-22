@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { printInvoice, initPrinter } = require('../printer');
 const mysql = require('mysql2/promise');
+const dataRep = require('../data_repository');
 
 // 数据库连接配置
 const pool = mysql.createPool({
@@ -51,10 +52,56 @@ router.post('/invoice', (req, res) => {
 //現金結帳
 router.post('/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
-    console.log(orderId)
     try {
+        const [orders] = await pool.query(
+            `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
+            [orderId]
+        );
+        if (orders.length === 0) {
+            return res.status(404).send('Order not found');
+        }
+
+        const orderInfo = orders[0];
+        console.log(orderInfo)
+
+        const [orderItems] = await pool.query(
+            `SELECT od.food_id, od.quantity, od.unit_price, f.name 
+                FROM orders_items od 
+                JOIN foods f ON od.food_id = f.id 
+                WHERE od.order_id = ?`,
+            [orderInfo.id]
+        );
+        console.log(orderItems)
+        const defaultInvoiceData = {
+            dateTime: orderInfo.created_at,
+            invoicePeriod: '10404',
+            items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                unitPrice: item.unit_price,
+                totalPrice: item.quantity * item.unit_price
+            })),
+            subTotal: orderInfo.food_price,
+            tax: orderInfo.service_fee,
+            total: orderInfo.trade_amt,
+            date: '1100301',
+            salesAmount: '00002710',
+            encryptionInfo: 'encryptedStringHere',
+            selfUseArea: '**********',
+            itemCount: '5',
+            encoding: '1',
+            products: 'LED顯示器:1:500:無;無線鍵盤:2:750:無',
+        };
+        console.log(defaultInvoiceData)
+
         await dataRep.confirmPaymentByCash(orderId)
-        console.log(orderId)
+        // console.log(orderId)
+        try {
+            initPrinter()
+            printInvoice(invoiceData)
+        } catch (e) {
+            console.log(e)
+        }
         return res.status(200).send(true);
     } catch (e) {
         return res.status(400).json({

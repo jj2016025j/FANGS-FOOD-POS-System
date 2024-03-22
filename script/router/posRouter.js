@@ -6,25 +6,9 @@ const dataRep = require('../data_repository');
 // http://localhost:3000/pos
 router.get('/', async (req, res) => {
     var orders = await dataRep.getPendingTableOrders();
-    return res.render('poshome', {
+    return res.render('pos', {
         orders: orders
     });
-});
-
-//新增訂單
-router.post('/', async(req, res) => {
-    let formData = req.body;
-    const tableNum = formData.seatID
-
-    try{
-        await dataRep.addTableOrder(tableNum)
-        var orders = await dataRep.getPending   ();
-        return res.status(200).json(orders);
-    }catch(e){
-        return res.status(400).json({
-            error: e
-        });
-    }
 });
 
 // 品項編輯
@@ -46,19 +30,6 @@ router.get('/report', async (req, res) => {
     return res.render('report', {
         report: report,
         foods: foods
-    });
-});
-
-//進入點餐畫面
-// http://localhost:3000/pos/order
-router.get('/order/:trade_no', async (req, res) => {
-    var categories = await dataRep.getFoodCateories()
-    var foods = await dataRep.getFoods()
-    var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
-    return res.render('tables_order', {
-        categories: categories,
-        foods: foods,
-        order: order
     });
 });
 

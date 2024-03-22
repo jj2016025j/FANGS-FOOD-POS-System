@@ -11,8 +11,8 @@ let generateSeat = () => {
         let {seatNum} = x;
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
-        const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/order/' + search.trade_no : ''
-        const orderUrl = search ? '/pos/order/' + search.trade_no: ''
+        const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/order/phone/' + search.trade_no : ''
+        const orderUrl = search ? '/order/' + search.trade_no: ''
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -71,7 +71,6 @@ let closeSeatOption = () => {
     })
 }
 closeSeatOption();
-    
 
 //生成QRcode按鈕並且更改用桌狀態
 let generateQRcode = (e) => {
@@ -91,6 +90,7 @@ let generateQRcode = (e) => {
                 },
                 success: function(result){
                     pendingOrders = result
+                    console.log(pendingOrders)
                     updataState()
                 },
                 error: function(error){

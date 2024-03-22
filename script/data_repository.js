@@ -23,7 +23,7 @@ const repository = {
      * 3.本月銷售排行榜前五名: rankTop5
      * 4.前12個月份的營業額: monthTurnoverOfYear
      */
-    getReport: ()=> {
+    getReport: () => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -54,7 +54,7 @@ const repository = {
             });
         })
     },
-    genearteTradeNo: ()=> {
+    genearteTradeNo: () => {
         return 'ORD' + Date.now() + Math.random().toString(36).substring(4);
     },
     create: (data, callback) => {
@@ -79,10 +79,10 @@ const repository = {
         var tmp_path = file.path;
         var image_name = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + mime.extension(file.mimetype);
         var target_path = target_path + '/' + image_name;
-        fs.rename(tmp_path, target_path, function(err) {});
+        fs.rename(tmp_path, target_path, function (err) { });
         return image_name;
     },
-    uploadFood: async(formData, imageFile) => {
+    uploadFood: async (formData, imageFile) => {
         return new Promise((resolve, reject) => {
             const image_name = repository.uploadImage(imageFile, './public/uploads/foods');
             const image_path = '/uploads/foods/' + image_name;
@@ -93,7 +93,7 @@ const repository = {
                 }
 
                 connection.query('INSERT INTO foods (name, price, category_id, image_url) VALUES(?,?,?,?)', [
-                    formData['item-name'], 
+                    formData['item-name'],
                     formData['item-price'],
                     formData['select-type'],
                     image_path
@@ -108,10 +108,10 @@ const repository = {
             });
         })
     },
-    editFood: async(id, formData, imageFile) => {
+    editFood: async (id, formData, imageFile) => {
         return new Promise((resolve, reject) => {
             var image_path = '';
-            if(imageFile){
+            if (imageFile) {
                 const image_name = repository.uploadImage(imageFile, './public/uploads/foods');
                 image_path = '/uploads/foods/' + image_name;
             }
@@ -124,7 +124,7 @@ const repository = {
 
                 var sqlStr = `UPDATE foods SET name = ?, price = ?, category_id = ?`;
                 var values = [formData['item-name'], formData['item-price'], formData['select-type']];
-                if(image_path){
+                if (image_path) {
                     sqlStr += `, image_url = ?`;
                     values.push(image_path)
                 }
@@ -143,15 +143,15 @@ const repository = {
         })
     },
     //僅可刪除尚未結帳訂單之食材
-    deleteOrderFood: async(orderId, foodId) => {
+    deleteOrderFood: async (orderId, foodId) => {
         return new Promise((resolve, reject) => {
-            pool.getConnection(async(err, connection) => {
+            pool.getConnection(async (err, connection) => {
                 if (err) {
                     reject(err);
                     return;
                 }
                 var order = await repository.getOrderById(orderId)
-                if(!order || order.order_status != 1){
+                if (!order || order.order_status != 1) {
                     reject('此訂單已結帳或不存在')
                     return;
                 }
@@ -166,7 +166,7 @@ const repository = {
             });
         })
     },
-    deleteFood: async(id) => {
+    deleteFood: async (id) => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -183,7 +183,7 @@ const repository = {
                 });
             });
         })
-    },    
+    },
     getFoodsWithTrash: async () => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
@@ -261,6 +261,26 @@ const repository = {
             });
         })
     },
+    //取得訂單ById
+    getTradeNoById: async (id) => {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((err, connection) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                connection.query('SELECT trade_no FROM table_orders where id = ?', [id], (error, results) => {
+                    connection.release();
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+                    resolve(results.length ? results[0] : null)
+                });
+            });
+        })
+    },
     //取得訂單ByTradeNo
     getOrderByTradeNo: async (trade_no) => {
         return new Promise((resolve, reject) => {
@@ -301,7 +321,7 @@ const repository = {
             });
         })
     },
-    addTableOrder: async(tableNum) => {
+    addTableOrder: async (tableNum) => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -314,12 +334,12 @@ const repository = {
                         reject(error);
                         return;
                     }
-                    if(results.length > 0){
+                    if (results.length > 0) {
                         reject('此桌號目前已有訂單');
-                    }else{
+                    } else {
                         connection.query('INSERT INTO table_orders (trade_no, table_number) VALUES(?,?)', [
                             repository.genearteTradeNo(),
-                            tableNum 
+                            tableNum
                         ], (error, results) => {
                             connection.release();
                             if (error) {
@@ -332,8 +352,8 @@ const repository = {
                 });
             });
         })
-    },  
-    clearOrderFoods: async(orderId) => {
+    },
+    clearOrderFoods: async (orderId) => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -352,7 +372,7 @@ const repository = {
         })
     },
     //取得產品品項
-    getOrderFoods: async(orderId) => {
+    getOrderFoods: async (orderId) => {
         return new Promise((resolve, reject) => {
             pool.getConnection((err, connection) => {
                 if (err) {
@@ -368,31 +388,31 @@ const repository = {
                     resolve(results)
                 });
             });
-        })        
+        })
     },
     /**
      * 疊加產品
      * [{id: food_id, item: 數量}]
      * 先取出後加在一起，全部刪除後，再寫入
      */
-    appendOrderFoods: async(orderId, data) => {
+    appendOrderFoods: async (orderId, data) => {
         var foods = await repository.getOrderFoods(orderId);
         var newData = data;
         foods.forEach((f) => {
             var index = newData.findIndex((item) => item.id == f.food_id);
-            if(index > -1){
+            if (index > -1) {
                 newData[index].item += f.quantity;
-            }else{
-                newData.push({id: f.food_id, item: f.quantity});
+            } else {
+                newData.push({ id: f.food_id, item: f.quantity });
             }
         });
         await repository.clearOrderFoods(orderId);
         return await repository.updateOrderFoods(orderId, newData);
     },
     //[{id: food_id, item: 數量}]  
-    updateOrderFoods: async(orderId, data) => {
+    updateOrderFoods: async (orderId, data) => {
         return new Promise((resolve, reject) => {
-            pool.getConnection(async(err, connection) => {
+            pool.getConnection(async (err, connection) => {
                 if (err) {
                     reject(err);
                     return;
@@ -403,7 +423,7 @@ const repository = {
                 var values = [];
                 data.forEach((item) => {
                     var foodItem = foods.find((f) => f.id == item.id);
-                    if(foodItem){
+                    if (foodItem) {
                         valuesSet.push('(?,?,?,?,?)');
                         values.push(orderId, foodItem.id, item.item, foodItem.price, item.item * foodItem.price);
                     }
@@ -421,22 +441,26 @@ const repository = {
                 });
             });
         })
-    },    
+    },
     //完成現金付款
-    confirmPaymentByCash: (order_id)=> {
-        return new Promise(async(resolve, reject) => {
+    confirmPaymentByCash: (order_id) => {
+        return new Promise(async (resolve, reject) => {
+            // console.log("await ")
             const order = await repository.getOrderById(order_id);
-            const order_foods = await repository.getOrderFoods(order_id); 
-            if(order && order_foods.length){
+            const order_foods = await repository.getOrderFoods(order_id);
+            // console.log("await ")
+            if (order && order_foods.length) {
                 // food_price INT NULL,
                 // service_fee INT NULL,
                 // trade_amt INT NULL,
                 // order_status TINYINT DEFAULT 1,
+                // console.log("if ")
 
-                const food_price = order_foods.map((x) => x.quantity * x.unit_price).reduce((x, y) => x + y ,0);
+                const food_price = order_foods.map((x) => x.quantity * x.unit_price).reduce((x, y) => x + y, 0);
                 const service_fee = Math.round(food_price * 10 / 100);
                 const trade_amt = food_price + service_fee;
                 const order_status = 2;
+                // console.log("getConnection ")
 
                 pool.getConnection((err, connection) => {
                     if (err) {
@@ -454,7 +478,7 @@ const repository = {
                 });
 
 
-            }else{
+            } else {
                 reject('查無訂單或訂單無品項')
                 return
             }
