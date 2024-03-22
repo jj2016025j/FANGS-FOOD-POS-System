@@ -145,7 +145,8 @@ router.delete('/api/order/foods/:order_id/:food_id', async (req, res) => {
     }
 });
 
-//進入點餐頁面      
+//送出訂單
+// http://localhost:3000/order/12
 router.post('/:order_id', async (req, res) => {
     let formData = req.body;
     const orderId = req.params['order_id']
@@ -160,10 +161,12 @@ router.post('/:order_id', async (req, res) => {
 });
 
 //取得訂單產品
-router.get('/order/:order_id', async (req, res) => {
+// http://localhost:3000/order/12
+router.get('/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
     try {
         var foods = await dataRep.getOrderFoods(orderId)
+        // console.log('foods', foods)
         return res.status(200).json(foods);
     } catch (e) {
         return res.status(400).json({
@@ -177,6 +180,7 @@ module.exports = router;
 // 假設 orders 和 dishes 是從某處獲得的數據，這裡為了簡化直接定義了
 // 實際應用中，這些數據應該從數據庫或其他數據源動態獲取
 const orders = {};
+
 const dishes = [
     // 示例菜品數據
     {

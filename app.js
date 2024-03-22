@@ -47,6 +47,10 @@ app.use('/menu', menuRouter);
 const orderRouter = require('./script/router/orderRouter');
 app.use('/order', orderRouter);
 
+// http://localhost:3000/pay
+const payRouter = require('./script/router/payRouter');
+app.use('/pay', payRouter);
+
 // const dataRouter = require('./script/router/dataRouter');
 // app.use('/data', dataRouter);
 

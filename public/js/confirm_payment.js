@@ -70,11 +70,11 @@ getOrderPrice(10);
 
 $('#pay-cash-button').on('click', ()=> {
     $.ajax({
-        url: "/api/order/payConfirm/cash/" + order.id,
+        url: "/pay/" + order.id,
         method: "POST",
         success: (result) => {
             alert('結帳成功')
-            location.href = "/shop/tables"
+            location.href = "/pos"
         }
     })
 })

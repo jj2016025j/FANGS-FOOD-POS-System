@@ -7,7 +7,7 @@
     <link rel="icon" href="/assets/image/Logo.png"/><!--webLOGO-->
     <!--導覽列及右側排版-->
     <link rel="stylesheet" href="/assets/menu/navbar-layout.css"> 
-    <link rel="stylesheet" href="/assets/page_order_confirm_payment/index.css">
+    <link rel="stylesheet" href="/css/confirm_payment.css">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -17,7 +17,7 @@
     <div class="page-wrapper">
         <div class="navbar-container order-width">
             <div class="goback-content">
-                <a href="/shop/tables"><i class="bi bi-arrow-left-short"></i></a>
+                <a href="/pos"><i class="bi bi-arrow-left-short"></i></a>
                 <div>桌號<span id="table-number">0</span></div>
             </div>
 
@@ -51,7 +51,8 @@
         <div class="pay-page">
             <div class="pay-title">付款方式</div>
             <div class="pay-button" id="pay-cash-button"><i class="bi bi-coin"></i>現金支付</div>
-            <div class="pay-button"><i class="bi bi-credit-card"></i>信用卡支付</div>
+            <div class="pay-button" id="pay-cash-button"><i class="bi bi-credit-card"></i>信用卡支付</div>
+            <div class="pay-button" id="pay-cash-button"><i class="bi bi-line"></i>LINE PAY</div>
         </div>
     </div>
 
@@ -70,7 +71,7 @@
             }
         }) 
     </script>
-    <script src="/assets/page_order_confirm_payment/index.js"></script>
+    <script src="/js/confirm_payment.js"></script>
     <script>
         // $.get("/order", function(data) {
             

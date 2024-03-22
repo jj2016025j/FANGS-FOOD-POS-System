@@ -16,7 +16,7 @@
     <div class="page-wrapper">
         <div class="navbar-container cart-width">
             <div class="goback-content">
-                <a href="/shop/tables"><i class="bi bi-arrow-left-short"></i></a>
+                <a href="/pos"><i class="bi bi-arrow-left-short"></i></a>
                 <div>桌號<span id="table-number">0</span></div>
             </div>
             <div class="cart-content">
@@ -97,7 +97,7 @@
                     <!-- 自動生成 -->
                 </div>
                 <div id="order-to-pay-content">
-                    <a href="/shop/orderConfirmPayment/<%= order.id %>" id="order-to-pay">前往結帳<i class="bi bi-arrow-right-short"></i></a>
+                    <a href="/pos/confirmpayment/<%= order.id %>" id="order-to-pay">前往結帳<i class="bi bi-arrow-right-short"></i></a>
                 </div>
             </div>
 
@@ -118,7 +118,7 @@
             }
         }) 
     </script>
-    <script src="/assets/page_tables_order/index.js"></script>
+    <script src="/js/page_tables_order.js"></script>
     <script>
         // $.get("url", function(data) {
 

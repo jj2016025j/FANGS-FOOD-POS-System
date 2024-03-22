@@ -232,7 +232,7 @@ let sentOrderBtn = () => {
     let cartBtnList = document.getElementById("cart-send-btn");
     cartBtnList.addEventListener("click", () => {
         $.ajax({
-            url: "/api/order/foods/append/" + order.id,
+            url: "/order/" + order.id,
             method: "POST",
             data: JSON.stringify(basket),
             contentType: "application/json",
@@ -287,7 +287,7 @@ let generateOrderItem = () => {
 
 
     $.ajax({
-        url: "/api/order/foods/" + order.id,
+        url: "/order/" + order.id,
         method: "GET",
         data: {},
         contentType: "application/json",

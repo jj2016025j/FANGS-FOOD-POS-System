@@ -55,7 +55,7 @@ router.get('/order/:trade_no', async (req, res) => {
     var categories = await dataRep.getFoodCateories()
     var foods = await dataRep.getFoods()
     var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
-    return res.render('pages/tables_order/index', {
+    return res.render('tables_order', {
         categories: categories,
         foods: foods,
         order: order
@@ -63,7 +63,7 @@ router.get('/order/:trade_no', async (req, res) => {
 });
 
 //確認付款
-router.get('/shop/orderConfirmPayment/:order_id', async (req, res) => {
+router.get('/confirmpayment/:order_id', async (req, res) => {
     const order_id = req.params['order_id'];
     const order = await dataRep.getOrderById(order_id);
     if (!order || order.order_status != 1) {
@@ -71,7 +71,7 @@ router.get('/shop/orderConfirmPayment/:order_id', async (req, res) => {
     } else {
         const foods = await dataRep.getFoods();
         const order_foods = await dataRep.getOrderFoods(order_id);
-        return res.render('pages/order_confirm_payment/index', {
+        return res.render('confirm_payment', {
             order: order,
             order_foods: order_foods,
             foods: foods
