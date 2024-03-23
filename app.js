@@ -24,16 +24,12 @@ app.get("/index", function (req, res) {
     res.render("index.ejs", { user: req.user });//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
 })
 
-// http://localhost:5001/seatHome
-app.get("/seathome", function (req, res) {
-    res.sendFile(__dirname + "/public/menu/seatHome/seatHome.html")
-})
-// 網站路由
+// 官方網站路由
 // http://localhost:3000/
 const webRouter = require('./script/router/webRouter');
 app.use('/', webRouter);
 
-// pos
+// pos系統路由
 // http://localhost:3000/pos
 const posRouter = require('./script/router/posRouter');
 app.use('/pos', posRouter);
@@ -74,9 +70,31 @@ connection.connect((err) => {
     console.log('Connected to MySQL');
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on http://localhost:${port}`);
-});
+// 取得區網IP
+const { getLocalIPAddress, getNetIPAddress, getPublicIP } = require('./script/getIPAddress.js');
+
+// 因為你不能在最頂層使用 await，所以我們創建一個立即執行的 async 函數
+(async () => {
+    try {
+        const localIP = getLocalIPAddress();
+        const publicIPOld = await getNetIPAddress(); // 等待公網 IP 地址的 Promise 解析
+        const publicIP = await getPublicIP(); // 等待公網 IP 地址的 Promise 解析
+
+        app.listen(port, () => {
+            console.log(`官方網站: http://localhost:${port}`);
+            console.log(`pos系統: http://localhost:${port}/pos`);            
+            console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
+            if (publicIPOld) {
+                console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
+            }
+            if (publicIP) {
+                console.log(`公網 IPv4 地址:  http://${publicIP}:${port}`);
+            }
+        });
+    } catch (error) {
+        console.error('無法獲取公網 IP 地址: ', error);
+    }
+})();
 
 // 404
 app.get('/order/:trade_no', async (req, res) => {

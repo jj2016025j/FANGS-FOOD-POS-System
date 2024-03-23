@@ -70,7 +70,29 @@ getOrderPrice(10);
 
 $('#pay-cash-button').on('click', ()=> {
     $.ajax({
-        url: "/pay/" + order.id,
+        url: "/pay/cash/" + order.id,
+        method: "POST",
+        success: (result) => {
+            alert('結帳成功')
+            location.href = "/pos"
+        }
+    })
+})
+
+$('#pay-credit-card-button').on('click', ()=> {
+    $.ajax({
+        url: "/pay/creditcard/" + order.id,
+        method: "POST",
+        success: (result) => {
+            alert('結帳成功')
+            location.href = "/pos"
+        }
+    })
+})
+
+$('#pay-line-pay-button').on('click', ()=> {
+    $.ajax({
+        url: "/pay/linepay/" + order.id,
         method: "POST",
         success: (result) => {
             alert('結帳成功')

@@ -11,6 +11,37 @@ router.get('/', async (req, res) => {
     });
 });
 
+//進入點餐畫面
+// http://localhost:3000/pos/:trade_no
+router.get('/:trade_no', async (req, res) => {
+    var categories = await dataRep.getFoodCateories()
+    var foods = await dataRep.getFoods()
+    var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
+    return res.render('order', {
+        categories: categories,
+        foods: foods,
+        order: order
+    });
+});
+// 手機點餐
+// http://localhost:3000/pos/phone/:trade_no
+router.get('/phone/:trade_no', async (req, res) => {
+    const trade_no = req.params['trade_no'];
+    var foods = await dataRep.getFoods();
+    var categories = await dataRep.getFoodCateories();
+    var order = await dataRep.getOrderByTradeNo(trade_no);
+
+    if (order) {
+        return res.render('phone', {
+            foods: foods,
+            categories: categories,
+            order: order
+        });
+    } else {
+        return res.send('訂單不存在唷!');
+    }
+});
+
 // 品項編輯
 // http://localhost:3000/pos/Edit
 router.get('/Edit', async (req, res) => {

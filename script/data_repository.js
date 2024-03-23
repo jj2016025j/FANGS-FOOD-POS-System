@@ -484,7 +484,36 @@ const repository = {
             }
         })
 
+    },
+    //一鍵結帳全部
+    OneClickCheckoutAll: () => {
+        return new Promise((resolve, reject) => {
+            pool.getConnection((error, connection) => {
+                if (error) {
+                    reject(error);
+                    return;
+                }
+                connection.query(
+                    `UPDATE table_orders 
+                     SET food_price = ?, 
+                     service_fee = ?, 
+                     trade_amt = ?, 
+                     order_status = ?, 
+                     payment_at = CURRENT_TIMESTAMP 
+                     WHERE order_status = ?`,
+                    [0, 0, 0, 2, 1], (error, results) => {
+                        connection.release();
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        console.log(results);
+                        resolve(results);
+                    });
+            });
+        });
     }
+    
 };
 
 module.exports = repository;

@@ -11,8 +11,8 @@ let generateSeat = () => {
         let {seatNum} = x;
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
-        const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/order/phone/' + search.trade_no : ''
-        const orderUrl = search ? '/order/' + search.trade_no: ''
+        const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/pos/phone/' + search.trade_no : ''
+        const orderUrl = search ? '/pos/' + search.trade_no: ''
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -22,7 +22,7 @@ let generateSeat = () => {
                 <div class="seat-option-content">
                     ${search ? `
                         <a data-seatnum=${seatNum} class="seat-order-btn" href="${orderUrl}">點餐/結帳</a>
-                        <a target="_blank" href="${qrcodeUrl}" data-seatnum=${seatNum} class="seat-qrcode-btn"><div id="qrcode_${search.trade_no}" class="qr-img"></div></a>
+                        <a href="${qrcodeUrl}" data-seatnum=${seatNum} class="seat-qrcode-btn"><div id="qrcode_${search.trade_no}" class="qr-img"></div></a>
                         ` : `
                         <a data-seatnum=${seatNum} class="generate-table-order-btn">生成QR code</a>
                     `}
@@ -83,7 +83,7 @@ let generateQRcode = (e) => {
             let seatID = (e.target.getAttribute('data-seatnum')) ? e.target.getAttribute('data-seatnum') : "1";
             console.log(seatID)
             $.ajax({
-                url: "/pos",
+                url: "/order",
                 method: "POST",
                 data: {
                     seatID: seatID
@@ -130,6 +130,18 @@ let goToOrderButton = () => {
     }
 }
 goToOrderButton();
+
+
+$('#all-checkout-button').on('click', ()=> {
+    $.ajax({
+        url: "/pay/checkout/",
+        method: "POST",
+        success: (result) => {
+            alert('結帳成功')
+            location.href = "/pos"
+        }
+    })
+})
 
 let updataState = () => {
     generateSeat();
