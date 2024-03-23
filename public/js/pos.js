@@ -12,7 +12,7 @@ let generateSeat = () => {
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/pos/phone/' + search.trade_no : ''
-        const orderUrl = search ? '/pos/' + search.trade_no: ''
+        const orderUrl = search ? '/pos/order/' + search.trade_no: ''
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>

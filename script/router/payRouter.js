@@ -71,9 +71,13 @@ router.post('/cash/:order_id', async (req, res) => {
                 WHERE od.order_id = ?`,
         [orderInfo.id]
     );
-    console.log(orderItems)
-    const defaultInvoiceData = {
-        dateTime: orderInfo.created_at,
+    console.log("orderItems", orderItems)
+
+    const formattedDate = TimeFormat(orderInfo.created_at)
+    console.log("formattedDate",formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
+
+    const invoiceData = {
+        dateTime: formattedDate,
         invoicePeriod: '10404',
         items: orderItems.map(item => ({
             name: item.name,
@@ -97,7 +101,6 @@ router.post('/cash/:order_id', async (req, res) => {
     await dataRep.confirmPaymentByCash(orderId)
     // console.log(orderId)
     try {
-        initPrinter()
         printInvoice(invoiceData)
     } catch (e) {
         console.log(e)
@@ -174,8 +177,8 @@ router.post('/creditcard/:trade_no', (req, res) => {
 // http://localhost:3000/pay/checkout
 router.post('/checkout', async (req, res) => {
     // try {
-        var results = await dataRep.OneClickCheckoutAll();
-        return res.status(200).json(results);
+    var results = await dataRep.OneClickCheckoutAll();
+    return res.status(200).json(results);
     // } catch (error) {
     //     console.error(error);
     //     return res.status(500).json({ message: "Internal server error" });

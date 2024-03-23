@@ -72,3 +72,15 @@ cd ..
 //7. 輸入
 node index.js
 8. 網址 http://localhost:3000/shop
+
+會發生以下錯誤
+TypeError: usb.on is not a function
+at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
+要把腳本裡面的以下程式碼刪除
+// usb.on('detach', function(device){
+//   if(device == self.device) {
+//     self.emit('detach'    , device);
+//     self.emit('disconnect', device);
+//     self.device = null;
+//   }
+// });

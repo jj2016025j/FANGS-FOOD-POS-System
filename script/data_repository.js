@@ -485,6 +485,46 @@ const repository = {
         })
 
     },
+    //計算訂單總價
+    calculateOrder: (order_id) => {
+        return new Promise(async (resolve, reject) => {
+            // console.log("await ")
+            const order = await repository.getOrderById(order_id);
+            const order_foods = await repository.getOrderFoods(order_id);
+            // console.log("await ")
+            if (order && order_foods.length) {
+                // food_price INT NULL,
+                // service_fee INT NULL,
+                // trade_amt INT NULL,
+                // order_status TINYINT DEFAULT 1,
+                // console.log("if ")
+
+                const food_price = order_foods.map((x) => x.quantity * x.unit_price).reduce((x, y) => x + y, 0);
+                const service_fee = Math.round(food_price * 10 / 100);
+                const trade_amt = food_price + service_fee;
+                const order_status = 2;
+                // console.log("getConnection ")
+
+                pool.getConnection((err, connection) => {
+                    if (err) {
+                        reject(err);
+                        return;
+                    }
+                    connection.query('UPDATE table_orders SET food_price = ?, service_fee = ?, trade_amt = ? WHERE id = ?', [food_price, service_fee, trade_amt, order_id], (error, results) => {
+                        connection.release();
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
+                        resolve(true);
+                    });
+                });
+            } else {
+                reject('查無訂單或訂單無品項')
+                return
+            }
+        })
+    },
     //一鍵結帳全部
     OneClickCheckoutAll: () => {
         return new Promise((resolve, reject) => {
@@ -513,7 +553,7 @@ const repository = {
             });
         });
     }
-    
+
 };
 
 module.exports = repository;
