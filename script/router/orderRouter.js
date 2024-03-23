@@ -174,55 +174,86 @@ router.post('/', async (req, res) => {
     }
 });
 
+//進入點餐畫面
+// http://localhost:3000/order/:trade_no
+router.get('/:trade_no', async (req, res) => {
+    var categories = await dataRep.getFoodCateories()
+    var foods = await dataRep.getFoods()
+    var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
+    return res.render('tables_order', {
+        categories: categories,
+        foods: foods,
+        order: order
+    });
+});
+// 手機點餐
+// http://localhost:3000/order/phone/:trade_no
+router.get('/phone/:trade_no', async (req, res) => {
+    const trade_no = req.params['trade_no'];
+    var foods = await dataRep.getFoods();
+    var categories = await dataRep.getFoodCateories();
+    var order = await dataRep.getOrderByTradeNo(trade_no);
+
+    if (order) {
+        return res.render('phone', {
+            foods: foods,
+            categories: categories,
+            order: order
+        });
+    } else {
+        return res.send('訂單不存在唷!');
+    }
+});
+
 //送出訂單
 // http://localhost:3000/order/12
 router.post('/:order_id', async (req, res) => {
     let formData = req.body;
     const orderId = req.params['order_id']
-    // try {
-    const [orders] = await pool.query(
-        `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
-        [orderId]
-    );
-    if (orders.length === 0) {
-        return res.status(404).send('Order not found');
-    }
+// try {
+        const [orders] = await pool.query(
+            `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
+            [orderId]
+        );
+        if (orders.length === 0) {
+            return res.status(404).send('Order not found');
+        }
 
-    const orderInfo = orders[0];
-    console.log(orderInfo)
+        const orderInfo = orders[0];
+        console.log(orderInfo)
 
-    const [orderItems] = await pool.query(
-        `SELECT od.food_id, od.quantity, od.unit_price, f.name 
+        const [orderItems] = await pool.query(
+            `SELECT od.food_id, od.quantity, od.unit_price, f.name 
                 FROM orders_items od 
                 JOIN foods f ON od.food_id = f.id 
                 WHERE od.order_id = ?`,
-        [orderInfo.id]
-    );
-    console.log(orderItems)
+            [orderInfo.id]
+        );
+        console.log(orderItems)
 
-    await dataRep.appendOrderFoods(orderId, formData)
-    const orderData = {
-        orderNumber: 'H123456789',
-        orderDate: orderInfo.created_at,
-        items: orderItems.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            unitPrice: item.unit_price,
-            totalPrice: item.quantity * item.unit_price
-        })),
-        subTotal: orderInfo.food_price,
-        total: orderInfo.trade_amt,
-        tax: orderInfo.service_fee,
-        specialRequests: '牛肉片請分開盛裝。'
-    };
-    try {
-        initPrinter()
-        printOrder(orderData)
-    } catch (e) {
-        console.log(e)
-    }
-    return res.status(200).send(true);
-    // } catch (e) {
+        await dataRep.appendOrderFoods(orderId, formData)
+        const orderData = {
+            orderNumber: 'H123456789',
+            orderDate: orderInfo.created_at,
+            items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                unitPrice: item.unit_price,
+                totalPrice: item.quantity * item.unit_price
+            })),
+            subTotal: orderInfo.food_price,
+            total: orderInfo.trade_amt,
+            tax: orderInfo.service_fee,
+            specialRequests: '牛肉片請分開盛裝。'
+        };
+        try {
+            initPrinter()
+            printOrder(orderData)
+        } catch (e) {
+            console.log(e)
+        }
+        return res.status(200).send(true);
+// } catch (e) {
     //     return res.status(400).json({
     //         error: e
     //     });
