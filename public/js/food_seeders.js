@@ -1,5 +1,5 @@
 require('dotenv').config({path: '../.env'});
-var sample_foods = require('./data.js');
+var sample_foods = require('./data2.js');
 var fs = require('fs');
 const mysql = require('mysql');
 const connection = mysql.createConnection({
