@@ -16,8 +16,8 @@ const LocalIP = getIp.getLocalIPAddress()
 //     printer = new escpos.Printer(device, options);
 // }
 
-// 設定紙張尺寸 5.7, 8 其他都是
-let size = 5.7
+// 設定紙張尺寸 5.7, 8 輸入其他只會顯示內容不會打印
+let size = 5.78
 // let size = 8
 
 // 列印QRCODE
@@ -139,7 +139,7 @@ function printOrder(insertOrder = defaultOrderData) {
                 .text('------------------------')
                 .align('lt')
                 .text('菜單:')
-                .size(1, 1)
+                .size(0, 0)
                 .text("名稱  單價 數量 總金額")
                 .feed(1)
 
@@ -239,68 +239,74 @@ async function printInvoice(insertInvoiceData = defaultInvoiceData) {
         console.log(`打印機連接成功`);
         // 串接條碼內容
         const barcodeContent = `${invoiceData.invoicePeriod}${invoiceData.invoiceNumber}${invoiceData.randomCode}`;
+        console.log(invoiceData);
 
-        printer
-            .font(`a`)
-            .align(`lt`)
-            .size(1, 1)
-            .text(invoiceData.header)
-            .style(`b`)// 加粗
-            .size(1, 1)
-            .text(`電子發票證明聯`)
-            .size(1, 1)
-            .text(` ${convertInvoicePeriod(invoiceData.invoicePeriod)}`)
-            .text(` ${invoiceData.invoiceNumber}`)
-            .style(`NORMAL`)
-            .size(0, 0)
-            .text(`     ${invoiceData.dateTime}`)
-            .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.total}`, 22))
-            .text(fillSpaces(`賣方:${invoiceData.sellerId}`, `買方:${invoiceData.buyerId}`, 22))
-            .barcode(barcodeContent, `CODE39`, {
-                width: 1,
-                height: 50, // 單位mm
-                // position: OFF, // 不顯示條碼值 這條參數有問題
-                includeParity: false //EAN13/EAN8 bar code
-            })
-
-        const outputPath = await printMergedQRCodes(
-            leftQRContent,
-            rightQRContent
-        ).catch(console.error);
-
-        escpos.Image.load(outputPath, function (image) {
+        if (size == 5.7) {
             printer
-                .raster(image)
-                .feed(2)
-                .cut()
                 .font(`a`)
                 .align(`lt`)
-                .size(0, 0)
-                .text(`公司: ${invoiceData.companyInfo}`)
+                .size(1, 1)
+                .text(invoiceData.header)
+                .style(`b`)// 加粗
+                .size(1, 1)
+                .text(`電子發票證明聯`)
+                .size(1, 1)
+                .text(` ${convertInvoicePeriod(invoiceData.invoicePeriod)}`)
+                .text(` ${invoiceData.invoiceNumber}`)
                 .style(`NORMAL`)
-                .text(`發票編號: ${invoiceData.invoiceNumber}`)
-                .text(`開票日期: ${formatInvoiceDate(invoiceData.dateTime)}`)
-                .text(`統一編號: ${invoiceData.buyerId}`)
-                .text(`地址: ${invoiceData.address}`)
-                .text(`電話: ${invoiceData.phone}`)
-                .feed(1)
-                .text(`商品: `)
+                .size(0, 0)
+                .text(`     ${invoiceData.dateTime}`)
+                .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.total}`, 22))
+                .text(fillSpaces(`賣方:${invoiceData.sellerId}`, `買方:${invoiceData.buyerId}`, 22))
+                .barcode(barcodeContent, `CODE39`, {
+                    width: 1,
+                    height: 50, // 單位mm
+                    // position: OFF, // 不顯示條碼值 這條參數有問題
+                    includeParity: false //EAN13/EAN8 bar code
+                })
 
-            printInvoiceItems(invoiceData.items);
+            const outputPath = await printMergedQRCodes(
+                leftQRContent,
+                rightQRContent
+            ).catch(console.error);
 
-            printer.feed(1)
-                .text(`商品總額: ${invoiceData.subTotal}`)
-                .text(`加值稅(10%): ${invoiceData.tax}`)
-                .text(`總計: ${invoiceData.total}`)
-                .feed(2)
+            escpos.Image.load(outputPath, function (image) {
+                printer
+                    .raster(image)
+                    .feed(2)
+                    .cut()
+                    .font(`a`)
+                    .align(`lt`)
+                    .size(0, 0)
+                    .text(`公司: ${invoiceData.companyInfo}`)
+                    .style(`NORMAL`)
+                    .text(`發票編號: ${invoiceData.invoiceNumber}`)
+                    .text(`開票日期: ${formatInvoiceDate(invoiceData.dateTime)}`)
+                    .text(`統一編號: ${invoiceData.buyerId}`)
+                    .text(`地址: ${invoiceData.address}`)
+                    .text(`電話: ${invoiceData.phone}`)
+                    .feed(1)
+                    .text(`商品: `)
 
-            printReturnPolicy(invoiceData.returnPolicyTexts);
+                printInvoiceItems(invoiceData.items);
 
-            printer
-                .feed(2)
-                .cut()
-                .close()
-        });
+                printer.feed(1)
+                    .text(`商品總額: ${invoiceData.subTotal}`)
+                    .text(`加值稅(10%): ${invoiceData.tax}`)
+                    .text(`總計: ${invoiceData.total}`)
+                    .feed(2)
+
+                printReturnPolicy(invoiceData.returnPolicyTexts);
+
+                printer
+                    .feed(2)
+                    .cut()
+                    .close()
+            });
+        } else {
+            console.log("尺寸沒有支援")
+        }
+
 
         console.log(`打印完成`);
         return true
@@ -411,6 +417,22 @@ function formatInvoiceDate(dateTime) {
     return formattedDate;
 }
 
+function convertToInvoiceFormat(orderItems) {
+    // 將訂單項目轉換為電子發票格式的字串
+    const invoiceItems = orderItems.map(item => {
+        const { name, quantity, unit_price } = item;
+        // 格式化為 "產品名稱:數量:單價:備註"
+        return `${name}:${quantity}:${unit_price}:無`;
+    });
+
+    // 使用分號將不同產品分隔
+    return invoiceItems.join(';');
+}
+
+// 使用函數並顯示結果
+// const invoiceFormat = convertToInvoiceFormat(orderItems);
+// console.log(invoiceFormat);
+
 // 使用範例
 const dateTime = '2024-03-18 11:22:33';
 
@@ -467,6 +489,15 @@ const defaultInvoiceData = {
     products: 'LED顯示器:1:500:無;無線鍵盤:2:750:無',
 };
 
+// 給convertToInvoiceFormat用
+const orderItems = [
+    { food_id: 37, quantity: 2, unit_price: 750, name: '牛肉鍋' },
+    { food_id: 37, quantity: 2, unit_price: 750, name: '牛肉鍋' },
+    { food_id: 37, quantity: 2, unit_price: 750, name: '牛肉鍋' },
+    { food_id: 37, quantity: 2, unit_price: 750, name: '牛肉鍋' },
+    { food_id: 37, quantity: 2, unit_price: 750, name: '牛肉鍋' }
+];
+
 // // 打印點餐QRCODE
 // printOrderWithQR("https://lee871116.ddns.net/A78146133", "A78146133", "12", contents);
 
@@ -478,4 +509,4 @@ const defaultInvoiceData = {
 
 
 // module.exports = { printOrderWithQR, printOrder, printInvoice, initPrinter };
-module.exports = { printOrderWithQR, printOrder, printInvoice };
+module.exports = { printOrderWithQR, printOrder, printInvoice, convertToInvoiceFormat };

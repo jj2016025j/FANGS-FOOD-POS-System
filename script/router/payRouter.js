@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { printInvoice, initPrinter } = require('../printer');
+const { printInvoice, convertToInvoiceFormat } = require('../printer');
+const { TimeFormat } = require('../timeFormatted.js')
 const mysql = require('mysql2/promise');
 const dataRep = require('../data_repository');
 
@@ -94,9 +95,9 @@ router.post('/cash/:order_id', async (req, res) => {
         selfUseArea: '**********',
         itemCount: '5',
         encoding: '1',
-        products: 'LED顯示器:1:500:無;無線鍵盤:2:750:無',
+        products: convertToInvoiceFormat(orderItems),
     };
-    console.log(defaultInvoiceData)
+    console.log(invoiceData)
 
     await dataRep.confirmPaymentByCash(orderId)
     // console.log(orderId)
