@@ -4,7 +4,7 @@ const mysql = require('mysql');
 const app = express();
 const dataRep = require('./script/data_repository');
 const bodyParser = require('body-parser')
-const port = 3000;
+const port = 3001;
 const { initPrinter } = require('./script/printer');
 
 app.use(bodyParser.urlencoded({ extended: false }));
