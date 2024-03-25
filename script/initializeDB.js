@@ -19,11 +19,50 @@ connection.connect(err => {
   }
   console.log('資料庫連接成功，連接 ID ' + connection.threadId);
 });
-
-connection.query(`USE fangs_food_pos_system`, err => {
+      
+// connection.query(`USE fangs_food_pos_system`, err => {
+//   if (err) throw err;
+//   console.log(`已選擇 fangs_food_pos_system 資料庫`);
+// });
+connection.query(`USE fang_project`, err => {
   if (err) throw err;
   console.log(`已選擇 fangs_food_pos_system 資料庫`);
 });
+
+connection.query(
+  `CREATE TABLE users (
+  id int(11) NOT NULL,
+  name varchar(255) NOT NULL,
+  googleID varchar(255) DEFAULT NULL,
+  date datetime DEFAULT current_timestamp(),
+  thumbnail varchar(255) DEFAULT 'https://img.league-funny.com/imgur/148292128067.jpg',
+  email varchar(255) DEFAULT NULL,
+  password varchar(1024) DEFAULT NULL,
+  lineID varchar(255) DEFAULT NULL,
+  reset_token varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;`
+  , (err) => {
+    if (err) throw err
+    console.log('資料表建立成功')
+  })
+    connection.query(
+      `ALTER TABLE users
+      ADD PRIMARY KEY ('id'),
+      ADD UNIQUE KEY email_unique ('email');`
+           , (err) => {
+        if (err) throw err
+        console.log('更改key成功')
+      })
+
+  connection.query(
+    `ALTER TABLE users
+    MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  COMMIT;`
+      , (err) => {
+      if (err) throw err
+      console.log('設定成功')
+    })
+
 
 connection.query(`
     CREATE TABLE IF NOT EXISTS Tables (
@@ -44,67 +83,67 @@ connection.end(err => {
 module.exports = connection
 
 
-const dbOperations = require('./mynodesql.js');
+// const dbOperations = require('./mynodesql.js');
 
-dbOperations.createDatabase('fangs_food_pos_system');
-dbOperations.useDatabase('fangs_food_pos_system');
-dbOperations.UseMySQL(
-  `CREATE TABLE IF NOT EXISTS Categories (
-    CategoryId INT AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    Description TEXT)`
-)
-dbOperations.UseMySQL(
-  `CREATE TABLE IF NOT EXISTS MenuItems (
-    MenuItemId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
-    CategoryId INT,
-    Insupply BOOLEAN DEFAULT TRUE,
-    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId))`
-)
+// dbOperations.createDatabase('fangs_food_pos_system');
+// dbOperations.useDatabase('fangs_food_pos_system');
+// dbOperations.UseMySQL(
+//   `CREATE TABLE IF NOT EXISTS Categories (
+//     CategoryId INT AUTO_INCREMENT PRIMARY KEY,
+//     CategoryName VARCHAR(255) NOT NULL,
+//     Description TEXT)`
+// )
+// dbOperations.UseMySQL(
+//   `CREATE TABLE IF NOT EXISTS MenuItems (
+//     MenuItemId INT AUTO_INCREMENT PRIMARY KEY,
+//     Name VARCHAR(255) NOT NULL,
+//     Description TEXT,
+//     Price DECIMAL(10, 2) NOT NULL,
+//     CategoryId INT,
+//     Insupply BOOLEAN DEFAULT TRUE,
+//     CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//     FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId))`
+// )
 
-const CategoryTable = {
-  CategoryName: "Name",
-  CategoryDescription: "CategoryDescription"
-};
+// const CategoryTable = {
+//   CategoryName: "Name",
+//   CategoryDescription: "CategoryDescription"
+// };
 
-dbOperations.UseMySQL(
-  `INSERT INTO Categories 
-    (CategoryName, Description) 
-    VALUES (?, ?)`,
-  [CategoryTable.CategoryName,
-  CategoryTable.CategoryDescription])
+// dbOperations.UseMySQL(
+//   `INSERT INTO Categories 
+//     (CategoryName, Description) 
+//     VALUES (?, ?)`,
+//   [CategoryTable.CategoryName,
+//   CategoryTable.CategoryDescription])
 
-const Items = {
-  MenuItemId: 20,
-  Name: "Name",
-  Description: "Description",
-  Price: 0.33,
-  CategoryId: 2,
-  Insupply: true
-};
+// const Items = {
+//   MenuItemId: 20,
+//   Name: "Name",
+//   Description: "Description",
+//   Price: 0.33,
+//   CategoryId: 2,
+//   Insupply: true
+// };
 
-// 
-dbOperations.insertIntoMenuItems(Items)
-dbOperations.updateMenuItems(Items)
-// 表名稱 列名稱 列值
-// dbOperations.updateFormTable("MenuItems", "MenuItemId", 1)
-dbOperations.updateFromTable(
-  'MenuItems', // 表名
-  { // 要更新的列及其新值
-    Name: "Updated Name",
-    Description: "Updated Description",
-    Price: 0.33,
-    CategoryId: 2,
-    Insupply: true
-  },
-  'MenuItemId', // 更新条件
-  8 // 条件匹配值
-);
-dbOperations.deleteFromTable("MenuItems", "MenuItemId", 9)
-// dbOperations.selectFromTable("MenuItemId, Name, Description, Price, CategoryId, InSupply","MenuItems")
-dbOperations.closeConnection()
+// // 
+// dbOperations.insertIntoMenuItems(Items)
+// dbOperations.updateMenuItems(Items)
+// // 表名稱 列名稱 列值
+// // dbOperations.updateFormTable("MenuItems", "MenuItemId", 1)
+// dbOperations.updateFromTable(
+//   'MenuItems', // 表名
+//   { // 要更新的列及其新值
+//     Name: "Updated Name",
+//     Description: "Updated Description",
+//     Price: 0.33,
+//     CategoryId: 2,
+//     Insupply: true
+//   },
+//   'MenuItemId', // 更新条件
+//   8 // 条件匹配值
+// );
+// dbOperations.deleteFromTable("MenuItems", "MenuItemId", 9)
+// // dbOperations.selectFromTable("MenuItemId, Name, Description, Price, CategoryId, InSupply","MenuItems")
+// dbOperations.closeConnection()

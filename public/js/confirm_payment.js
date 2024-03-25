@@ -90,13 +90,23 @@ $('#pay-credit-card-button').on('click', ()=> {
     })
 })
 
-$('#pay-line-pay-button').on('click', ()=> {
+$('#pay-line-pay-button').on('click', () => {
     $.ajax({
         url: "/pay/linepay/" + order.id,
         method: "POST",
         success: (result) => {
-            alert('結帳成功')
-            location.href = "/pos"
+            console.log(result.paymentUrl)
+            if (result.paymentUrl) {
+                // 如果服务器返回了支付URL，则跳转到该URL进行支付
+                window.location.href = result.paymentUrl;
+            } else {
+                alert('結帳成功');
+                location.href = "/pos";
+            }
+        },
+        error: (xhr, status, error) => {
+            // 处理错误情况
+            alert('支付失败: ' + error);
         }
-    })
-})
+    });
+});

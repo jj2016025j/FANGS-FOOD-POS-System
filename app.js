@@ -1,11 +1,39 @@
-require('dotenv').config()
+const dotenv = require("dotenv");
+dotenv.config();
 const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const dataRep = require('./script/data_repository');
 const bodyParser = require('body-parser')
-const port = 3001;
+const port = 5000;
 const { initPrinter } = require('./script/printer');
+require("./script/passport");
+const passport = require("passport");
+const session = require("express-session");
+const flash = require("connect-flash");
+
+//設定middleware跟排版引擎
+app.set("view engine", "ejs");
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: { secure: false },
+  })
+);
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
+app.use((req, res, next) => {
+  res.locals.success_msg = req.flash("success_msg");
+  res.locals.error_msg = req.flash("error_msg");
+  res.locals.error = req.flash("error");
+  next();
+});
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -88,13 +116,13 @@ const { getLocalIPAddress, getNetIPAddress, getPublicIP } = require('./script/ge
         app.listen(port, () => {
             console.log(`官方網站: http://localhost:${port}`);
             console.log(`pos系統: http://localhost:${port}/pos`);            
-            console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
-            if (publicIPOld) {
-                console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
-            }
-            if (publicIP) {
-                console.log(`公網 IPv4 地址:  http://${publicIP}:${port}`);
-            }
+            // console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
+            // if (publicIPOld) {
+            //     console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
+            // }
+            // if (publicIP) {
+            //     console.log(`公網 IPv4 地址:  http://${publicIP}:${port}`);
+            // }
         });
     } catch (error) {
         console.error('無法獲取公網 IP 地址: ', error);
