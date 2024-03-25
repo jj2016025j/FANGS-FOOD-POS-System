@@ -133,8 +133,8 @@ router.post('/cash/:order_id', async (req, res) => {
 
 // POST /linepay/:trade_no 路由处理
 // http://localhost:5000/pay/linepay/:trade_no
-router.post('/linepay/:id', async (req, res) => {
-    const id = req.params.id;
+router.post('/linepay/:order_id', async (req, res) => {
+    const id = req.params.order_id;
 
     // try {
     // 查询订单基本信息
@@ -194,7 +194,7 @@ router.post('/linepay/:id', async (req, res) => {
         });
     }
 
-    
+
     // } catch (err) {
     // console.error(`Error: ${err.message}`);
     // res.status(500).send('Server Error');
@@ -227,14 +227,19 @@ router.get("/lineConfirm", async (req, res) => {
                 message: linePayRes,
             });
         }
+        await dataRep.confirmPaymentByCash(orderId)
+
     } catch (err) {
         console.log(err);
     }
 });
 
 // http://localhost:5000/pay/creditcard/:trade_no
-router.post('/creditcard/:trade_no', (req, res) => {
-    const orderId = req.params['trade_no']
+router.post('/creditcard/:order_id', async (req, res) => {
+    // const orderId = req.params['trade_no']
+    const orderId = req.params['order_id']
+
+    await dataRep.confirmPaymentByCash(orderId)
 
     res.json(orderId);
 })

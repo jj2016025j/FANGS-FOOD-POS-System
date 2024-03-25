@@ -5,7 +5,7 @@ const mysql = require('mysql');
 const app = express();
 const dataRep = require('./script/data_repository');
 const bodyParser = require('body-parser')
-const port = 5000;
+const port = 8080;
 const { initPrinter } = require('./script/printer');
 require("./script/passport");
 const passport = require("passport");

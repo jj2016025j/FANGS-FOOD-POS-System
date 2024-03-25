@@ -19,9 +19,10 @@ const LocalIP = getIp.getLocalIPAddress()
 // 設定紙張尺寸 5.7, 8 輸入其他只會顯示內容不會打印
 let size = 5.78
 // let size = 8
-
+let hasPrinter = size == 5.7 || size == 8
 // 列印QRCODE
 function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, tableNumber = 1, contents = defaultContents) {
+    if (!hasPrinter) return
     device.open(function (error) {
         if (error) {
             console.error('打印機連接錯誤:', error);
@@ -108,6 +109,7 @@ function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, t
 
 // 列印訂單
 function printOrder(insertOrder = defaultOrderData) {
+    if (!hasPrinter) return
     // 定義預設參數
     const oldOrderData = defaultOrderData
 
@@ -220,6 +222,7 @@ function printOrder(insertOrder = defaultOrderData) {
 
 // 列印發票
 async function printInvoice(insertInvoiceData = defaultInvoiceData) {
+    if (!hasPrinter) return
     // 定義預設參數
     const oldInvoiceData = defaultInvoiceData
 

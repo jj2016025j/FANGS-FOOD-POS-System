@@ -224,7 +224,6 @@ router.post('/:order_id', async (req, res) => {
         // specialRequests: '牛肉片請分開盛裝。'
     };
     try {
-        // initPrinter()
         printOrder(orderData)
     } catch (e) {
         console.log(e)
