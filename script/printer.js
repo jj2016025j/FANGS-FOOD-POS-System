@@ -4,9 +4,9 @@ const Jimp = require('jimp');
 const qr = require('qr-image');
 const streamToBuffer = require('stream-to-buffer');
 
-const device = new escpos.USB();
-const options = { encoding: "Big5", width: 42 }
-const printer = new escpos.Printer(device, options);
+// const device = new escpos.USB();
+// const options = { encoding: "Big5", width: 42 }
+// const printer = new escpos.Printer(device, options);
 
 const getIp = require("./getIPAddress.js")
 const LocalIP = getIp.getLocalIPAddress()

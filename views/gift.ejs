@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/css/profile.css" />
+  </head>
+  <body>
+    <%- include("partials/nav") %>
+
+    <div class="container">
+      <div class="box">
+        <h1>芳鍋 Fangs-food</h1>
+        <div class="header">
+          <img src="<%= user.thumbnail %>" />
+          <h2><%= user.name %></h2>
+          <h4>FANGS-FOOD 會員</h4>
+        </div>
+        <div class="nav">
+          <ul>
+            <li><a href="#">禮物卷</a></li>
+            <li><a href="/auth/change-password">帳號管理</a></li>
+            <li><a href="/profile">VIP</a></li>
+          </ul>
+        </div>
+        <div class="gift">
+          <div class="gift-item">
+            <img
+              src="https://d3egcl3bvwgcig.cloudfront.net/coupon/261bd5850bb3e9339f92391b4d584591.png"
+            />
+            <h5>【痛快暢飲 梅你不行】梅醉兌換券</h5>
+            <p>
+              <img src="../image/schedule_FILL0_wght400_GRAD0_opsz24.svg" />
+              2024/4/21到期
+            </p>
+          </div>
+          <hr />
+          <div class="gift-item">
+            <img
+              src="https://d3egcl3bvwgcig.cloudfront.net/coupon/2e06ba6e1b8b1ca2abcce9d3b5e16639.png"
+            />
+            <h5>FANGS-FOOD 入會禮</h5>
+            <p>
+              <img src="../image/schedule_FILL0_wght400_GRAD0_opsz24.svg" />
+              2024/6/30到期
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <%- include("partials/footer") %>
+  </body>
+</html>

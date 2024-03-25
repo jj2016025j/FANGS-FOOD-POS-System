@@ -47,6 +47,11 @@ app.use('/order', orderRouter);
 const payRouter = require('./script/router/payRouter');
 app.use('/pay', payRouter);
 
+const authRoutes = require("./script/router/auth_routes.js");
+const profileRoutes = require("./script/router/profile_routes");
+app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
+
 // const dataRouter = require('./script/router/dataRouter');
 // app.use('/data', dataRouter);
 

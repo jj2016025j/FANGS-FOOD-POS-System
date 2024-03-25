@@ -102,7 +102,7 @@ router.post('/cash/:order_id', async (req, res) => {
     await dataRep.confirmPaymentByCash(orderId)
     // console.log(orderId)
     try {
-        printInvoice(invoiceData)
+        // printInvoice(invoiceData)
     } catch (e) {
         console.log(e)
     }
