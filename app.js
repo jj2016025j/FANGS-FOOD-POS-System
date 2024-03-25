@@ -7,8 +7,8 @@ const dataRep = require('./script/data_repository');
 const bodyParser = require('body-parser')
 const port = 8080;
 const { initPrinter } = require('./script/printer');
-require("./script/passport");
-const passport = require("passport");
+// require("./script/passport");
+// const passport = require("passport");
 const session = require("express-session");
 const flash = require("connect-flash");
 
@@ -25,8 +25,8 @@ app.use(
     cookie: { secure: false },
   })
 );
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 app.use(flash());
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
@@ -75,10 +75,10 @@ app.use('/order', orderRouter);
 const payRouter = require('./script/router/payRouter');
 app.use('/pay', payRouter);
 
-const authRoutes = require("./script/router/auth_routes.js");
-const profileRoutes = require("./script/router/profile_routes");
-app.use("/auth", authRoutes);
-app.use("/profile", profileRoutes);
+// const authRoutes = require("./script/router/auth_routes.js");
+// const profileRoutes = require("./script/router/profile_routes");
+// app.use("/auth", authRoutes);
+// app.use("/profile", profileRoutes);
 
 // const dataRouter = require('./script/router/dataRouter');
 // app.use('/data', dataRouter);
