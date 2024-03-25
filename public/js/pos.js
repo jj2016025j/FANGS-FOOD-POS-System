@@ -10,7 +10,7 @@ let generateSeat = () => {
     seatContainer.innerHTML = seatList.map((x) => {
         let {seatNum} = x;
         let search = pendingOrders.find(y => y.table_number == seatNum);
-        // console.log(search)
+        console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/pos/phone/' + search.trade_no : ''
         const orderUrl = search ? '/pos/order/' + search.trade_no: ''
         return `

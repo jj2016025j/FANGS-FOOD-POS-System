@@ -1,18 +1,19 @@
 const mysql = require('mysql');
 
-const local  = mysql.createConnection({
+const local = mysql.createConnection({
   host: "localhost", // 資料庫伺服器地址
   user: "root",
-  password: "", 
+  password: "",
   // database: database
   charset: "utf8mb4",
   port: 3306
 });
 
-const aws  = mysql.createConnection({
+// 給雲端用的
+const aws = mysql.createConnection({
   host: 'fangfoodbackend-v3-instance-1.cd08s4082uws.ap-northeast-1.rds.amazonaws.com', // RDS终端节点
   user: "admin",
-  password: "", 
+  password: "",
   charset: "utf8mb4",
   port: 3306
 });
@@ -60,11 +61,12 @@ const dbOperations = {
   // 創建資料庫（如果不存在）
   // dbOperations.createDatabase("databaseName")
   createDatabase: function (databaseName) {
-    connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName}`, (err) => {
+    connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName} CHARACTER SET utf8 COLLATE utf8_general_ci;`, (err) => {
       if (err) throw err;
       console.log(`${databaseName} 資料庫已創建或已存在`);
     });
   },
+  //CREATE DATABASE restaurant_order CHARACTER SET utf8 COLLATE utf8_general_ci;
 
   // 轉換數據庫編碼
   // dbOperations.alterDatabaseCharset("databaseName", "utf8mb4", "utf8mb4_unicode_ci")
@@ -87,7 +89,7 @@ const dbOperations = {
 
   // 一次創建很多個表
   // dbOperations.createTables(sql[])
-  createTables: function () {
+  createTables: function (queries) {
     queries.forEach((_query, index) => {
       connection.query(_query, function (err, results) {
         if (err) throw err;
@@ -110,10 +112,10 @@ const dbOperations = {
 
   // 使用sql
   // dbOperations.UseMySQL(sql, values)
-  UseMySQL: function (sql, values="") {
+  UseMySQL: function (sql, values = "", explain = "") {
     connection.query(sql, values, (err) => {
       if (err) throw err;
-      console.log("成功使用SQL")
+      console.log(`成功使用SQL ${explain}`)
     })
   },
 
@@ -142,29 +144,15 @@ const dbOperations = {
       });
     });
   },
-  // 插入多筆資料到表
-  // insertIntoDatasToTable: function (tableName, columns, values) {
-  //   let placeholders = columns.map(() => '?').join(',');
-  //   let insertSql = `INSERT INTO ${tableName} (${columns.join(',')}) VALUES (${placeholders})`;
-  //   connection.query(insertSql, values, (err, results) => {
-  //     if (err) throw err;
-  //     console.log('插入資料成功，插入的記錄數：', results.affectedRows);
-  //   });
-  // },
 
-  selectFromTable: function (row, tableName, whereClause = '', whereValues = []) {
-    // 返回一个新的Promise
-    return new Promise((resolve, reject) => {
-      let selectSql = `SELECT ${row} FROM ${tableName}` + (whereClause ? ` WHERE ${whereClause}` : '');
-      connection.query(selectSql, whereValues, (err, results) => {
-        if (err) {
-          console.error(err);
-          reject(err); // 如果有错误，拒绝Promise
-        } else {
-          console.log(results);
-          resolve(results); // 如果成功，解析Promise
-        }
-      });
+  insertProjectDataList: function (projectDataList, categoryMap) {
+    projectDataList.forEach(item => {
+      // 從對照表中取得 category_id
+      const categoryId = categoryMap[item.type] || 0; // 如果找不到對應的 category_id，預設為 0
+      const sql = "INSERT INTO foods (name, category_id, price, image_url) VALUES (?, ?, ?, ?)";
+      const values = [item.product, categoryId, item.price, item.img];
+
+      dbOperations.UseMySQL(sql, values, `插入 ${item.product}`);
     });
   },
 
@@ -183,6 +171,22 @@ const dbOperations = {
         } else {
           console.log("更新資料成功，影響的行數：" + results.affectedRows);
           resolve(results);
+        }
+      });
+    });
+  },
+
+  selectFromTable: function (row = "*", tableName, whereClause = '', whereValues = []) {
+    // 返回一个新的Promise
+    return new Promise((resolve, reject) => {
+      let selectSql = `SELECT ${row} FROM ${tableName}` + (whereClause ? ` WHERE ${whereClause}` : '');
+      connection.query(selectSql, whereValues, (err, results) => {
+        if (err) {
+          console.error(err);
+          reject(err); // 如果有错误，拒绝Promise
+        } else {
+          console.log(results);
+          resolve(results); // 如果成功，解析Promise
         }
       });
     });
@@ -288,103 +292,5 @@ const dbOperations = {
   }
 };
 
-// 一次灌入資料表
-const queries = [
-  `CREATE TABLE IF NOT EXISTS Users (
-    UserId INT AUTO_INCREMENT PRIMARY KEY,
-    Username VARCHAR(255) UNIQUE NOT NULL,
-    PasswordHash VARCHAR(255) NOT NULL,
-    Email VARCHAR(255),
-    Role VARCHAR(50),
-    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-  );`,
-  `CREATE TABLE IF NOT EXISTS Roles (
-    Role VARCHAR(50),
-    RoleId INT AUTO_INCREMENT PRIMARY KEY,
-    ValidUntil TIMESTAMP
-  );`,
-  `CREATE TABLE IF NOT EXISTS Pages (
-    PageId INT AUTO_INCREMENT PRIMARY KEY,
-    PageName VARCHAR(255) NOT NULL,
-    RoleRequired VARCHAR(50) NOT NULL
-  );`,
-  `CREATE TABLE IF NOT EXISTS Categories (
-    CategoryId INT AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    Description TEXT
-  );`,
-  `CREATE TABLE IF NOT EXISTS MenuItems (
-    MenuItemId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
-    CategoryId INT,
-    Insupply BOOLEAN DEFAULT TRUE,
-    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId)
-  );`,
-  `CREATE TABLE IF NOT EXISTS Orders (
-    OrderId INT AUTO_INCREMENT PRIMARY KEY,
-    TableId INT,
-    TotalPrice DECIMAL(10, 2) NOT NULL,
-    Status INT NOT NULL,
-    OrderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    UserId INT,
-    FOREIGN KEY (UserId) REFERENCES Users(UserId)
-  );`,
-  `CREATE TABLE IF NOT EXISTS OrderItems (
-    OrderItemId INT AUTO_INCREMENT PRIMARY KEY,
-    MenuItemId INT,
-    Quantity INT NOT NULL,
-    Price DECIMAL(10, 2) NOT NULL,
-    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    Status INT NOT NULL,
-    FOREIGN KEY (MenuItemId) REFERENCES MenuItems(MenuItemId)
-  );`,
-  `CREATE TABLE IF NOT EXISTS OrderItemMappings (
-    OrderId INT,
-    OrderItemId INT,
-    FOREIGN KEY (OrderId) REFERENCES Orders(OrderId),
-    FOREIGN KEY (OrderItemId) REFERENCES OrderItems(OrderItemId)
-  );`,
-  `CREATE TABLE IF NOT EXISTS Tables (
-    TableId INT AUTO_INCREMENT PRIMARY KEY,
-    TableName VARCHAR(50) NOT NULL
-  );`,
-  `  CREATE TABLE IF NOT EXISTS menu_items (
-    item_id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    price DECIMAL(10, 2),
-    category VARCHAR(100),
-    photo_url VARCHAR(2083)
-  ) ENGINE=InnoDB;`
-];
 // 桌子還要加入用餐中或是空桌
 module.exports = dbOperations;
-
-
-  // // 插入資料到 menu_items
-  // connection.query(
-  //   `INSERT INTO menu_items (name, description, price, category, photo_url) VALUES 
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?),
-  //   (?, ?, ?, ?, ?)`,
-  // [
-  //     '漢堡', '經典美式牛肉漢堡，配生菜、番茄、起司和特製醬料', 99.00, '主餐', 'http://example.com/burger.jpg',
-  // '薯條', '酥脆金黃的薯條，外酥內軟', 30.00, '小吃', 'http://example.com/fries.jpg',
-  // '可樂', '冰涼的可樂，解渴首選', 20.00, '飲料', 'http://example.com/cola.jpg',
-  // '壽司盛合', '新鮮的壽司組合，包括鮭魚、吞拿魚和黃瓜卷', 180.00, '主餐', 'http://example.com/sushi.jpg',
-  // '綠茶', '香醇的日式綠茶', 25.00, '飲料', 'http://example.com/greentea.jpg'
-  //   ],
-  //   (err, results) => {
-  //     if (err) throw err;
-  //     console.log('插入資料成功，插入的記錄數：', results.affectedRows);
-  //   }
-  // );

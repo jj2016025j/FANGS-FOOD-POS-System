@@ -22,13 +22,13 @@
 
 ```bash
 # 克隆項目
-git clone https://github.com/yourusername/fangguo.git
+git clone https://github.com/jj2016025j/FANGS-FOOD-POS-System.git
 
-# 進入項目目錄
-cd fangguo
+# 執行初始化資料表
+node initDB
 
 # 安裝依賴
-npm install
+npm i
 
 # 運行項目
 npm start
@@ -36,11 +36,11 @@ npm start
 ## **使用說明**
 
 - **網站訪問**：在瀏覽器中輸入**`http://localhost:3000`**訪問芳鍋網站。
-- **後台登入**：店內工作人員可通過**`/admin`**路徑訪問POS系統。
+# - **後台登入**：店內工作人員可通過**`/admin`**路徑訪問POS系統。
 
 ## **貢獻指南**
 
-我們歡迎任何形式的貢獻，無論是功能建議、錯誤報告或是代碼提交。請先通過Issues討論您的想法或報告錯誤，然後您可以開始提交Pull Request。
+我們歡迎任何形式的貢獻，無論是功能建議、錯誤報告或是代碼提交。請先通過Issues討論您的想法或報告錯誤，然後您可以開始提交 Pull Request。
 
 ## **授權信息**
 

@@ -3,23 +3,20 @@ escpos.USB = require('escpos-usb');
 const Jimp = require('jimp');
 const qr = require('qr-image');
 const streamToBuffer = require('stream-to-buffer');
-
-// const device = new escpos.USB();
-// const options = { encoding: "Big5", width: 42 }
-// const printer = new escpos.Printer(device, options);
-
 const getIp = require("./getIPAddress.js")
 const LocalIP = getIp.getLocalIPAddress()
-// function initPrinter() {
-//     device = new escpos.USB();
-//     options = { encoding: "Big5", width: 42 }
-//     printer = new escpos.Printer(device, options);
-// }
 
 // 設定紙張尺寸 5.7, 8 輸入其他只會顯示內容不會打印
 let size = 5.78
 // let size = 8
 let hasPrinter = size == 5.7 || size == 8
+
+if (hasPrinter) {
+    const device = new escpos.USB();
+    const options = { encoding: "Big5", width: 42 }
+    const printer = new escpos.Printer(device, options);
+}
+
 // 列印QRCODE
 function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, tableNumber = 1, contents = defaultContents) {
     if (!hasPrinter) return
@@ -225,12 +222,10 @@ async function printInvoice(insertInvoiceData = defaultInvoiceData) {
     if (!hasPrinter) return
     // 定義預設參數
     const oldInvoiceData = defaultInvoiceData
-
     // 合併預設參數和傳入的自訂物件參數
     const invoiceData = { ...oldInvoiceData, ...insertInvoiceData };
     // 組合左側二維條碼內容
     const leftQRContent = `${invoiceData.invoiceNumber}:${invoiceData.date}:${invoiceData.randomCode}:${invoiceData.salesAmount}:${invoiceData.totalAmount}:${invoiceData.buyerId}:${invoiceData.sellerId}:${invoiceData.encryptionInfo}`;
-
     // 組合右側二維條碼內容
     const rightQRContent = `**:${invoiceData.selfUseArea}:${invoiceData.itemCount}:${invoiceData.itemCount}:${invoiceData.encoding}:${invoiceData.products}`;
 
@@ -310,15 +305,21 @@ async function printInvoice(insertInvoiceData = defaultInvoiceData) {
             console.log("尺寸沒有支援")
         }
 
-
         console.log(`打印完成`);
         return true
     });
 }
 
+/**
+ * 在左右兩個字符串之間填充空格以達到指定長度。
+ * @param {string} left - 左側字符串。
+ * @param {string} right - 右側字符串。
+ * @param {number} length - 目標長度。
+ * @returns {string} - 填充後的字符串。
+ */
 const fillSpaces = (left, right, length) => {
     const spaces = length - (left.length + right.length);
-    return left + ' '.repeat(spaces) + right;
+    return `${left}${' '.repeat(spaces)}${right}`;
 };
 
 const createQRCode = async (text, size) => {
@@ -406,6 +407,9 @@ function printInvoiceItems(items) {
     });
 }
 
+// 使用範例
+const dateTime = '2024-03-18 11:22:33';
+
 function formatInvoiceDate(dateTime) {
     // 解析日期時間字符串為Date物件
     const date = new Date(dateTime);
@@ -436,9 +440,6 @@ function convertToInvoiceFormat(orderItems) {
 // const invoiceFormat = convertToInvoiceFormat(orderItems);
 // console.log(invoiceFormat);
 
-// 使用範例
-const dateTime = '2024-03-18 11:22:33';
-
 const defaultOrderData = {
     orderNumber: 'H123456789',
     orderDate: '2024-03-19',
@@ -466,7 +467,7 @@ const defaultInvoiceData = {
     invoiceNumber: 'AB-12345678',
     randomCode: '1234',
     totalAmount: '100',
-    sellerId: '53589318',
+    sellerId: '94321201',
     buyerId: '79461349',
     companyInfo: '芳鍋企業有限公司',
     address: '台北市信義區市府路1號',
