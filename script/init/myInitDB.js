@@ -5,7 +5,7 @@ var fs = require('fs');
 pool.Connection()
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
-// pool.dropDatabase("test")
+pool.dropDatabase("test")
 
 // pool.createDatabase("fangs_food_pos_system")
 // pool.useDatabase("fangs_food_pos_system")
@@ -40,6 +40,8 @@ pool.UseMySQL(`
   );`
 )
 
+// 假設我們要插入5個桌號
+// pool.insertTables(5);
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS Categories (
@@ -100,10 +102,7 @@ pool.UseMySQL(
 )
 
 const itemData = require("../data/fangsFoodData.js")
-pool.insertProjectDataList(itemData, categoryMap)
-
-var sample_foods = require('./data.js');
-
+// pool.insertProjectDataList(itemData, categoryMap)
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS MenuItems (

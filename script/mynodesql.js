@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 
-const local = mysql.createConnection({
+const local = mysql.createPool({
+  connectionLimit: 20, // 連接池大小
   host: "localhost", // 資料庫伺服器地址
   user: "root",
   password: "",
@@ -20,14 +21,6 @@ const aws = mysql.createConnection({
 
 const connection = local
 
-connection.connect(err => {
-  if (err) {
-    console.error('連接資料庫失敗: ' + err.stack);
-    return;
-  }
-  console.log('資料庫連接成功，連接 ID ' + connection.threadId);
-});
-
 const dbOperations = {
   // 建立資料庫連接
   // dbOperations.createConnection('localhost', 'root', '', '', 'utf8mb4')
@@ -44,7 +37,9 @@ const dbOperations = {
 
   // 直接返回SQL物件
   // dbOperations.Connection()
-  Connection: function () { return connection },
+  Connection: function () { 
+    console.log("取得連線物件")
+    return connection },
 
   // 建立連接
   // dbOperations.connectToSQL()

@@ -1,11 +1,12 @@
 const pool = require("../mynodesql.js")
 var fs = require('fs');
+const path = require('path');
 
 // 連接資料庫
 pool.Connection()
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
-// pool.dropDatabase("fang_project2")
+pool.dropDatabase("fang_project2")
 
 pool.createDatabase("fang_project2")
 pool.useDatabase("fang_project2")
@@ -65,9 +66,39 @@ pool.UseMySQL(
 )
 
 const itemData = require("../data/fangsFoodData.js")
-pool.insertProjectDataList(itemData, categoryMap)
+// pool.insertProjectDataList(itemData, categoryMap)
 
-var sample_foods = require('../data/fangsFoodData.js');
+const copyImageAndUpdatePath = async (item) => {
+  const originalImagePath = path.join(__dirname, '..', item.img); // 原始圖片路徑
+  const newImageName = path.basename(item.img);
+  const newImagePath = path.join(__dirname, '..', 'public', 'images', newImageName); // 新圖片路徑
+
+  try {
+    await fs.copyFile(originalImagePath, newImagePath);
+    console.log(`Copied: ${newImageName}`);
+    return '/images/' + newImageName; // 返回新的圖片URL
+  } catch (error) {
+    console.error(`Error copying file: ${error}`);
+    return ''; // 如果複製失敗，返回空字符串
+  }
+};
+
+const processItemsAndInsert = async (items) => {
+  for (const item of items) {
+    const newImgPath = await copyImageAndUpdatePath(item);
+    if (newImgPath) {
+      item.img = newImgPath; // 更新項目的圖片路徑
+    } else {
+      console.log(`Image not found or copy failed for item: ${item.product}`);
+    }
+  }
+  pool.insertProjectDataList(items, categoryMap); // 呼叫函式將項目資料導入資料庫
+};
+
+// 執行處理
+processItemsAndInsert(itemData).then(() => {
+  console.log('All items processed and inserted into the database.');
+});
 
 const Items = {
   MenuItemId: 20,
