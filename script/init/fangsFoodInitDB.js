@@ -5,12 +5,26 @@ var fs = require('fs');
 pool.Connection()
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
-// pool.dropDatabase("test")
+// pool.dropDatabase("fang_project2")
 
 pool.createDatabase("fang_project2")
 pool.useDatabase("fang_project2")
 
-
+pool.UseMySQL(
+  `CREATE TABLE IF NOT EXISTS users (
+    id int(11) NOT NULL AUTO_INCREMENT,
+    name varchar(255) NOT NULL,
+    googleID varchar(255) DEFAULT NULL,
+    date datetime DEFAULT current_timestamp(),
+    thumbnail varchar(255) DEFAULT 'https://img.league-funny.com/imgur/148292128067.jpg',
+    email varchar(255) DEFAULT NULL,
+    password varchar(1024) DEFAULT NULL,
+    lineID varchar(255) DEFAULT NULL,
+    reset_token varchar(255) DEFAULT NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY email_unique (email)
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;`
+)
 
 const categoryMap = {
   "hotpot": 1,
@@ -19,6 +33,14 @@ const categoryMap = {
   "vegetable": 4,
   "dumplings": 5
 };
+
+// 分類
+pool.UseMySQL(
+  `CREATE TABLE IF NOT EXISTS foods_category (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(255) NOT NULL,
+    sort INT DEFAULT 0)`
+)
 
 // 傳入分類
 pool.UseMySQL(
@@ -81,7 +103,7 @@ pool.UseMySQL(
     total_price INT NOT NULL)`
 )
 
-// pool.dropDatabase("test")
+// pool.dropDatabase("fang_project2")
 
 pool.closeConnection()
 
