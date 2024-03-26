@@ -66,7 +66,7 @@ router.post('/:order_id', async (req, res) => {
         [orderId]
     );
     if (orders.length === 0) {
-        return res.status(404).send('Order not found');
+        return res.send('Order not found');
     }
 
     const orderInfo = orders[0];

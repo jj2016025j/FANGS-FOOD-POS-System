@@ -1,4 +1,4 @@
-const pool = require("../mynodesql.js")
+const pool = require("./script/mynodesql.js")
 var fs = require('fs');
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
@@ -29,33 +29,33 @@ pool.UseMySQL(
   `ALTER TABLE users MODIFY id int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=0;`
 )
 
-pool.UseMySQL(`
-  CREATE TABLE IF NOT EXISTS Tables (
-  TableId INT AUTO_INCREMENT PRIMARY KEY,
-  TableName VARCHAR(50) NOT NULL,
-  Status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE'
-  );`
-)
+// pool.UseMySQL(`
+//   CREATE TABLE IF NOT EXISTS Tables (
+//   TableId INT AUTO_INCREMENT PRIMARY KEY,
+//   TableName VARCHAR(50) NOT NULL,
+//   Status VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE'
+//   );`
+// )
 
 
-pool.UseMySQL(
-  `CREATE TABLE IF NOT EXISTS Categories (
-    CategoryId INT AUTO_INCREMENT PRIMARY KEY,
-    CategoryName VARCHAR(255) NOT NULL,
-    Description TEXT)`
-)
+// pool.UseMySQL(
+//   `CREATE TABLE IF NOT EXISTS Categories (
+//     CategoryId INT AUTO_INCREMENT PRIMARY KEY,
+//     CategoryName VARCHAR(255) NOT NULL,
+//     Description TEXT)`
+// )
 
-const CategoryTable = {
-  CategoryName: "Name",
-  CategoryDescription: "CategoryDescription"
-};
+// const CategoryTable = {
+//   CategoryName: "Name",
+//   CategoryDescription: "CategoryDescription"
+// };
 
-pool.UseMySQL(
-  `INSERT INTO Categories
-    (CategoryName, Description)
-    VALUES (?, ?)`,
-  [CategoryTable.CategoryName,
-  CategoryTable.CategoryDescription])
+// pool.UseMySQL(
+//   `INSERT INTO Categories
+//     (CategoryName, Description)
+//     VALUES (?, ?)`,
+//   [CategoryTable.CategoryName,
+//   CategoryTable.CategoryDescription])
 
 
 // 分類
@@ -96,51 +96,51 @@ pool.UseMySQL(
   sort INT DEFAULT 0)`
 )
 
-const itemData = require("../data/fangsFoodData.js")
+const itemData = require("./script/data/fangsFoodData.js")
 pool.insertProjectDataList(itemData, categoryMap)
 
-pool.UseMySQL(
-  `CREATE TABLE IF NOT EXISTS MenuItems (
-    MenuItemId INT AUTO_INCREMENT PRIMARY KEY,
-    Name VARCHAR(255) NOT NULL,
-    Description TEXT,
-    Price DECIMAL(10, 2) NOT NULL,
-    CategoryId INT,
-    Insupply BOOLEAN DEFAULT TRUE,
-    CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId))`
-)
+// pool.UseMySQL(
+//   `CREATE TABLE IF NOT EXISTS MenuItems (
+//     MenuItemId INT AUTO_INCREMENT PRIMARY KEY,
+//     Name VARCHAR(255) NOT NULL,
+//     Description TEXT,
+//     Price DECIMAL(10, 2) NOT NULL,
+//     CategoryId INT,
+//     Insupply BOOLEAN DEFAULT TRUE,
+//     CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//     UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//     FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId))`
+// )
 console.log("MenuItems")
 
-const Items = {
-  MenuItemId: 20,
-  Name: "Name",
-  Description: "Description",
-  Price: 0.33,
-  CategoryId: 2,
-  Insupply: true
-};
+// const Items = {
+//   MenuItemId: 20,
+//   Name: "Name",
+//   Description: "Description",
+//   Price: 0.33,
+//   CategoryId: 2,
+//   Insupply: true
+// };
 
-// pool.insertIntoMenuItems(Items)
-pool.updateMenuItems(Items)
+// // pool.insertIntoMenuItems(Items)
+// pool.updateMenuItems(Items)
 
-// 表名稱 列名稱 列值
-pool.updateFromTable(
-  'MenuItems', // 表名
-  { // 要更新的列及其新值
-    Name: "Updated Name",
-    Description: "Updated Description",
-    Price: 0.33,
-    CategoryId: 2,
-    Insupply: true
-  },
-  'MenuItemId', // 更新条件
-  8 // 条件匹配值
-);
+// // 表名稱 列名稱 列值
+// pool.updateFromTable(
+//   'MenuItems', // 表名
+//   { // 要更新的列及其新值
+//     Name: "Updated Name",
+//     Description: "Updated Description",
+//     Price: 0.33,
+//     CategoryId: 2,
+//     Insupply: true
+//   },
+//   'MenuItemId', // 更新条件
+//   8 // 条件匹配值
+// );
 
-pool.deleteFromTable("MenuItems", "MenuItemId", 9)
-pool.selectFromTable("MenuItemId, Name, Description, Price, CategoryId, InSupply", "MenuItems")
+// pool.deleteFromTable("MenuItems", "MenuItemId", 9)
+// pool.selectFromTable("MenuItemId, Name, Description, Price, CategoryId, InSupply", "MenuItems")
 
 // 訂單
 pool.UseMySQL(
@@ -167,14 +167,14 @@ pool.UseMySQL(
     total_price INT NOT NULL)`
 )
 
-// LOG
-pool.UseMySQL(
-  `CREATE TABLE IF NOT EXISTS action_log (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE,
-    Description TEXT,
-    executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`
-)
+// // LOG
+// pool.UseMySQL(
+//   `CREATE TABLE IF NOT EXISTS action_log (
+//     id INT AUTO_INCREMENT PRIMARY KEY,
+//     name VARCHAR(255) NOT NULL UNIQUE,
+//     Description TEXT,
+//     executed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP);`
+// )
 
 
 // pool.UseMySQL(

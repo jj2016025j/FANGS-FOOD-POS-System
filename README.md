@@ -59,19 +59,6 @@ Copy code
 請根據您的項目需求調整上述模板的內容。記得替換連結、郵件地址和其他特定信息，以反映您的實際項目情況。
 
 ```
-1. 本機mysql 新增database  fang_project
-2. .env 輸入password
-3. 開啟終端機輸入
-node migrate.js
-//4. 輸入
-cd ./seeder
-//5. 輸入
-node food_seeders.js
-//6. 輸入
-cd ..
-//7. 輸入
-node index.js
-8. 網址 http://localhost:3000/shop
 
 會發生以下錯誤
 TypeError: usb.on is not a function
@@ -84,3 +71,15 @@ at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\in
 //     self.device = null;
 //   }
 // });
+
+
+1.
+初始化
+使用InitDB.js執行資料庫初始化
+
+2.
+將scipt/router/payRouter.js
+裡面的 database 改成 跟 myInitDB.js裡面的資料庫名稱相同
+
+3.
+資料庫就能正常使用

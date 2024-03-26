@@ -10,7 +10,7 @@ const { printInvoice, convertToInvoiceFormat } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
 const mysql = require('mysql2/promise');
 const dataRep = require('../data_repository');
-
+// const pool = dataRep.getPool()
 const {
     LINEPAY_CHANNEL_ID,
     LINEPAY_RETURN_HOST,
@@ -34,38 +34,6 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-// // 結帳
-// router.post('/pay', (req, res) => {
-//     const { orderId, paymentMethod, amount } = req.body;
-//     const receiptId = `receipt${Object.keys(orders).length + 1}`;
-//     const receipt = {
-//         receiptId,
-//         amount,
-//         paymentMethod,
-//         status: "已支付"
-//     };
-//     orders[orderId].receipt = receipt;
-//     // 返回支付成功或失敗
-//     res.json({ success: true, message: "支付成功", receipt });
-// });
-
-// // 發票開具 X
-// router.post('/invoice', (req, res) => {
-//     const { orderId, receiptId, invoiceType, carrier } = req.body;
-//     const invoiceId = `invoice${Object.keys(orders).length + 1}`;
-//     const invoice = {
-//         invoiceId,
-//         orderId,
-//         receiptId,
-//         invoiceType,
-//         carrier,
-//         status: "已開具"
-//     };
-//     if (orders[orderId]) orders[orderId].invoice = invoice;
-//     const isSuccess = printInvoice(invoiceData);
-
-//     res.json({ success: isSuccess, message: "發票已開具", invoice });
-// });
 
 //現金結帳
 router.post('/cash/:order_id', async (req, res) => {
@@ -76,7 +44,7 @@ router.post('/cash/:order_id', async (req, res) => {
         [orderId]
     );
     if (orders.length === 0) {
-        return res.status(404).send('Order not found');
+        return res.json('Order not found');
     }
 
     const orderInfo = orders[0];
@@ -301,3 +269,38 @@ function createSignature(uri, linePayBody) {
 }
 
 module.exports = router;
+
+
+
+// // 結帳
+// router.post('/pay', (req, res) => {
+//     const { orderId, paymentMethod, amount } = req.body;
+//     const receiptId = `receipt${Object.keys(orders).length + 1}`;
+//     const receipt = {
+//         receiptId,
+//         amount,
+//         paymentMethod,
+//         status: "已支付"
+//     };
+//     orders[orderId].receipt = receipt;
+//     // 返回支付成功或失敗
+//     res.json({ success: true, message: "支付成功", receipt });
+// });
+
+// // 發票開具 X
+// router.post('/invoice', (req, res) => {
+//     const { orderId, receiptId, invoiceType, carrier } = req.body;
+//     const invoiceId = `invoice${Object.keys(orders).length + 1}`;
+//     const invoice = {
+//         invoiceId,
+//         orderId,
+//         receiptId,
+//         invoiceType,
+//         carrier,
+//         status: "已開具"
+//     };
+//     if (orders[orderId]) orders[orderId].invoice = invoice;
+//     const isSuccess = printInvoice(invoiceData);
+
+//     res.json({ success: isSuccess, message: "發票已開具", invoice });
+// });

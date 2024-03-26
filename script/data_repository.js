@@ -11,11 +11,16 @@ const pool = mysql.createPool({
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    multipleStatements: true
+    multipleStatements: true,
+    charset: "utf8mb4", // 確保使用 utf8mb4
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Repository functions
 const repository = {
+    getPool: () => { return pool },
     /**
      * 取得報表
      * 1.本日營業額: dayTurnover
