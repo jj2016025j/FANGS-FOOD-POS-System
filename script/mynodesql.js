@@ -141,12 +141,13 @@ const dbOperations = {
   },
 
   insertProjectDataList: function (projectDataList, categoryMap) {
+    let i = 1;
     projectDataList.forEach(item => {
       // 從對照表中取得 category_id
       const categoryId = categoryMap[item.type] || 0; // 如果找不到對應的 category_id，預設為 0
       const sql = "INSERT INTO foods (name, category_id, price, image_url) VALUES (?, ?, ?, ?)";
-      const values = [item.product, categoryId, item.price, item.img];
-
+      const values = [item.product, categoryId, item.price, `/image/product/jpg_${i}.jpg`];
+      i++
       dbOperations.UseMySQL(sql, values, `插入 ${item.product}`);
     });
   },
