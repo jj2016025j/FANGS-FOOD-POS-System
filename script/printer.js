@@ -15,302 +15,319 @@ let options = {};
 let printer = {};
 
 if (hasPrinter) {
-    device = new escpos.USB();
-    options = { encoding: "Big5", width: 42 }
-    printer = new escpos.Printer(device, options);
+    try {
+        device = new escpos.USB();
+        options = { encoding: "Big5", width: 42 }
+        printer = new escpos.Printer(device, options);
+    } catch {
+
+    }
 }
 
 // 列印QRCODE
 function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, tableNumber = 1, contents = defaultContents) {
-    if (!hasPrinter) return
-    device.open(function (error) {
-        if (error) {
-            console.error('打印機連接錯誤:', error);
-            return;
-        }
-        console.log('打印機連接成功');
-        console.log(url, orderNumber, tableNumber, contents);
+    try {
+        if (!hasPrinter) return
+        device.open(function (error) {
+            if (error) {
+                console.error('打印機連接錯誤:', error);
+                return;
+            }
+            console.log('打印機連接成功');
+            console.log(url, orderNumber, tableNumber, contents);
 
-        const qrContent = `${url}`;
-        const qrCode = qr.imageSync(qrContent, { type: 'png', size: 10 });
+            const qrContent = `${url}`;
+            const qrCode = qr.imageSync(qrContent, { type: 'png', size: 10 });
 
-        if (size == 5.7) {
-            printer
-                .font('a')
-                .align('lt')
-                .size(1, 1)
-                .text(' Fang Food芳鍋')
-                .feed(1)
-                // .align('lt')
-                .size(0, 0)
-                .text(`           桌號: ${tableNumber}`)
-                .text(`         訂單編號: ${orderNumber}`)
-                .text(`  時間: ${formatDateTime(new Date())}`)
-                .text('---------------------------')
-                .qrimage(qrContent, { type: 'png', size: 5 }, function (err) {
-                    this.feed()
-                    this.align('lt')
+            if (size == 5.7) {
+                printer
+                    .font('a')
+                    .align('lt')
+                    .size(1, 1)
+                    .text(' Fang Food芳鍋')
+                    .feed(1)
+                    // .align('lt')
+                    .size(0, 0)
+                    .text(`           桌號: ${tableNumber}`)
+                    .text(`         訂單編號: ${orderNumber}`)
+                    .text(`  時間: ${formatDateTime(new Date())}`)
+                    .text('---------------------------')
+                    .qrimage(qrContent, { type: 'png', size: 5 }, function (err) {
+                        this.feed()
+                        this.align('lt')
 
-                    console.log(`桌號: ${tableNumber}`);
-                    console.log(`訂單編號: ${orderNumber}`);
-                    console.log(`時間: ${formatDateTime(new Date())}`);
-                    console.log(`QRCode: ${qrContent}`);
+                        console.log(`桌號: ${tableNumber}`);
+                        console.log(`訂單編號: ${orderNumber}`);
+                        console.log(`時間: ${formatDateTime(new Date())}`);
+                        console.log(`QRCode: ${qrContent}`);
 
-                    contents.forEach(content => {
-                        this.text("      " + content)
-                        console.log(content);
-                    })
+                        contents.forEach(content => {
+                            this.text("      " + content)
+                            console.log(content);
+                        })
 
-                    this
-                        .feed(2)
-                        .cut()
-                        .close()
-                });
-        } else if (size == 8) {
-            printer
-                .font('a')
-                .align('ct')
-                .size(1, 1)
-                .text('Fang Food芳鍋')
-                .feed(1)
-                // .align('lt')
-                .size(0, 0)
-                .text(`桌號: ${tableNumber}`)
-                .text(`訂單編號: ${orderNumber}`)
-                .text(`時間: ${formatDateTime(new Date())}`)
-                .text('---------------------------')
-                .qrimage(qrContent, { type: 'png', size: 10 }, function (err) {
-                    this.feed()
-                    this.align('ct')
+                        this
+                            .feed(2)
+                            .cut()
+                            .close()
+                    });
+            } else if (size == 8) {
+                printer
+                    .font('a')
+                    .align('ct')
+                    .size(1, 1)
+                    .text('Fang Food芳鍋')
+                    .feed(1)
+                    // .align('lt')
+                    .size(0, 0)
+                    .text(`桌號: ${tableNumber}`)
+                    .text(`訂單編號: ${orderNumber}`)
+                    .text(`時間: ${formatDateTime(new Date())}`)
+                    .text('---------------------------')
+                    .qrimage(qrContent, { type: 'png', size: 10 }, function (err) {
+                        this.feed()
+                        this.align('ct')
 
-                    console.log(`桌號: ${tableNumber}`);
-                    console.log(`訂單編號: ${orderNumber}`);
-                    console.log(`時間: ${formatDateTime(new Date())}`);
-                    console.log(`QRCode: ${qrContent}`);
+                        console.log(`桌號: ${tableNumber}`);
+                        console.log(`訂單編號: ${orderNumber}`);
+                        console.log(`時間: ${formatDateTime(new Date())}`);
+                        console.log(`QRCode: ${qrContent}`);
 
-                    contents.forEach(content => {
-                        this.text(content)
-                        console.log(content);
-                    })
+                        contents.forEach(content => {
+                            this.text(content)
+                            console.log(content);
+                        })
 
-                    this
-                        .feed(2)
-                        .cut()
-                        .close()
-                });
-        } else {
-            console.log("尺寸沒有支援")
-        }
+                        this
+                            .feed(2)
+                            .cut()
+                            .close()
+                    });
+            } else {
+                console.log("尺寸沒有支援")
+            }
 
-        console.log('打印結束');
-        return true
-    });
+            console.log('打印結束');
+            return true
+        });
+    } catch {
+
+    }
 }
 
 // 列印訂單
 function printOrder(insertOrder = defaultOrderData) {
-    if (!hasPrinter) return
-    // 定義預設參數
-    const oldOrderData = defaultOrderData
+    try {
+        if (!hasPrinter) return
+        // 定義預設參數
+        const oldOrderData = defaultOrderData
 
-    // 合併預設參數和傳入的自訂物件參數
-    const order = { ...oldOrderData, ...insertOrder };
-    console.log(order);
-    device.open(function (error) {
-        if (error) {
-            console.error('打印機連接錯誤:', error);
-            return;
-        }
-        console.log('打印機連接成功');
+        // 合併預設參數和傳入的自訂物件參數
+        const order = { ...oldOrderData, ...insertOrder };
+        console.log(order);
+        device.open(function (error) {
+            if (error) {
+                console.error('打印機連接錯誤:', error);
+                return;
+            }
+            console.log('打印機連接成功');
 
-        if (size == 5.7) {
-            printer
-                .font('a')
-                .align('lt')
-                .size(1, 1)
-                .text(" FangFood 芳鍋")
-                .size(0, 0)
-                .text('------------------------')
-
-                .text('         訂單編號: ' + order.orderNumber)
-                .align('lt')
-                .text('下單日期: ' + order.orderDate)
-                .text('地址: ' + order.address)
-                .text('電話: ' + order.phone)
-                // .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('菜單:')
-                .size(0, 0)
-                .text("名稱  單價 數量 總金額")
-                .feed(1)
-
-            order.items.forEach(item => {
+            if (size == 5.7) {
                 printer
-                    .text(`${item.name}  ${item.unitPrice}  ${item.quantity}  ${item.totalPrice}`)
+                    .font('a')
+                    .align('lt')
+                    .size(1, 1)
+                    .text(" FangFood 芳鍋")
+                    .size(0, 0)
+                    .text('------------------------')
+
+                    .text('         訂單編號: ' + order.orderNumber)
+                    .align('lt')
+                    .text('下單日期: ' + order.orderDate)
+                    .text('地址: ' + order.address)
+                    .text('電話: ' + order.phone)
+                    // .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('菜單:')
+                    .size(0, 0)
+                    .text("名稱  單價 數量 總金額")
                     .feed(1)
-            });
 
-            printer
-                .size(0, 0)
-                .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('餐點總額: ' + order.total)
-                // .text('服務費(' + order.serviceChargeRate + '%): ' + order.serviceCharge)
-                // .text('總計: ' + (order.total + order.serviceCharge))
-                // .text('支付方式: ' + order.paymentMethod)
-                .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('特殊要求: ' + order.specialRequests)
-                .feed(2)
-                .cut()
-                .close()
-        } else if (size == 8) {
-            printer
-                .font('a')
-                .align('ct')
-                .size(1, 1)
-                .text("FangFood 芳鍋")
-                .size(0, 0)
-                .text('------------------------')
+                order.items.forEach(item => {
+                    printer
+                        .text(`${item.name}  ${item.unitPrice}  ${item.quantity}  ${item.totalPrice}`)
+                        .feed(1)
+                });
 
-                .text('訂單編號: ' + order.orderNumber)
-                .align('lt')
-                .text('下單日期: ' + order.orderDate)
-                .text('地址: ' + order.address)
-                .text('電話: ' + order.phone)
-                .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('菜單:')
-                .size(1, 1)
-                .text("名稱  單價 數量 總金額")
-                .feed(1)
-
-            order.items.forEach(item => {
                 printer
-                    .text(`${item.name}  ${item.unitPrice}  ${item.quantity}  ${item.item}`)
+                    .size(0, 0)
+                    .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('餐點總額: ' + order.total)
+                    // .text('服務費(' + order.serviceChargeRate + '%): ' + order.serviceCharge)
+                    // .text('總計: ' + (order.total + order.serviceCharge))
+                    // .text('支付方式: ' + order.paymentMethod)
+                    .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('特殊要求: ' + order.specialRequests)
+                    .feed(2)
+                    .cut()
+                    .close()
+            } else if (size == 8) {
+                printer
+                    .font('a')
+                    .align('ct')
+                    .size(1, 1)
+                    .text("FangFood 芳鍋")
+                    .size(0, 0)
+                    .text('------------------------')
+
+                    .text('訂單編號: ' + order.orderNumber)
+                    .align('lt')
+                    .text('下單日期: ' + order.orderDate)
+                    .text('地址: ' + order.address)
+                    .text('電話: ' + order.phone)
+                    .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('菜單:')
+                    .size(1, 1)
+                    .text("名稱  單價 數量 總金額")
                     .feed(1)
-            });
 
-            printer
-                .size(0, 0)
-                .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('餐點總額: ' + order.total)
-                // .text('服務費(' + order.serviceChargeRate + '%): ' + order.serviceCharge)
-                // .text('總計: ' + (order.total + order.serviceCharge))
-                // .text('支付方式: ' + order.paymentMethod)
-                .align('ct')
-                .text('------------------------')
-                .align('lt')
-                .text('特殊要求: ' + order.specialRequests)
-                .feed(2)
-                .cut()
-                .close()
-        } else {
-            console.log("尺寸沒有支援")
-        }
+                order.items.forEach(item => {
+                    printer
+                        .text(`${item.name}  ${item.unitPrice}  ${item.quantity}  ${item.item}`)
+                        .feed(1)
+                });
 
-        console.log('打印完成');
-        return true
-    });
+                printer
+                    .size(0, 0)
+                    .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('餐點總額: ' + order.total)
+                    // .text('服務費(' + order.serviceChargeRate + '%): ' + order.serviceCharge)
+                    // .text('總計: ' + (order.total + order.serviceCharge))
+                    // .text('支付方式: ' + order.paymentMethod)
+                    .align('ct')
+                    .text('------------------------')
+                    .align('lt')
+                    .text('特殊要求: ' + order.specialRequests)
+                    .feed(2)
+                    .cut()
+                    .close()
+            } else {
+                console.log("尺寸沒有支援")
+            }
+
+            console.log('打印完成');
+            return true
+        });
+    } catch {
+
+    }
+
 }
 
 // 列印發票
 async function printInvoice(insertInvoiceData = defaultInvoiceData) {
-    if (!hasPrinter) return
-    // 定義預設參數
-    const oldInvoiceData = defaultInvoiceData
-    // 合併預設參數和傳入的自訂物件參數
-    const invoiceData = { ...oldInvoiceData, ...insertInvoiceData };
-    // 組合左側二維條碼內容
-    const leftQRContent = `${invoiceData.invoiceNumber}:${invoiceData.date}:${invoiceData.randomCode}:${invoiceData.salesAmount}:${invoiceData.totalAmount}:${invoiceData.buyerId}:${invoiceData.sellerId}:${invoiceData.encryptionInfo}`;
-    // 組合右側二維條碼內容
-    const rightQRContent = `**:${invoiceData.selfUseArea}:${invoiceData.itemCount}:${invoiceData.itemCount}:${invoiceData.encoding}:${invoiceData.products}`;
+    try {
+        if (!hasPrinter) return
+        // 定義預設參數
+        const oldInvoiceData = defaultInvoiceData
+        // 合併預設參數和傳入的自訂物件參數
+        const invoiceData = { ...oldInvoiceData, ...insertInvoiceData };
+        // 組合左側二維條碼內容
+        const leftQRContent = `${invoiceData.invoiceNumber}:${invoiceData.date}:${invoiceData.randomCode}:${invoiceData.salesAmount}:${invoiceData.totalAmount}:${invoiceData.buyerId}:${invoiceData.sellerId}:${invoiceData.encryptionInfo}`;
+        // 組合右側二維條碼內容
+        const rightQRContent = `**:${invoiceData.selfUseArea}:${invoiceData.itemCount}:${invoiceData.itemCount}:${invoiceData.encoding}:${invoiceData.products}`;
 
-    device.open(async function (error) {
-        if (error) {
-            console.error(`打印機連接錯誤:`, error);
-            return;
-        }
-        console.log(`打印機連接成功`);
-        // 串接條碼內容
-        const barcodeContent = `${invoiceData.invoicePeriod}${invoiceData.invoiceNumber}${invoiceData.randomCode}`;
-        console.log(invoiceData);
+        device.open(async function (error) {
+            if (error) {
+                console.error(`打印機連接錯誤:`, error);
+                return;
+            }
+            console.log(`打印機連接成功`);
+            // 串接條碼內容
+            const barcodeContent = `${invoiceData.invoicePeriod}${invoiceData.invoiceNumber}${invoiceData.randomCode}`;
+            console.log(invoiceData);
 
-        if (size == 5.7) {
-            printer
-                .font(`a`)
-                .align(`lt`)
-                .size(1, 1)
-                .text(invoiceData.header)
-                .style(`b`)// 加粗
-                .size(1, 1)
-                .text(`電子發票證明聯`)
-                .size(1, 1)
-                .text(` ${convertInvoicePeriod(invoiceData.invoicePeriod)}`)
-                .text(` ${invoiceData.invoiceNumber}`)
-                .style(`NORMAL`)
-                .size(0, 0)
-                .text(`     ${invoiceData.dateTime}`)
-                .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.total}`, 22))
-                .text(fillSpaces(`賣方:${invoiceData.sellerId}`, `買方:${invoiceData.buyerId}`, 22))
-                .barcode(barcodeContent, `CODE39`, {
-                    width: 1,
-                    height: 50, // 單位mm
-                    // position: OFF, // 不顯示條碼值 這條參數有問題
-                    includeParity: false //EAN13/EAN8 bar code
-                })
-
-            const outputPath = await printMergedQRCodes(
-                leftQRContent,
-                rightQRContent
-            ).catch(console.error);
-
-            escpos.Image.load(outputPath, function (image) {
+            if (size == 5.7) {
                 printer
-                    .raster(image)
-                    .feed(2)
-                    .cut()
                     .font(`a`)
                     .align(`lt`)
-                    .size(0, 0)
-                    .text(`公司: ${invoiceData.companyInfo}`)
+                    .size(1, 1)
+                    .text(invoiceData.header)
+                    .style(`b`)// 加粗
+                    .size(1, 1)
+                    .text(`電子發票證明聯`)
+                    .size(1, 1)
+                    .text(` ${convertInvoicePeriod(invoiceData.invoicePeriod)}`)
+                    .text(` ${invoiceData.invoiceNumber}`)
                     .style(`NORMAL`)
-                    .text(`發票編號: ${invoiceData.invoiceNumber}`)
-                    .text(`開票日期: ${formatInvoiceDate(invoiceData.dateTime)}`)
-                    .text(`統一編號: ${invoiceData.buyerId}`)
-                    .text(`地址: ${invoiceData.address}`)
-                    .text(`電話: ${invoiceData.phone}`)
-                    .feed(1)
-                    .text(`商品: `)
+                    .size(0, 0)
+                    .text(`     ${invoiceData.dateTime}`)
+                    .text(fillSpaces(`隨機碼:${invoiceData.randomCode}`, `總計${invoiceData.total}`, 22))
+                    .text(fillSpaces(`賣方:${invoiceData.sellerId}`, `買方:${invoiceData.buyerId}`, 22))
+                    .barcode(barcodeContent, `CODE39`, {
+                        width: 1,
+                        height: 50, // 單位mm
+                        // position: OFF, // 不顯示條碼值 這條參數有問題
+                        includeParity: false //EAN13/EAN8 bar code
+                    })
 
-                printInvoiceItems(invoiceData.items);
+                const outputPath = await printMergedQRCodes(
+                    leftQRContent,
+                    rightQRContent
+                ).catch(console.error);
 
-                printer.feed(1)
-                    .text(`商品總額: ${invoiceData.subTotal}`)
-                    .text(`加值稅(10%): ${invoiceData.tax}`)
-                    .text(`總計: ${invoiceData.total}`)
-                    .feed(2)
+                escpos.Image.load(outputPath, function (image) {
+                    printer
+                        .raster(image)
+                        .feed(2)
+                        .cut()
+                        .font(`a`)
+                        .align(`lt`)
+                        .size(0, 0)
+                        .text(`公司: ${invoiceData.companyInfo}`)
+                        .style(`NORMAL`)
+                        .text(`發票編號: ${invoiceData.invoiceNumber}`)
+                        .text(`開票日期: ${formatInvoiceDate(invoiceData.dateTime)}`)
+                        .text(`統一編號: ${invoiceData.buyerId}`)
+                        .text(`地址: ${invoiceData.address}`)
+                        .text(`電話: ${invoiceData.phone}`)
+                        .feed(1)
+                        .text(`商品: `)
 
-                printReturnPolicy(invoiceData.returnPolicyTexts);
+                    printInvoiceItems(invoiceData.items);
 
-                printer
-                    .feed(2)
-                    .cut()
-                    .close()
-            });
-        } else {
-            console.log("尺寸沒有支援")
-        }
+                    printer.feed(1)
+                        .text(`商品總額: ${invoiceData.subTotal}`)
+                        .text(`加值稅(10%): ${invoiceData.tax}`)
+                        .text(`總計: ${invoiceData.total}`)
+                        .feed(2)
 
-        console.log(`打印完成`);
-        return true
-    });
+                    printReturnPolicy(invoiceData.returnPolicyTexts);
+
+                    printer
+                        .feed(2)
+                        .cut()
+                        .close()
+                });
+            } else {
+                console.log("尺寸沒有支援")
+            }
+
+            console.log(`打印完成`);
+            return true
+        });
+    } catch {
+
+    }
 }
 
 /**
