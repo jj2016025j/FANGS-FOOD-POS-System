@@ -93,6 +93,7 @@ pool.UseMySQL(
     category_id INT NOT NULL,
     price INT NOT NULL,
     image_url TEXT NULL,
+    deleted_at TIMESTAMP NULL,
   sort INT DEFAULT 0)`
 )
 
