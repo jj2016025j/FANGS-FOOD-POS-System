@@ -7,15 +7,16 @@ const getIp = require("./getIPAddress.js")
 const LocalIP = getIp.getLocalIPAddress()
 
 // 設定紙張尺寸 5.7, 8 輸入其他只會顯示內容不會打印
-let size = 5.78
+let size = 5.7
 // let size = 8
 let hasPrinter = size == 5.7 || size == 8
 
 if (hasPrinter) {
-    const device = new escpos.USB();
-    const options = { encoding: "Big5", width: 42 }
-    const printer = new escpos.Printer(device, options);
 }
+
+const device = new escpos.USB();
+const options = { encoding: "Big5", width: 42 }
+const printer = new escpos.Printer(device, options);
 
 // 列印QRCODE
 function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, tableNumber = 1, contents = defaultContents) {

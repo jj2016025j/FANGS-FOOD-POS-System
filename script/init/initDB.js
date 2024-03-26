@@ -3,6 +3,8 @@ const pool = require("../mynodesql")
 // 連接資料庫
 pool.Connection()
 
+// pool.dropDatabase("test")
+
 // pool.createDatabase("fangs_food_pos_system")
 // pool.useDatabase("fangs_food_pos_system")
 // pool.createDatabase("fang_project")
