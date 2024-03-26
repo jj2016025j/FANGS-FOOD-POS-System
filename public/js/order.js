@@ -33,7 +33,7 @@ let generateMenuCard = (dom, datalist) => {
         //從本機儲存裡找資料
         let search = basket.find((x) => x.id === id) || [];
         return `
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="item">
                         <div class="mycard">
                             <img class="menu-img" src=${img} alt="project-pic"/>
@@ -375,21 +375,21 @@ let deleteOrder = (food_id) => {
     }
 }
 
-let openOrderPage = () => {
-    document.getElementById("open-order-btn").addEventListener("click",() => 
-    {
-        let orderPage = document.getElementById("order-page");
-        orderPage.style.transform = "translateX(0%)"
-    })
-}
-openOrderPage();
+// let openOrderPage = () => {
+//     document.getElementById("open-order-btn").addEventListener("click",() => 
+//     {
+//         let orderPage = document.getElementById("order-page");
+//         orderPage.style.transform = "translateX(0%)"
+//     })
+// }
+// openOrderPage();
 
-let closeOrderPage = () => {
-    document.getElementById("close-order-btn").addEventListener("click", () => 
-    {
-        let orderPage = document.getElementById("order-page");
-        orderPage.style.transform = "translateX(100%)"
-    })
-}
-closeOrderPage();
+// let closeOrderPage = () => {
+//     document.getElementById("close-order-btn").addEventListener("click", () => 
+//     {
+//         let orderPage = document.getElementById("order-page");
+//         orderPage.style.transform = "translateX(100%)"
+//     })
+// }
+// closeOrderPage();
 

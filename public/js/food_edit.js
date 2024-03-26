@@ -192,39 +192,6 @@ let editItem = (itemId) => {
     closeDeleteConfirm();
 }
 
-let postUpdateForm = (id) => {
-    let formData = new FormData()
-    
-    let itemName = document.getElementById("item-name").value;
-    let itemPrice = document.getElementById("item-price").value;
-    let selectType = document.getElementById("select-type").value;
-    let itemImg = document.getElementById("item-img").files[0];
-    
-    if (itemName && itemPrice) {
-        formData.append('item-name', itemName)
-        formData.append('item-price', itemPrice)
-        formData.append('select-type', selectType)
-        if(itemImg) formData.append('item-img', itemImg)
-    }else {
-        return;
-    }
-    $.ajax({
-        url: "/api/foods/" + id,
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            toastMessage("菜單已更新");
-            setTimeout(()=> {
-                location.reload()            
-            }, 1000)
-        }
-        
-    })
-
-}
-
 let postNewForm = () => {
     let formData = new FormData();
 
@@ -243,7 +210,7 @@ let postNewForm = () => {
     }
     console.log($("#item-name"))
     $.ajax({
-        url: "/api/foods",
+        url: "/menu",
         method: "POST",
         data: formData,
         processData: false,
@@ -257,9 +224,42 @@ let postNewForm = () => {
     })
 }
 
+let postUpdateForm = (id) => {
+    let formData = new FormData()
+    
+    let itemName = document.getElementById("item-name").value;
+    let itemPrice = document.getElementById("item-price").value;
+    let selectType = document.getElementById("select-type").value;
+    let itemImg = document.getElementById("item-img").files[0];
+    
+    if (itemName && itemPrice) {
+        formData.append('item-name', itemName)
+        formData.append('item-price', itemPrice)
+        formData.append('select-type', selectType)
+        if(itemImg) formData.append('item-img', itemImg)
+    }else {
+        return;
+    }
+    $.ajax({
+        url: "/menu/" + id,
+        method: "PUT",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(data) {
+            toastMessage("菜單已更新");
+            setTimeout(()=> {
+                location.reload()            
+            }, 1000)
+        }
+        
+    })
+
+}
+
 let deleteItem = (itemId) => {
     $.ajax({
-        url: "/api/foods/" + itemId,
+        url: "/menu/" + itemId,
         method: "DELETE",
         processData: false,
         contentType: false,

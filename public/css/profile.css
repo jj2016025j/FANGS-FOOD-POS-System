@@ -1,0 +1,359 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanstc.css);
+@media only screen and (max-width: 1000px) {
+  .recommend {
+    margin-bottom: 300px;
+  }
+  .carousel {
+    top: 0;
+    width: 50%;
+    height: 400px;
+  }
+  #navbarScroll {
+    height: 300px;
+  }
+  #privacy {
+    visibility: hidden;
+  }
+  #connect {
+    visibility: hidden;
+  }
+}
+
+@media only screen and (max-width: 1250px) {
+  #connect {
+    visibility: hidden;
+  }
+  .footer {
+    margin-bottom: auto;
+  }
+}
+
+@media only screen and (max-width: 1400px) {
+  .infoContent {
+    display: none;
+  }
+  .infoImg {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .infoButton {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-image: url(../image/首頁大圖1.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat-x;
+  font-family: "Noto Sans TC", sans-serif;
+}
+.main-nav ul {
+  height: 100px;
+  width: 1000px;
+}
+.main-nav li {
+  width: 150px;
+}
+.img2 {
+  position: relative;
+  display: block;
+  margin: auto;
+  width: 100%;
+}
+.nav-link {
+  font-size: 20px;
+}
+.nav-item {
+  align-self: center;
+  /* outline: 1px solid black; */
+}
+.navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-image: url(../image/backgroundY.jpg);
+  background-repeat: repeat-x;
+  z-index: 100;
+}
+.card {
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+}
+.card-footer {
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+}
+.card-title {
+  font-size: 32px;
+  text-align: center;
+  font-weight: bold;
+}
+.card-text {
+  margin-top: 30px;
+  font-size: 17px;
+}
+
+.formContainer {
+  width: 90%;
+  background-image: url(../image/ai圖片/餐廳外觀2.jpg);
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat-x;
+  height: 800px;
+}
+
+.footer {
+  background-image: url(../image/footer1.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: bottom;
+  width: 100%;
+  height: 600px;
+}
+
+a:link {
+  text-decoration: none;
+  color: black;
+}
+
+.navbar-nav li a:hover {
+  color: black;
+  text-decoration: none;
+  font-size: 21px;
+}
+
+a:visited {
+  color: black;
+  text-decoration: none;
+}
+
+a:active {
+  color: black;
+  text-decoration: none;
+}
+
+.dropdown-item:hover {
+  font-size: 18px;
+}
+
+.form-group {
+  margin-bottom: 15px; /* 為每個表單元素增加間距 */
+}
+.form-control {
+  border-radius: 0;
+}
+
+.btn-primary,
+.btn-success {
+  border-radius: 0;
+}
+
+.btn-primary {
+  background-color: #007bff;
+}
+.btn-success {
+  background-color: #28a745;
+}
+.custom-form {
+  background-color: #fff;
+  padding: 30px;
+  border-radius: 5px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.custom-container {
+  position: relative;
+  top: 150px;
+}
+.overlay {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 5px;
+}
+
+.aLine:hover {
+  background-color: #01c301 !important;
+}
+
+.container {
+  width: 100%;
+  height: 1200px;
+  background-image: url("./image/首頁大圖1.jpg");
+  position: relative;
+  background-position: center;
+}
+
+.container .box {
+  width: 90%;
+  max-width: 450px;
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translate(-50%, 10%);
+}
+.container .box h1 {
+  text-align: center;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.container .box .header {
+  width: 100%;
+  background-image: url("https://d3egcl3bvwgcig.cloudfront.net/vip/50b193037d9b16519b9e6c82bcfd9154_m.jpg");
+  border-radius: 10px 10px 0 0;
+  background-size: cover;
+  text-align: center;
+  padding: 30px 0;
+}
+.container .box .header img {
+  border-radius: 50%;
+  width: 110px;
+}
+.container .box .header h2 {
+  font-weight: 600;
+  font-size: 25px;
+}
+
+.container .box .header h4 {
+  font-weight: normal;
+  font-size: 13px;
+}
+.container .box .nav {
+  width: 100%;
+  max-height: 50px;
+  background: rgba(0, 0, 0, 0.8);
+
+  padding: 15px 0;
+}
+.container .box .nav ul {
+  display: flex;
+  width: 100%;
+
+  justify-content: space-around;
+
+  align-items: center;
+}
+
+.container .box .nav ul li {
+  list-style: none;
+  color: #fff;
+}
+.container .box .nav ul li a {
+  text-decoration: none;
+  color: #fff;
+}
+.container .box .main {
+  width: 100%;
+  background: #fff;
+  padding: 15px 8px;
+}
+.container .box .main .shopVIP {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  border: 1px solid gray;
+  border-radius: 10px;
+  margin-top: 0.5rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.container .box .main .shopVIP img {
+  width: 100px;
+  border-radius: 10px;
+}
+.container .box .main .shopVIP p {
+  padding: 5px;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.container .box .main .shopVIP small {
+  font-weight: 100;
+  color: #8e8e8e;
+}
+.container .box .main .history {
+  margin-top: 1.5rem;
+  margin-bottom: 2rem;
+}
+.container .box .main .history h6 {
+  font-size: 0.65rem;
+}
+.container .box .main .info {
+  text-align: center;
+  margin-bottom: 1rem;
+  border-radius: 0 0 10px 10px;
+}
+.container .box .main .info p {
+  margin-bottom: 1.25rem;
+  color: #8e8e8e;
+}
+.container .box .main .info a {
+  background: #f5f5f5;
+  color: #8e8e8e;
+  padding: 10px 15px;
+  border-radius: 10px;
+  text-decoration: none;
+  outline: none;
+}
+.container .box .main .info a:hover {
+  color: #000;
+}
+
+.container .box .gift {
+  width: 100%;
+  background-color: #fff;
+  cursor: pointer;
+}
+.container .box .gift .gift-item {
+  text-align: center;
+}
+.container .box .gift .gift-item img {
+  width: 90%;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.container .box .gift .gift-item p img {
+  width: 15px;
+  padding: 0 0 1rem 0;
+}
+.edit {
+  width: 100%;
+  background: #fff;
+
+  border: 1px solid blue;
+}
+.form-box {
+  width: 100%;
+  text-align: center;
+  border: 1px solid red;
+}
+.form-box h5 {
+  color: #000;
+  margin-top: 1rem;
+}
+.form-box form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.form-box form input {
+  width: 250px;
+  padding-left: 5px;
+  margin-bottom: 1rem;
+}
+.form-box form button {
+  outline: 0;
+  border: 0;
+  background: #ffea00;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 16px;
+  margin-bottom: 20px;
+}

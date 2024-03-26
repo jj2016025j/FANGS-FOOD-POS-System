@@ -6,7 +6,7 @@ const pool = mysql.createPool({
   host: "127.0.0.1",
   user: "root",
   password: "",
-  database: "googledb",
+  database: "fang_project",
 });
 
 pool.query = util.promisify(pool.query); // 將 pool.query 轉換為 Promise 形式

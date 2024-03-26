@@ -43,53 +43,54 @@ const Items = {
     Insupply: true,
     PostmanTest: false
 };
-// 新增菜單項目
-// http://localhost:5001/menu/items
-router.post('/items', async (req, res) => {
-    req.body = Items.PostmanTest ? Items : req.body;
-    const Item = req.body
-    try {
-        // 直接等待异步方法的结果
-        const results = await dbOperations.insertIntoMenuItems(Items)
-        res.status(201).send("成功插入資料, 插入的ID: " + results.insertId);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
-    }
-});
+// // 新增菜單項目
+// // http://localhost:5001/menu/items
+// router.post('/items', async (req, res) => {
+//     // req.body = Items.PostmanTest ? Items : req.body;
+//     const Items = req.body
+//     try {
+//         // 直接等待异步方法的结果
+//         const results = await dbOperations.insertIntoMenuItems(Items)
+//         res.status(201).send("成功插入資料, 插入的ID: " + results.insertId);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Server error');
+//     }
+// });
 
-// 修改菜單項目
-// http://localhost:5001/menu/items
-router.put('/items', async (req, res) => {
-    req.body = Items.PostmanTest ? Items : req.body;
-    const Item = req.body
-    try {
-        // 直接等待异步方法的结果
-        const results = await dbOperations.updateMenuItems(Item)
-        res.status(201).send("更新資料成功，影響的行數：" + results.affectedRows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
-    }
-});
+// // 修改菜單項目
+// // http://localhost:5001/menu/items
+// router.put('/items', async (req, res) => {
+//     req.body = Items.PostmanTest ? Items : req.body;
+//     const Item = req.body
+//     try {
+//         // 直接等待异步方法的结果
+//         const results = await dbOperations.updateMenuItems(Item)
+//         res.status(201).send("更新資料成功，影響的行數：" + results.affectedRows);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Server error');
+//     }
+// });
 
-// 刪除菜單項目
-// http://localhost:5001/menu/items
-router.delete('/items', async (req, res) => {
-    req.body = Items.PostmanTest ? Items : req.body;
-    const Item = req.body
-    console.log(req.body)
-    try {
-        // 直接等待异步方法的结果
-        const results = await dbOperations.deleteMenuItems(Item)
-        res.status(201).send("刪除資料成功，影響的行數：" + results.affectedRows);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send('Server error');
-    }
-});
+// // 刪除菜單項目
+// // http://localhost:5001/menu/items
+// router.delete('/items', async (req, res) => {
+//     req.body = Items.PostmanTest ? Items : req.body;
+//     const Item = req.body
+//     console.log(req.body)
+//     try {
+//         // 直接等待异步方法的结果
+//         const results = await dbOperations.deleteMenuItems(Item)
+//         res.status(201).send("刪除資料成功，影響的行數：" + results.affectedRows);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).send('Server error');
+//     }
+// });
 
 //新增品項
+// http://localhost:5001/menu
 router.post('/', foodsUpload.single('item-img'), async (req, res) => {
     let formData = req.body;
 
@@ -99,7 +100,7 @@ router.post('/', foodsUpload.single('item-img'), async (req, res) => {
 });
 
 //編輯品項
-router.post('/:id', foodsUpload.single('item-img'), async (req, res) => {
+router.put('/:id', foodsUpload.single('item-img'), async (req, res) => {
     const id = req.params['id']
     let formData = req.body;
     await dataRep.editFood(id, formData, req.file)
