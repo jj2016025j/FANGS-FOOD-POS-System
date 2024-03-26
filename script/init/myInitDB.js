@@ -1,14 +1,14 @@
-const pool = require("../mynodesql")
+const pool = require("../mynodesql.js")
+var fs = require('fs');
 
 // 連接資料庫
 pool.Connection()
 
+// 如果要重建資料庫就保留這個功能 重建後再備註
 // pool.dropDatabase("test")
 
 // pool.createDatabase("fangs_food_pos_system")
 // pool.useDatabase("fangs_food_pos_system")
-// pool.createDatabase("fang_project")
-// pool.useDatabase("fang_project")
 pool.createDatabase("test")
 pool.useDatabase("test")
 
@@ -99,8 +99,11 @@ pool.UseMySQL(
   sort INT DEFAULT 0)`
 )
 
-const itemData = require("../data/itemData")
+const itemData = require("../data/fangsFoodData.js")
 pool.insertProjectDataList(itemData, categoryMap)
+
+var sample_foods = require('./data.js');
+
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS MenuItems (

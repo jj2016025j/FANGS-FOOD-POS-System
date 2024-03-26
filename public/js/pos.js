@@ -35,6 +35,7 @@ let generateSeat = () => {
     pendingOrders.forEach((order)=> {
         var elementId = `qrcode_${order.trade_no}`
         var url = window.location.protocol + '//' + window.location.host + '/order/' + order.trade_no
+        console.log(url)    
         $('#'+elementId).qrcode({width: 100,height: 100,text: url})
 
     })

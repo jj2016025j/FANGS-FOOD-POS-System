@@ -344,6 +344,7 @@ a:active {
 
 
 .popup {
+  z-index: 101;
   width: 400px;
   background-color: #fff;
   border-radius: 6px;

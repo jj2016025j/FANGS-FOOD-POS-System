@@ -119,7 +119,7 @@ router.post('/cash/:order_id', async (req, res) => {
     await dataRep.confirmPaymentByCash(orderId)
     // console.log(orderId)
     try {
-        // printInvoice(invoiceData)
+        printInvoice(invoiceData)
     } catch (e) {
         console.log(e)
     }
@@ -133,8 +133,8 @@ router.post('/cash/:order_id', async (req, res) => {
 
 // POST /linepay/:trade_no 路由处理
 // http://localhost:5000/pay/linepay/:trade_no
-router.post('/linepay/:order_id', async (req, res) => {
-    const id = req.params.order_id;
+router.post("/linepay/:id", async (req, res) => {
+    const id = req.params.id;
 
     // try {
     // 查询订单基本信息
@@ -142,9 +142,9 @@ router.post('/linepay/:order_id', async (req, res) => {
         `SELECT id, trade_no, trade_amt FROM table_orders WHERE id = ?`,
         [id]
     );
-    console.log(orders)
+    //   console.log(orders);
     if (orders.length === 0) {
-        return res.status(404).send('Order not found');
+        return res.status(404).send("Order not found");
     }
 
     const orderInfo = orders[0]; // 直接取得订单对象
@@ -152,9 +152,9 @@ router.post('/linepay/:order_id', async (req, res) => {
     // 查询订单项详情
     const [orderItems] = await pool.query(
         `SELECT od.food_id, od.quantity, od.unit_price, f.name 
-            FROM orders_items od 
-            JOIN foods f ON od.food_id = f.id 
-            WHERE od.order_id = ?`,
+              FROM orders_items od 
+              JOIN foods f ON od.food_id = f.id 
+              WHERE od.order_id = ?`,
         [orderInfo.id] // 使用订单ID查询详情
     );
     // console.log(orderItems)
@@ -167,24 +167,27 @@ router.post('/linepay/:order_id', async (req, res) => {
             {
                 id: "1",
                 amount: orderInfo.trade_amt,
-                products: [{
-                    name: "芳鍋",
-                    quantity: 1,
-                    price: orderInfo.trade_amt
-                }]
-            }
-        ]
+                products: [
+                    {
+                        name: "芳鍋",
+                        quantity: 1,
+                        price: orderInfo.trade_amt,
+                    },
+                ],
+            },
+        ],
     };
     // console.log(linepayData)
     // console.log(linepayData.packages[0].products)
 
     const linePayBody = createLinePayBody(linepayData);
+    //   console.log(linePayBody);
     // CreateSignature 建立加密內容
     const uri = "/payments/request";
     const headers = createSignature(uri, linePayBody);
     const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
     const linePayRes = await axios.post(url, linePayBody, { headers });
-    console.log(url, linePayRes.data.returnCode);
+    //   console.log(url, linePayRes.data.returnCode);
     // 請求成功...
     if (linePayRes?.data?.returnCode === "0000") {
         res.json({ paymentUrl: linePayRes.data.info.paymentUrl.web });
@@ -193,7 +196,6 @@ router.post('/linepay/:order_id', async (req, res) => {
             message: "訂單不存在",
         });
     }
-
 
     // } catch (err) {
     // console.error(`Error: ${err.message}`);
@@ -205,6 +207,7 @@ router.post('/linepay/:order_id', async (req, res) => {
 // http://localhost:5000/pay/lineConfirm
 router.get("/lineConfirm", async (req, res) => {
     const { transactionId, orderId } = req.query;
+    //   console.log(orderId);
     try {
         const [orders] = await pool.query(
             `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
@@ -212,26 +215,37 @@ router.get("/lineConfirm", async (req, res) => {
         );
 
         const linePayBody = {
-            amount: orders.trade_amt,
+            amount: orders[0].trade_amt,
             currency: "TWD",
         };
-
+        console.log(linePayBody);
         const uri = `/payments/${transactionId}/confirm`;
         const headers = createSignature(uri, linePayBody);
         const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
         const linePayRes = await axios.post(url, linePayBody, { headers });
+        // console.log(linePayRes);
         if (linePayRes?.data?.returnCode === "0000") {
-            res.redirect(`/success/${orderId}`);
+            res.redirect(`/pay/success/${orderId}`);
         } else {
             res.status(400).send({
                 message: linePayRes,
             });
         }
-        await dataRep.confirmPaymentByCash(orderId)
-
     } catch (err) {
         console.log(err);
     }
+});
+
+router.get("/success/:orderId", async (req, res) => {
+    const { orderId } = req.params;
+    const [orders] = await pool.query(
+        `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
+        [orderId]
+    );
+    console.log(orders);
+    console.log(orders.id);
+    await dataRep.confirmPaymentByCash(orders[0].id);
+    res.redirect("/pos");
 });
 
 // http://localhost:5000/pay/creditcard/:trade_no
