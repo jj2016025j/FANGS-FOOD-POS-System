@@ -1,16 +1,13 @@
 const pool = require("../mynodesql.js")
 var fs = require('fs');
 
-// 連接資料庫
-pool.Connection()
-
 // 如果要重建資料庫就保留這個功能 重建後再備註
-pool.dropDatabase("test")
+pool.dropDatabase("fang_project2")
 
 // pool.createDatabase("fangs_food_pos_system")
 // pool.useDatabase("fangs_food_pos_system")
-pool.createDatabase("test")
-pool.useDatabase("test")
+pool.createDatabase("fang_project2")
+pool.useDatabase("fang_project2")
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS users (
@@ -40,8 +37,6 @@ pool.UseMySQL(`
   );`
 )
 
-// 假設我們要插入5個桌號
-// pool.insertTables(5);
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS Categories (
@@ -102,7 +97,7 @@ pool.UseMySQL(
 )
 
 const itemData = require("../data/fangsFoodData.js")
-// pool.insertProjectDataList(itemData, categoryMap)
+pool.insertProjectDataList(itemData, categoryMap)
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS MenuItems (

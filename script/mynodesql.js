@@ -1,6 +1,6 @@
 const mysql = require('mysql');
 
-const local = mysql.createPool({
+const local = mysql.createConnection({
   connectionLimit: 20, // 連接池大小
   host: "localhost", // 資料庫伺服器地址
   user: "root",
