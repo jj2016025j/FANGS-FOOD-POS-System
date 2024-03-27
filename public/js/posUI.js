@@ -8,11 +8,11 @@ const seatContainer = document.getElementById("seat-container");
 //生成座位表
 let generateSeat = () => {
     seatContainer.innerHTML = seatList.map((x) => {
-        let {seatNum} = x;
+        let { seatNum } = x;
         let search = pendingOrders.find(y => y.table_number == seatNum);
         // console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/pos/phone/' + search.trade_no : ''
-        const orderUrl = search ? '/pos/order/' + search.trade_no: ''
+        const orderUrl = search ? '/pos/order/' + search.trade_no : ''
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -32,11 +32,11 @@ let generateSeat = () => {
     }).join("")
 
     //generate qrcode
-    pendingOrders.forEach((order)=> {
+    pendingOrders.forEach((order) => {
         var elementId = `qrcode_${order.trade_no}`
         var url = window.location.protocol + '//' + window.location.host + '/order/' + order.trade_no
         // console.log(url)    
-        $('#'+elementId).qrcode({width: 100,height: 100,text: url})
+        $('#' + elementId).qrcode({ width: 100, height: 100, text: url })
 
     })
 }
@@ -47,8 +47,8 @@ let displaySeatOption = () => {
     let seat = document.getElementsByClassName("seat");
 
     //桌號選項顯示
-    for(let i = 0; i < seat.length; i++) {
-        seat[i].addEventListener("click", function(e) {
+    for (let i = 0; i < seat.length; i++) {
+        seat[i].addEventListener("click", function (e) {
             e.stopPropagation();
             // // console.log("seat")
             let seatOptionContent = document.getElementsByClassName("seat-option-content");
@@ -63,7 +63,7 @@ displaySeatOption();
 
 //點空白處關閉選單
 let closeSeatOption = () => {
-    seatContainer.addEventListener("click", function(e) {
+    seatContainer.addEventListener("click", function (e) {
         // console.log("seatContainer")
         let seatOptionContent = document.getElementsByClassName("seat-option-content");
         for (let j = 0; j < seatOptionContent.length; j++) {
@@ -77,33 +77,20 @@ closeSeatOption();
 let generateQRcode = (e) => {
     let qrcodeBtnList = document.getElementsByClassName("generate-table-order-btn");
     for (let k = 0; k < qrcodeBtnList.length; k++) {
-        qrcodeBtnList[k].addEventListener("click", function(e) {
+        qrcodeBtnList[k].addEventListener("click", function (e) {
             e.stopPropagation();
             //要傳給後端的桌號
             // let seatID = this.parentNode.previousElementSibling.getElementsByClassName("seat-number")[0].innerHTML;
             let seatID = (e.target.getAttribute('data-seatnum')) ? e.target.getAttribute('data-seatnum') : "1";
             // console.log(seatID)
-            $.ajax({
-                url: "/order",
-                method: "POST",
-                data: {
-                    seatID: seatID
-                },
-                success: function(result){
-                    pendingOrders = result
-                    // // console.log(pendingOrders)
-                    updataState()
-                },
-                error: function(error){
-                    if(error.responseJSON && error.responseJSON.error){
-                        // alert(error.responseJSON.error)
-                        location.reload();
-                        
-                    }
-                }
-            })
-            
-            // let search = seatArray.find(x => x.seatNum == seatID);
+            let { result, isSuccess } = generateNewOrder(seatID)
+            if (isSuccess) {
+                pendingOrders = result
+                // // console.log(pendingOrders)
+                updataState()
+            } else {
+                location.reload();
+            }
             // if(search  === undefined) {
             //     seatArray.push({
             //         seatNum: seatID,
@@ -116,14 +103,14 @@ let generateQRcode = (e) => {
             // localStorage.setItem("seatIsON", JSON.stringify(seatArray));
         })
     }
-}      
+}
 generateQRcode();
-    
+
 //桌號點餐按鈕(session)
 let goToOrderButton = () => {
     let seatOrderList = document.getElementsByClassName("seat-order-btn");
     for (let j = 0; j < seatOrderList.length; j++) {
-        seatOrderList[j].addEventListener("click", function(e) {
+        seatOrderList[j].addEventListener("click", function (e) {
             e.stopPropagation();
             let seatID = e.target.getAttribute('data-seatnum');
             localStorage.setItem("seatNum", seatID);
@@ -131,18 +118,6 @@ let goToOrderButton = () => {
     }
 }
 goToOrderButton();
-
-
-$('#all-checkout-button').on('click', ()=> {
-    $.ajax({
-        url: "/pay/checkout/",
-        method: "POST",
-        success: (result) => {
-            alert('結帳成功')
-            location.href = "/pos"
-        }
-    })
-})
 
 let updataState = () => {
     generateSeat();

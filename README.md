@@ -29,3 +29,4 @@ TEST_MYSQL_DATABASE為測試用資料庫名稱
 
 目前問題:
 有時候結帳在首頁並不會刷新當前狀況
+public\js\confirm_payment.js 看不到變數是怎麼產生的 不好修改

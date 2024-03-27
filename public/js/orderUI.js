@@ -1,32 +1,18 @@
-let menuMeat = document.getElementById("meat");
-let menuSeafood = document.getElementById("seafood");
-let menuVegetable = document.getElementById("vegetable");
-let menuDumplings = document.getElementById("dumplings");
-
-let meatType = projectDataList.filter((x) => {return x.type === "meat"});
-let seafoodType = projectDataList.filter((x) => {return x.type === "seafood"});
-let vegetableType = projectDataList.filter((x) => {return x.type === "vegetable"});
-let dumplingsType = projectDataList.filter((x) => {return x.type === "dumplings"});
-
-let basket = JSON.parse(localStorage.getItem("data")) || [] ;
-
-
 //桌號顯示
 let displaySeatNum = () => {
-    let seatNum = localStorage.getItem("seatNum");
-    document.getElementById("table-number").innerHTML = seatNum;
+    // let seatNum = localStorage.getItem("seatNum");
+    document.getElementById("table-number").innerHTML = order.table_number;
 }
 displaySeatNum()
-
 
 // 生成品項
 let generateMenuCard = (dom, datalist) => {
     return dom.innerHTML = datalist.map((x) => {//slice選取projectDataList內部分物件
-        let {img, product, price, id} = x;
+        let { img, product, price, id } = x;
         //從本機儲存裡找資料
         let search = basket.find((x) => x.id === id) || [];
         return `
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="item">
                         <div class="mycard">
                             <img class="menu-img" src=${img} alt="project-pic"/>
@@ -47,33 +33,41 @@ let generateMenuCard = (dom, datalist) => {
         `
     }).join("")
 }
-generateMenuCard(menuMeat, meatType);
-generateMenuCard(menuSeafood, seafoodType);
-generateMenuCard(menuVegetable, vegetableType);
-generateMenuCard(menuDumplings, dumplingsType);
+
+// 重製畫面?
+let resetMenuCard = () => {
+    categoryData.forEach((category) => {
+        var element = $('#tab_category_' + category.id).find('.items').get(0)
+        var foodsForType = projectDataList.filter((x) => { return x.type === category.id })
+        // console.log(foodsForType)
+        generateMenuCard(element, foodsForType);
+    })
+}
+resetMenuCard();
 
 // 品項類別選單
 function openMenu(pageName) {
     var i, tabcontent;
-  
+
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
-      tabcontent[i].style.display = "none";
+        tabcontent[i].style.display = "none";
     }
-    
-    document.getElementById(pageName).style.display = "block";   
+
+    document.getElementById(pageName).style.display = "block";
 }
 // 預設開啟類別
-document.getElementById("defaultOpen").click();
-
+// document.getElementById("defaultOpen").click();
+$('.defaultCateogry').click()
 
 //增量數量函式
 
 let increment = (id) => {
     // console.log(id);return;
-    let productItem = id;
+    let productItem = projectDataList.find(item => item.id == id);
 
-    let search = basket.find((x) => { return x.id === productItem.id})
+
+    let search = basket.find((x) => { return x.id === productItem.id })
 
     if (search === undefined) {
         basket.push({
@@ -81,22 +75,22 @@ let increment = (id) => {
             item: 1,
         });
     }
-    else{
+    else {
         search.item += 1;
     }
     updata(productItem.id);
     generateCartItem(cartList);
     cartTotal();
-    generateOrderItem()
+    // generateOrderItem()
 
     localStorage.setItem("data", JSON.stringify(basket));
 };
 
 //減量數量函式
 let decrement = (id) => {
-    let productItem = id;
-    
-    let search = basket.find((x) => { return x.id === productItem.id})
+    let productItem = projectDataList.find(item => item.id == id);
+
+    let search = basket.find((x) => { return x.id === productItem.id })
 
 
     if (search === undefined) {
@@ -105,17 +99,17 @@ let decrement = (id) => {
     else if (search.item === 0) {
         return;
     }
-    else{
+    else {
         search.item -= 1;
     }
     // console.log(basket);
     updata(productItem.id);
     //移除數量為0的物件
     basket = basket.filter((x) => x.item !== 0);//回傳此條件為true的物件
-    
+
     generateCartItem(cartList);
     cartTotal();
-    generateOrderItem()
+    // generateOrderItem()
 
     localStorage.setItem("data", JSON.stringify(basket));
 };
@@ -123,7 +117,7 @@ let decrement = (id) => {
 //更新函式input值
 let updata = (id) => {
     let search = basket.find((x) => x.id === id);
-    
+
     if (search !== undefined) {
         document.getElementById(id).innerHTML = search.item;
     }
@@ -133,15 +127,13 @@ let updata = (id) => {
 };
 
 //生成購物車商品
-let cartList = document.getElementById("cart-list");
-
 let generateCartItem = (dom) => {
     //dom參數
     let cartBtnContent = document.getElementById("cart-btn-content");
-    if (basket.length !== 0){
+    if (basket.length !== 0) {
         //cart not empty
         return dom.innerHTML = basket.map((x) => {
-            let {id , item} = x;//物件解構賦值變數
+            let { id, item } = x;//物件解構賦值變數
             cartBtnContent.style.display = "block"
             let search = projectDataList.find((y) => y.id === id) || [];
             // console.log(search);
@@ -167,15 +159,15 @@ let generateCartItem = (dom) => {
         `;
     }
 }
-
+let cartList = document.getElementById("cart-list");
 generateCartItem(cartList);
 
 //刪除購物車品項
 let removeItem = (id) => {
-    let productItem = id;
+    let productItem = projectDataList.find(item => item.id == id);
     //移除物件
     basket = basket.filter((x) => x.id !== productItem.id);
-    
+
     updata(productItem.id)
     generateCartItem(cartList);
     cartTotal();
@@ -193,76 +185,88 @@ let cartTotal = () => {
 }
 cartTotal();
 
+let clearCart = () => {
+    basket = [];
+    localStorage.setItem("data", JSON.stringify(basket));
+    // generateOrderItem();
+    generateCartItem(cartList);
+    resetMenuCard();
+}
+
 // 送出訂單按鈕
 let sentOrderBtn = () => {
-    let cartBtnList = document.getElementsByClassName("cart-btn");
-    for (let i = 0; i < cartBtnList.length; i++) {
-        cartBtnList[i].addEventListener("click", () => {
+    let cartResetBtn = document.getElementById("cart-reset-btn");
+    cartResetBtn.addEventListener("click", () => {
+        clearCart()
+    })
+
+
+    let cartBtnList = document.getElementById("cart-send-btn");
+    cartBtnList.addEventListener("click", ()=>{
+        let isSuccess = sendOrder()
+        if(isSuccess){
             basket = [];
-            localStorage.setItem("data", JSON.stringify(basket));
+            alert('送出訂單成功！')
+            clearCart();
             generateOrderItem();
-            generateCartItem(cartList);
-            generateMenuCard(menuMeat, meatType);
-            generateMenuCard(menuSeafood, seafoodType);
-            generateMenuCard(menuVegetable, vegetableType);
-            generateMenuCard(menuDumplings, dumplingsType);
-            if (cartBtnList[i].id) {
-                // console.log("notsent")
-            }else {
-                // console.log("sent")
-            }
-        })  
-    }
+        }
+    })
 }
 sentOrderBtn();
 
-//生成訂單品項
+//生成菜單品項
 let generateOrderItem = () => {
     let orderList = document.getElementById("order-list")
-    if (basket.length !== 0){
-        //cart not empty
-        return orderList.innerHTML = basket.map((x) => {
-            let {id , item} = x;//物件解構賦值變數
-            
-            let search = projectDataList.find((y) => y.id === id) || [];
-            // console.log(search);
-            return `
+    let { foods, isSuccess } = getOrderItem()
+    if (isSuccess) {
+        if (foods.length !== 0) {
+            //cart not empty
+
+            return orderList.innerHTML = foods.map((x) => {
+                let id = x.food_id;
+                let search = projectDataList.find((y) => y.id === id) || [];
+                // console.log(search);
+                return `
                 <div class="order-item">
                     <div class="order-info">
                         <p class="order-info-title">${search.product}</p>
                         <div class="order-info-price">$${search.price}</div>
                     </div>
-                    <div class="order-info-quantity"><span>${item}</span></div>
+                    <div class="order-info-quantity"><span>${x.quantity}</span></div>
                     <i onclick="deleteOrder(${id})" class="bi bi-trash"></i>
                 </div>
             `
-        }).join("")
-    }
-    else {
-        //cart empty
-        
-        orderList.innerHTML = `
+            }).join("")
+        }
+        else {
+            orderList.innerHTML = `
         <div class="no-item"><h4>訂單是空的唷</h4></div>
+        `;
+        }
+    } else {
+        orderList.innerHTML = `
+        <div class="no-item"><h4>發生錯誤</h4></div>
         `;
     }
 }
 generateOrderItem();
 
-let openOrderPage = () => {
-    document.getElementById("open-order-btn").addEventListener("click",() => 
-    {
-        let orderPage = document.getElementById("order-page");
-        orderPage.style.transform = "translateX(0%)"
-    })
-}
-openOrderPage();
 
-let closeOrderPage = () => {
-    document.getElementById("close-order-btn").addEventListener("click", () => 
-    {
-        let orderPage = document.getElementById("order-page");
-        orderPage.style.transform = "translateX(100%)"
-    })
-}
-closeOrderPage();
+// let openOrderPage = () => {
+//     document.getElementById("open-order-btn").addEventListener("click",() =>
+//     {
+//         let orderPage = document.getElementById("order-page");
+//         orderPage.style.transform = "translateX(0%)"
+//     })
+// }
+// openOrderPage();
+
+// let closeOrderPage = () => {
+//     document.getElementById("close-order-btn").addEventListener("click", () =>
+//     {
+//         let orderPage = document.getElementById("order-page");
+//         orderPage.style.transform = "translateX(100%)"
+//     })
+// }
+// closeOrderPage();
 

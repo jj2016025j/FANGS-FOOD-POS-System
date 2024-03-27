@@ -1,7 +1,18 @@
+let menuMeat = document.getElementById("meat");
+let menuSeafood = document.getElementById("seafood");
+let menuVegetable = document.getElementById("vegetable");
+let menuDumplings = document.getElementById("dumplings");
+// let menuHotpot = document.getElementById("hotpot");
 
+// 依分類生成???
+categoryData.forEach((category)=> {
+    var element = $('#tab_category_' + category.id).find('.items').get(0)
+    var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
+    // console.log(foodsForType)
+    generateMenuCard(element, foodsForType);
+})
 
-
-// 生成品項
+// 傳入品項資料 生成品項
 let generateMenuCard = (dom, datalist) => {
     return dom.innerHTML = datalist.map((x) => {//slice選取projectDataList內部分物件
         let {img, product, price, id} = x;
@@ -18,7 +29,7 @@ let generateMenuCard = (dom, datalist) => {
                                 </div>
                                 <div class="card-btn-group">
                                     <i  onclick="editItem(${id})" class="bi bi-pencil"></i>
-                                    <i  onclick="deleteConfirm(${id})" class="bi bi-trash"></i>
+                                    <i  onclick="deleteItem(${id})" class="bi bi-trash"></i>
                                 </div>
                             </div>
                         </div>   
@@ -27,31 +38,12 @@ let generateMenuCard = (dom, datalist) => {
         `
     }).join("")
 }
-// let menuMeat = document.getElementById("meat");
-// let menuSeafood = document.getElementById("seafood");
-// let menuVegetable = document.getElementById("vegetable");
-// let menuDumplings = document.getElementById("dumplings");
-// let menuHotpot = document.getElementById("hotpot");
 
-// let meatType = projectDataList.filter((x) => {return x.type === "meat"});
-// let seafoodType = projectDataList.filter((x) => {return x.type === "seafood"});
-// let vegetableType = projectDataList.filter((x) => {return x.type === "vegetable"});
-// let dumplingsType = projectDataList.filter((x) => {return x.type === "dumplings"});
-// let hotpotType = projectDataList.filter((x) => {return x.type === "hotpot"});
-// console.log(categoryData)
-
-// generateMenuCard(menuMeat, meatType);
-// generateMenuCard(menuSeafood, seafoodType);
-// generateMenuCard(menuVegetable, vegetableType);
-// generateMenuCard(menuDumplings, dumplingsType);
-// generateMenuCard(menuHotpot, hotpotType);
-
-categoryData.forEach((category)=> {
-    var element = $('#tab_category_' + category.id).find('.items').get(0)
-    var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
-    // console.log(foodsForType)
-    generateMenuCard(element, foodsForType);
-})
+generateMenuCard(menuMeat, meatType);
+generateMenuCard(menuSeafood, seafoodType);
+generateMenuCard(menuVegetable, vegetableType);
+generateMenuCard(menuDumplings, dumplingsType);
+generateMenuCard(menuHotpot, hotpotType);
 
 // 品項類別選單
 function openMenu(pageName) {
@@ -66,7 +58,10 @@ function openMenu(pageName) {
 }
 
 // 預設開啟類別
+document.getElementById("defaultOpen").click();
+// 預設開啟類別
 $('.defaultCateogry').click()
+
 
 //側欄表單開始
 let customSelect = document.getElementsByClassName("custom-select");
@@ -122,8 +117,6 @@ for(let i = 0; i < customSelect.length; i++) {
     document.getElementsByClassName("select-items")[0].getElementsByTagName("div")[selItem.selectedIndex].setAttribute("class", "same-as-selected");
 }
 
-
-
 //檔案上傳顯示檔名及縮圖
 document.getElementById("item-img").addEventListener("change", function(e) {
     generateFileImg(e.target.files[0]);
@@ -150,7 +143,7 @@ document.getElementById("form-option").addEventListener("submit", function(e) {
 // 新增按鈕及修改按鈕功能
 document.querySelector(".plus-icon").addEventListener("click", function() {
     editItem();
-    closeDeleteConfirm()
+    closeDeleteConfirm();
     document.querySelector(".form-page").style.transform = "translateX(0%)";
 })
 
@@ -163,7 +156,7 @@ document.getElementById("form-cancel-btn").addEventListener("click", function(e)
 let editItem = (itemId) => {
     if(itemId) {
         document.querySelector(".form-title").innerHTML = "修改";
-        let search = projectDataList.find((x) => x.id == itemId) || [];
+        let search = projectDataList.find((x) => x.id === itemId.id) || [];
         let {id, price, product, type} = search;
         
         document.getElementById("item-name").value = product;
@@ -173,7 +166,7 @@ let editItem = (itemId) => {
         let optList = [...document.getElementById("select-type").options];
 
         let list = optList.map((x) => {
-            return parseInt(x.value)
+            return x.value
         })
 
         let currentIndex =  list.indexOf(type);
@@ -183,102 +176,24 @@ let editItem = (itemId) => {
 
         selectSelected.click();
         selectItems.getElementsByTagName("div")[currentIndex].click();
-        document.getElementById("form-submit-btn").setAttribute("onclick", "postUpdateForm("+ search.id +")");
+        document.getElementById("form-submit-btn").setAttribute("onclick", "postUpdateForm()");
     }else {
         document.querySelector(".form-title").innerHTML = "新增";
         document.getElementById("form-submit-btn").setAttribute("onclick", "postNewForm()");
     }
     document.querySelector(".form-page").style.transform = "translateX(0%)";
-    closeDeleteConfirm();
+}
+
+let postUpdateForm = () => {
+    toastMessage("菜單已更新");
 }
 
 let postNewForm = () => {
-    let formData = new FormData();
-
-    let itemName = document.getElementById("item-name").value;
-    let itemPrice = document.getElementById("item-price").value;
-    let selectType = document.getElementById("select-type").value;
-    let itemImg = document.getElementById("item-img").files[0];
-    
-    if (itemName && itemPrice && itemImg) {
-        formData.append('item-name', itemName)
-        formData.append('item-price', itemPrice)
-        formData.append('select-type', selectType)
-        formData.append('item-img', itemImg)
-    }else {
-        return;
-    }
-    // console.log($("#item-name"))
-    $.ajax({
-        url: "/menu",
-        method: "POST",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: ()=> {
-            toastMessage("菜單已新增");
-            setTimeout(()=> {
-                location.reload()            
-            }, 500)
-        }
-    })
-}
-
-let postUpdateForm = (id) => {
-    let formData = new FormData()
-    
-    let itemName = document.getElementById("item-name").value;
-    let itemPrice = document.getElementById("item-price").value;
-    let selectType = document.getElementById("select-type").value;
-    let itemImg = document.getElementById("item-img").files[0];
-    
-    if (itemName && itemPrice) {
-        formData.append('item-name', itemName)
-        formData.append('item-price', itemPrice)
-        formData.append('select-type', selectType)
-        if(itemImg) formData.append('item-img', itemImg)
-    }else {
-        return;
-    }
-    $.ajax({
-        url: "/menu/" + id,
-        method: "PUT",
-        data: formData,
-        processData: false,
-        contentType: false,
-        success: function(data) {
-            toastMessage("菜單已更新");
-            setTimeout(()=> {
-                location.reload()            
-            }, 1000)
-        }
-        
-    })
-
+    toastMessage("菜單已新增");
 }
 
 let deleteItem = (itemId) => {
-    $.ajax({
-        url: "/menu/" + itemId,
-        method: "DELETE",
-        processData: false,
-        contentType: false,
-        success: (result)=> {
-            closeDeleteConfirm();
-            toastMessage(`菜單刪除成功`);
-            setTimeout(()=> {
-                location.reload()
-            }, 500)
-        }
-    })
-
-    // //post itemId
-    // $.post("/menu/delete", itemName, function(data) {
-    //         console.log(data);
-    // })
-    // toastMessage(`菜單已刪除${itemName}`);
-    // console.log("deleteItem")
-    // closeDeleteConfirm();
+    toastMessage("菜單已刪除");
 }
 
 // 提示訊息 msg:顯示訊息
@@ -286,8 +201,9 @@ let toastMessage = (msg) => {
     let message = document.getElementById("message");
     message.innerHTML = `${msg}<i class="bi bi-check-circle-fill"></i>`
     message.classList.add("show");
-    setTimeout(() => {message.classList.remove("show")}, 1500);
+    setTimeout(() => {message.classList.remove("show")}, 3000);
 }
+
 
 //刪除確認框
 let deleteConfirm = (id) => {

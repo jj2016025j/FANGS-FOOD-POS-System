@@ -15,26 +15,7 @@ let getTableNumber = () => {
 }
 getTableNumber();
 
-// let getMenu = () => {
-//     $.get("/menulist", function(data) {
-//         projectDataList = data;
-//     })
-// };
-// getMenu();
-
-// let shopMeat = document.getElementById("shop-meat");
-// let shopSeafood = document.getElementById("shop-seafood");
-// let shopVegetable = document.getElementById("shop-vegetable");
-// let shopDumplings = document.getElementById("shop-dumplings");
-// let shopHotPot = document.getElementById("shop-hotPot");
-
-// let meatType = projectDataList.filter((x) => {return x.type === "meat"});
-// let seafoodType = projectDataList.filter((x) => {return x.type === "seafood"});
-// let vegetableType = projectDataList.filter((x) => {return x.type === "vegetable"});
-// let dumplingsType = projectDataList.filter((x) => {return x.type === "dumplings"});
-// let hotPotType = projectDataList.filter((x) => {return x.type === "hotPot"});
-
-let basket = JSON.parse(localStorage.getItem("data")) || [] ;
+let basket = JSON.parse(localStorage.getItem("data")) || [];
 basket = basket.filter(item => {
     return projectDataList.find(x => x.id === item.id)
 })
@@ -42,7 +23,7 @@ basket = basket.filter(item => {
 //品項生成
 let generateMenuCard = (dom, datalist) => {
     return dom.innerHTML = datalist.map((x) => {//slice選取projectDataList內部分物件
-        let {img, product, price, id} = x;
+        let { img, product, price, id } = x;
         //從本機儲存裡找資料
         let search = basket.find((x) => x.id === id) || [];
         return `
@@ -69,24 +50,19 @@ let generateMenuCard = (dom, datalist) => {
 
 }
 
-let resetMenu = ()=> {
-    categories.forEach((category)=> {
+let resetMenu = () => {
+    categories.forEach((category) => {
         var element = $('#category_inner_' + category.id).get(0)
-        var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
+        var foodsForType = projectDataList.filter((x) => { return x.type === category.id })
         generateMenuCard(element, foodsForType);
     })
 }
 resetMenu()
 
-// generateMenuCard(shopMeat, meatType);
-// generateMenuCard(shopSeafood, seafoodType);
-// generateMenuCard(shopVegetable, vegetableType);
-// generateMenuCard(shopDumplings, dumplingsType);
-
 // 鍋物生成
 let generateHotPotCard = (dom, datalist) => {
     return dom.innerHTML = datalist.map((x) => {
-        let {img, product, price, id} = x;
+        let { img, product, price, id } = x;
         //從本機儲存裡找資料
         let search = basket.find((x) => x.id === id) || [];
         return `
@@ -109,7 +85,7 @@ let generateHotPotCard = (dom, datalist) => {
 
 let orderHotPot = (id) => {
     //以訂單id去火鍋商品資料內核對
-    let search = basket.find((x) => { 
+    let search = basket.find((x) => {
         return hotPotType.find((y) => {
             return x.id === y.id
         })
@@ -121,7 +97,7 @@ let orderHotPot = (id) => {
             item: 1,
         });
     }
-    else{
+    else {
         search.id = id.id
     }
     generateOrderItem();
@@ -154,9 +130,9 @@ let orderHotPot = (id) => {
 
 let increment = (id) => {
     // console.log(id);return;
-    let productItem = projectDataList.find(item=> item.id == id);
+    let productItem = projectDataList.find(item => item.id == id);
 
-    let search = basket.find((x) => { return x.id === productItem.id})
+    let search = basket.find((x) => { return x.id === productItem.id })
 
     if (search === undefined) {
         basket.push({
@@ -164,7 +140,7 @@ let increment = (id) => {
             item: 1,
         });
     }
-    else{
+    else {
         search.item += 1;
     }
     updata(productItem.id);
@@ -176,9 +152,9 @@ let increment = (id) => {
 
 //減量數量函式
 let decrement = (id) => {
-    let productItem = projectDataList.find(item=> item.id == id);
-    
-    let search = basket.find((x) => { return x.id === productItem.id})
+    let productItem = projectDataList.find(item => item.id == id);
+
+    let search = basket.find((x) => { return x.id === productItem.id })
 
 
     if (search === undefined) {
@@ -187,7 +163,7 @@ let decrement = (id) => {
     else if (search.item === 0) {
         return;
     }
-    else{
+    else {
         search.item -= 1;
     }
     // console.log(basket);
@@ -210,8 +186,8 @@ let updata = (id) => {
     else {
         document.getElementById(id).innerHTML = 0;
     }
-    
-    
+
+
     cartTotal();
     totalPrice();
 };
@@ -235,7 +211,7 @@ let openOrder = () => {
     let orderInfo = document.getElementById("order-info");
     if (orderInfo.style.display == "block") {
         orderInfo.style.display = "none";
-    }else {
+    } else {
         return;
     }
     hideCart();
@@ -247,107 +223,77 @@ let closeOrder = () => {
     generateCartButton();
 }
 
-//訂單記錄畫面
-let generateOrderItem = () => {
+getOrderList = (foods, isSuccess) => {
     let orderContent = document.getElementById("order-content");
     let orderPriceContent = document.getElementById("order-price-content");
 
+    if (isSuccess) {
+        if (foods.length !== 0) {
+            //cart not empty
+            let total = foods.map((food) => {
+                return food.total_price;
+            }).reduce((x, y) => x + y, 0);
+
+            orderPriceContent.innerHTML = `
+        <div class="order-price-info">訂單金額:<span>$${total}</span></div>
+        <div class="order-price-info">服務費:<span>$${Math.round(total * 10 / 100)}</span></div>
+        <div class="order-price-info">總金額:<span>$${total + Math.round(total * 10 / 100)}</span></div>
+    `;
+
+            return orderContent.innerHTML = foods.map((x) => {
+                let id = x.food_id;
+                let search = projectDataList.find((y) => y.id === id) || [];
+
+                return `
+        <div class="cart-item">
+            <img src=${search.img} alt="">
+            <div class="cart-info">
+                <p class="cart-info-title">${search.product}</p>
+                <div class="price">
+                    <p>$ ${x.unit_price} x ${x.quantity} = ${x.total_price}</p>
+                </div>
+            </div>
+        </div>
+        `
+            }).join("")
+        }
+        else {
+            orderPriceContent.innerHTML = ``;
+            orderContent.innerHTML = `
+    <div class="no-item"><h4>無訂單紀錄</h4></div>
+    `;
+        }
+    } else {
+        orderPriceContent.innerHTML = ``;
+        orderContent.innerHTML = `
+        <div class="no-item"><h4>發生錯誤</h4></div>
+        `;
+    }
+}
+
+//訂單記錄畫面
+let generateOrderItem = () => {
     $.ajax({
         url: "/order/list/" + order.id,
         method: "GET",
         data: {},
         contentType: "application/json",
         success: (foods) => {
-            if (foods.length !== 0){
-                //cart not empty
-                let total = foods.map((food) => {
-                    return food.total_price;
-                }).reduce((x, y) => x + y ,0);
-
-                orderPriceContent.innerHTML = `
-                    <div class="order-price-info">訂單金額:<span>$${total}</span></div>
-                    <div class="order-price-info">服務費:<span>$${Math.round(total * 10 / 100)}</span></div>
-                    <div class="order-price-info">總金額:<span>$${total + Math.round(total * 10 / 100)}</span></div>
-                `;
-
-                return orderContent.innerHTML = foods.map((x) => {
-                    let id = x.food_id;
-                    let search = projectDataList.find((y) => y.id === id) || [];
-                    
-                    return `
-                    <div class="cart-item">
-                        <img src=${search.img} alt="">
-                        <div class="cart-info">
-                            <p class="cart-info-title">${search.product}</p>
-                            <div class="price">
-                                <p>$ ${x.unit_price} x ${x.quantity} = ${x.total_price}</p>
-                            </div>
-                        </div>
-                    </div>
-                    `
-                }).join("")
-            }
-            else {
-                orderPriceContent.innerHTML = ``;
-                orderContent.innerHTML = `
-                <div class="no-item"><h4>無訂單紀錄</h4></div>
-                `;
-            }
+            getOrderList(foods, true)
         },
-        error: ()=> {
-            orderPriceContent.innerHTML = ``;
-            orderContent.innerHTML = `
-            <div class="no-item"><h4>發生錯誤</h4></div>
-            `;
+        error: () => {
+            getOrderList(foods, false)
         }
     })
-
-    // if (basket.length !== 0){
-    //     //cart not empty
-    //     let total = basket.map((x) => {
-    //         let {id, item} = x;
-    //         let search = projectDataList.find((y) => y.id === id) || [];
-    //         return item * search.price;
-    //     }).reduce((x, y) => x + y ,0);
-
-    //     orderPriceContent.innerHTML = `
-    //         <div class="order-price-info">訂單金額:<span>$${total}</span></div>
-    //         <div class="order-price-info">服務費:<span>$${Math.round(total * 10 / 100)}</span></div>
-    //         <div class="order-price-info">總金額:<span>$${total + Math.round(total * 10 / 100)}</span></div>
-    //     `;
-
-    //     return orderContent.innerHTML = basket.map((x) => {
-    //         let {id , item} = x;//物件解構賦值變數
-    //         let search = projectDataList.find((y) => y.id === id) || [];
-            
-    //         return `
-    //         <div class="cart-item">
-    //             <img src=${search.img} alt="">
-    //             <div class="cart-info">
-    //                 <p class="cart-info-title">${search.product}</p>
-    //                 <div class="price">
-    //                     <p>$ ${search.price} x ${item} = ${search.price * item}</p>
-    //                 </div>
-    //             </div>
-    //         </div>
-    //         `
-    //     }).join("")
-    // }
-    // else {
-    //     orderPriceContent.innerHTML = ``;
-    //     orderContent.innerHTML = `
-    //     <div class="no-item"><h4>無訂單紀錄</h4></div>
-    //     `;
-    // }
 }
 generateOrderItem();
 
 
 //顯示購物車按鈕
 let generateCartButton = () => {
-    if (basket.length !== 0){
+    if (basket.length !== 0) {
         document.getElementById("order-info").style.display = "block";
-    }else {
+    } else {
         document.getElementById("order-info").style.display = "none";
     }
 }
@@ -358,11 +304,11 @@ generateCartButton();
 let cartContainer = document.getElementById("cart-container");
 let generateCartItem = (dom) => {
     //dom參數
-    if (basket.length !== 0){
+    if (basket.length !== 0) {
         //cart not empty
         return dom.innerHTML = basket.map((x) => {
-            let {id , item} = x;//物件解構賦值變數
-            
+            let { id, item } = x;//物件解構賦值變數
+
             let search = projectDataList.find((y) => y.id === id) || [];
             // console.log(search);
             return `
@@ -389,10 +335,10 @@ let generateCartItem = (dom) => {
 generateCartItem(cartContainer);
 
 // 開啟購物車
-let displayCart = () =>{
+let displayCart = () => {
     document.getElementById("cart-page").style.transform = "translateY(0%)";
     // console.log("ok");
-    document.querySelector("#order-info > div").setAttribute('onclick',"sendCart()");
+    document.querySelector("#order-info > div").setAttribute('onclick', "sendCart()");
     document.getElementById("order-title").innerHTML = "送出";
     document.querySelector("#order-info > div > div:nth-child(2)").style.display = "none";
 }
@@ -400,7 +346,7 @@ let displayCart = () =>{
 //隱藏購物車
 let hideCart = () => {
     document.getElementById("cart-page").style.transform = "translateY(120%)";
-    document.querySelector("#order-info > div").setAttribute('onclick',"displayCart()");
+    document.querySelector("#order-info > div").setAttribute('onclick', "displayCart()");
     document.getElementById("order-title").innerHTML = "目前";
     document.querySelector("#order-info > div > div:nth-child(2)").style.display = "block";
 }
@@ -420,7 +366,6 @@ let sendCart = () => {
             generateOrderItem();
         }
     })
-    
 
     // let search = basket.find((x) => { 
     //     return hotPotType.find((y) => {
@@ -440,7 +385,7 @@ let sendCart = () => {
 // console.log(document.getElementById("project01"))
 //刪除品項
 let removeItem = (id) => {
-    let productItem = projectDataList.find(item=> item.id == id);
+    let productItem = projectDataList.find(item => item.id == id);
 
     //移除物件
     basket = basket.filter((x) => x.id !== productItem.id);
@@ -457,50 +402,20 @@ let removeItem = (id) => {
     localStorage.setItem("data", JSON.stringify(basket));
 }
 
-//購物車金額加總
-let totalPrice = () => {
-    let orderPrice = document.getElementById("order-price");
-    if (basket.length !== 0) {
-        let amount = basket.map((x) => {
-            let {id, item} = x;
-            let search = projectDataList.find((y) => y.id === id) || [];
-            return item * search.price;
-        }).reduce((x, y) => x + y ,0);
-
-        orderPrice.innerHTML = `
-        $ ${amount}
-        `;
-        // return amount;
-    }
-    else {
-        orderPrice.innerHTML = `
-        $ 0
-        `
-    }
-}
-
-totalPrice();
-
 let clearCart = () => {
     basket = [];
-    // generateOrderItem();
     generateCartItem(cartContainer);
     generateCartButton();
     cartTotal();
     totalPrice();
     resetMenu();
-    // generateMenuCard(shopMeat, meatType);
-    // generateMenuCard(shopSeafood, seafoodType);
-    // generateMenuCard(shopVegetable, vegetableType);
-    // generateMenuCard(shopDumplings, dumplingsType);
-    // generateHotPotCard(shopHotPot, hotPotType);
-    
-    localStorage.setItem("data", JSON.stringify(basket)); 
+
+    localStorage.setItem("data", JSON.stringify(basket));
 }
 
 //預設選取鍋物種類
 let defaultChecked = () => {
-    document.getElementsByClassName("hotPot-label")[0].click();  
+    document.getElementsByClassName("hotPot-label")[0].click();
 }
 
 // let hideHotPot = () => {
@@ -518,12 +433,12 @@ let defaultChecked = () => {
 // hideHotPot();
 
 let isFirstOrder = () => {
-    if(localStorage.getItem("isFirstOrder")) {
+    if (localStorage.getItem("isFirstOrder")) {
         return;
-    }else {
+    } else {
         localStorage.setItem("isFirstOrder", "1");
         hideHotPot();
-    }  
+    }
 }
 isFirstOrder();
 

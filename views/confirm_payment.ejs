@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>桌位結帳</title>
-    <link rel="icon" href="/assets/image/Logo.png"/><!--webLOGO-->
+    <link rel="icon" href="/image/Logo.png" /><!--webLOGO-->
     <!--導覽列及右側排版-->
-    <link rel="stylesheet" href="/css/navbar-layout.css"> 
+    <link rel="stylesheet" href="/css/navbar-layout.css">
     <link rel="stylesheet" href="/css/confirm_payment.css">
     <link href="/assets/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="/assets/js/jQuery3.7.1.js"></script>
 </head>
+
 <body>
     <div class="page-wrapper">
         <div class="navbar-container order-width">
@@ -33,7 +35,7 @@
                         </div>
                         <div class="order-item-quantity">0</div>
                     </div>
-                    
+
                 </div>
                 <div class="order-price-info">
                     <div class="order-price-title">訂單金額:
@@ -56,12 +58,12 @@
         </div>
     </div>
 
-    <!-- <script src="/assets/data/data.js"></script> -->
+    <!-- 以下這些是從後端傳來的資料 -->
     <script>
-        let order_foods = <%- JSON.stringify(order_foods) %>;
-        let order = <%- JSON.stringify(order) %>;
-        let foods = <%- JSON.stringify(foods) %>;
-        let projectDataList = foods.map((food)=>{
+        let order_foods = <% - JSON.stringify(order_foods) %>;
+        let order = <% - JSON.stringify(order) %>;
+        let foods = <% - JSON.stringify(foods) %>;
+        let projectDataList = foods.map((food) => {
             return {
                 id: food.id,
                 product: food.name,
@@ -71,14 +73,10 @@
             }
         }) 
     </script>
-    <script src="/js/confirm_payment.js"></script>
+    <script src="/js/UIManager.js"></script>
+    <script src="/js/request.js">    </script>
     <script>
-        // $.get("/order", function(data) {
-            
-        // })
-        // $.get("/order/money", function(data) {
-
-        // })
     </script>
 </body>
+
 </html>
