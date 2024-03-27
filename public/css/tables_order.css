@@ -1,19 +1,20 @@
 /* 返回鍵及桌號開始 */
 .cart-width {
     width: 300px;
+    padding: 0px 4px;
 }
 
 .goback-content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0px 10px;
+    justify-content: center;
+    padding: 5px 10px;
     width: 100%;
     font-size: 1.5em;
     background-color: rgba(247, 230, 174, 1);
 }
 
-.goback-content > div {
+.goback-content>div {
     font-weight: 600;
 }
 
@@ -21,9 +22,17 @@
     margin-left: 5px;
 }
 
-.goback-content > a {
+.tab>a {
     text-decoration: none;
-    color: black;
+    width: 40px;
+    height: 40px;
+    color: #fff;
+    border: 1px solid #fff;
+    border-radius: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
 }
 
 .bi-arrow-left-short {
@@ -38,7 +47,7 @@
     background-color: #fff;
     width: 100%;
     height: 100%;
-    margin-top: 5px;
+    /* margin-top: 5px; */
     padding: 0px 5px;
     display: flex;
     flex-direction: column;
@@ -64,7 +73,7 @@
 .cart-list::-webkit-scrollbar {
     width: 10px;
 }
-  
+
 
 .cart-list::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
@@ -142,7 +151,7 @@
     object-fit: cover;
 }
 
-.cart-info  {
+.cart-info {
     margin-left: 3px;
     margin-right: auto;
 }
@@ -156,7 +165,7 @@
     display: flex;
 }
 
-.price > p {
+.price>p {
     margin: 0;
 }
 
@@ -173,7 +182,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    border-bottom: 1px solid rgba(247, 230, 174, 1); 
+    border-bottom: 1px solid rgba(247, 230, 174, 1);
     padding-left: 20px;
     height: 75px;
     background-color: rgba(48, 48, 48, 1);
@@ -194,10 +203,12 @@
     transition: 0.3s;
 }
 
-.tablinks:hover, .tablinks:focus {
+.tablinks:hover,
+.tablinks:focus {
     border-bottom: 5px solid rgba(247, 230, 174, 1);
     color: rgba(247, 230, 174, 1);
 }
+
 /* 品項種類導覽列結束 */
 
 .tabcontent {
@@ -213,7 +224,7 @@
 .tabcontent::-webkit-scrollbar {
     width: 10px;
 }
-  
+
 
 .tabcontent::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
@@ -233,6 +244,7 @@
 .tabcontent::-webkit-scrollbar-button {
     background: none;
 }
+
 /* scrollbar自定義 */
 
 /* ====================商品品項==================== */
@@ -293,7 +305,8 @@
     user-select: none;
 }
 
-.bi-dash, .bi-plus {
+.bi-dash,
+.bi-plus {
     background-color: black;
     color: #fff;
     aspect-ratio: 1 / 1;
@@ -345,7 +358,7 @@
     display: flex;
     justify-content: center;
     font-size: 1.5em;
-    font-weight: 600; 
+    font-weight: 600;
     border-bottom: 1px solid black;
     padding-bottom: 5px;
 }
@@ -360,7 +373,7 @@
 .order-list::-webkit-scrollbar {
     width: 10px;
 }
-  
+
 
 .order-list::-webkit-scrollbar-track {
     box-shadow: inset 0 0 5px grey;
@@ -380,6 +393,7 @@
 .order-list::-webkit-scrollbar-button {
     background: none;
 }
+
 /* scrollbar自定義 */
 
 /* 前往結帳區開始 */
@@ -450,7 +464,7 @@
     border-radius: 100vw;
 }
 
-.order-item > .bi-trash:hover {
+.order-item>.bi-trash:hover {
     color: red;
 }
 
