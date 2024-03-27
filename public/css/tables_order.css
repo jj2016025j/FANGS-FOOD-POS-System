@@ -24,19 +24,19 @@
 
 .tab>a {
     text-decoration: none;
-    width: 40px;
-    height: 40px;
     color: #fff;
     border: 1px solid #fff;
     border-radius: 100vw;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin-right: 20px;
 }
 
 .bi-arrow-left-short {
     font-size: 2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
 }
 
 /* 返回鍵及桌號結束 */
