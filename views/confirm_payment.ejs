@@ -56,11 +56,14 @@
         </div>
     </div>
 
-    <!-- <script src="/assets/data/data.js"></script> -->
+    <!-- 取的資料 -->
     <script>
         let order_foods = <%- JSON.stringify(order_foods) %>;
         let order = <%- JSON.stringify(order) %>;
         let foods = <%- JSON.stringify(foods) %>;
+        console.log(order_foods)
+        console.log(order)
+        console.log(foods)
         let projectDataList = foods.map((food)=>{
             return {
                 id: food.id,
@@ -70,15 +73,10 @@
                 img: food.image_url
             }
         }) 
-    </script>
-    <script src="/js/confirm_payment.js"></script>
-    <script>
-        // $.get("/order", function(data) {
-            
-        // })
-        // $.get("/order/money", function(data) {
+        console.log(projectDataList)
 
-        // })
     </script>
+
+    <script src="/js/confirm_payment.js"></script>
 </body>
 </html>
