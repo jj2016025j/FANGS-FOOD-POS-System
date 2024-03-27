@@ -74,12 +74,21 @@ at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\in
 
 
 1.
-初始化
-使用InitDB.js執行資料庫初始化
+更改環境變數
+MYSQL_DATABASE為要使用的資料庫名稱
+TEST_MYSQL_DATABASE為測試用資料庫名稱
 
-2.
-將scipt/router/payRouter.js
-裡面的 database 改成 跟 myInitDB.js裡面的資料庫名稱相同
+初始化
+使用InitDB.js會執行資料庫初始化
+建立名稱為 TEST_MYSQL_DATABASE 參數內容的資料庫
 
 3.
+確保 MYSQL_DATABASE 名稱已經用 TEST_MYSQL_DATABASE 名稱建立過資料庫
 資料庫就能正常使用
+
+
+
+目前問題:
+如果對同一筆訂單重複結帳伺服器會卡死 盡量避免
+有時候結帳在首頁並不會刷新當前狀況
+需要建立假訂單紀錄用於展示統計功能

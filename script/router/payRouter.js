@@ -10,8 +10,12 @@ const { printInvoice, convertToInvoiceFormat } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
 const mysql = require('mysql2/promise');
 const dataRep = require('../data_repository');
-// const pool = dataRep.getPool()
+
 const {
+    MYSQL_HOST,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DATABASE,
     LINEPAY_CHANNEL_ID,
     LINEPAY_RETURN_HOST,
     LINEPAY_SITE,
@@ -24,10 +28,10 @@ const {
 console.log(LINEPAY_CHANNEL_ID, LINEPAY_RETURN_HOST, LINEPAY_SITE, LINEPAY_VERSION, LINEPAY_CHANNEL_SECRET_KEY, LINEPAY_RETURN_CONFIRM_URL, LINEPAY_RETURN_CANCEL_URL)
 // 数据库连接配置
 const pool = mysql.createPool({
-    host: "localhost", // 資料庫伺服器地址
-    user: "root", // 資料庫用戶名
-    password: "", // 資料庫密碼
-    database: "fang_project", // 要操作的数据库名 庫名不一定要
+    host: MYSQL_HOST, // 資料庫伺服器地址
+    user: MYSQL_USER, // 資料庫用戶名
+    password: MYSQL_PASSWORD, // 資料庫密碼
+    database: MYSQL_DATABASE, // 要操作的数据库名 庫名不一定要
     charset: "utf8mb4", // 確保使用 utf8mb4
     waitForConnections: true,
     connectionLimit: 10,

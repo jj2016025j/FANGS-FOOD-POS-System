@@ -1,4 +1,4 @@
-const pool = require("../mynodesql.js")
+const pool = require("../../mynodesql.js")
 var fs = require('fs');
 const path = require('path');
 

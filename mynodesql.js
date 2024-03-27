@@ -1,11 +1,28 @@
 const mysql = require('mysql');
+require('dotenv').config();
+
+const MYSQL_HOST = process.env.MYSQL_HOST;
+const MYSQL_USER = process.env.MYSQL_USER;
+const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
+const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
+console.log(MYSQL_HOST)
+console.log(MYSQL_USER)
+console.log(MYSQL_PASSWORD)
+
+// const {
+//   MYSQL_HOST,
+//   MYSQL_USER,
+//   MYSQL_PASSWORD,
+//   MYSQL_DATABASE
+// } = process.env;
+// console.log(process.env)
 
 const local = mysql.createConnection({
   connectionLimit: 20, // 連接池大小
-  host: "localhost", // 資料庫伺服器地址
-  user: "root",
-  password: "",
-  // database: database
+  host: MYSQL_HOST, // 資料庫伺服器地址
+  user: MYSQL_USER,
+  password: MYSQL_PASSWORD,
+  // database: MYSQL_DATABASE
   charset: "utf8mb4",
   port: 3306
 });
@@ -37,9 +54,10 @@ const dbOperations = {
 
   // 直接返回SQL物件
   // dbOperations.Connection()
-  Connection: function () { 
+  Connection: function () {
     console.log("取得連線物件")
-    return connection },
+    return connection
+  },
 
   // 建立連接
   // dbOperations.connectToSQL()
@@ -110,7 +128,7 @@ const dbOperations = {
   UseMySQL: function (sql, values = "", explain = "") {
     connection.query(sql, values, (err) => {
       if (err) throw err;
-      console.log(`成功使用SQL ${explain}`)
+      console.log(`成功使用SQL :${explain}`)
     })
   },
 

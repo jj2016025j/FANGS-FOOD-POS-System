@@ -1,13 +1,16 @@
-const pool = require("./script/mynodesql.js")
+const pool = require("./mynodesql.js")
 var fs = require('fs');
+require('dotenv').config();
+
+const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
-pool.dropDatabase("fang_project2")
+pool.dropDatabase(TEST_MYSQL_DATABASE)
 
 // pool.createDatabase("fangs_food_pos_system")
 // pool.useDatabase("fangs_food_pos_system")
-pool.createDatabase("fang_project2")
-pool.useDatabase("fang_project2")
+pool.createDatabase(TEST_MYSQL_DATABASE)
+pool.useDatabase(TEST_MYSQL_DATABASE)
 
 pool.UseMySQL(
   `CREATE TABLE IF NOT EXISTS users (
@@ -155,6 +158,18 @@ pool.UseMySQL(
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   payment_at TIMESTAMP NULL)`
 )
+
+const orders = require("./generateOrders.js")
+let i = 1;
+orders.forEach(order => {
+  pool.UseMySQL(
+    `INSERT INTO table_orders (trade_no, food_price, service_fee, trade_amt, table_number, order_status, created_at, payment_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+    [order.trade_no, order.food_price, order.service_fee, order.trade_amt, order.table_number, order.order_status, order.created_at, order.payment_at],
+    `插入第${i}筆訂單 ${order.trade_no}到foods表`
+  );
+  i++
+});
+
 
 // 訂單品項對照表
 pool.UseMySQL(
