@@ -14,7 +14,7 @@ router.get('/', async (req, res) => {
 //進入點餐畫面
 // http://localhost:3000/pos/:trade_no
 router.get('/order/:trade_no', async (req, res) => {
-    console.log("pos")
+    // console.log("pos")
     var categories = await dataRep.getFoodCateories()
     var foods = await dataRep.getFoods()
     var order = await dataRep.getOrderByTradeNo(req.params['trade_no']);
@@ -46,7 +46,7 @@ router.get('/phone/:trade_no', async (req, res) => {
 // 品項編輯
 // http://localhost:3000/pos/edit
 router.get('/edit', async (req, res) => {
-    console.log("edit")
+    // console.log("edit")
     var categories = await dataRep.getFoodCateories()
     var foods = await dataRep.getFoods()
     return res.render('edit', {
@@ -58,7 +58,7 @@ router.get('/edit', async (req, res) => {
 // 後臺數據
 // http://localhost:3000/pos/report
 router.get('/report', async (req, res) => {
-    console.log("edit")
+    // console.log("edit")
     const report = await dataRep.getReport()
     const foods = await dataRep.getFoodsWithTrash()
     return res.render('report', {

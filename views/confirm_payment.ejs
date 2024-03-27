@@ -61,9 +61,9 @@
         let order_foods = <%- JSON.stringify(order_foods) %>;
         let order = <%- JSON.stringify(order) %>;
         let foods = <%- JSON.stringify(foods) %>;
-        console.log(order_foods)
-        console.log(order)
-        console.log(foods)
+        // console.log(order_foods)
+        // console.log(order)
+        // console.log(foods)
         let projectDataList = foods.map((food)=>{
             return {
                 id: food.id,
@@ -73,7 +73,7 @@
                 img: food.image_url
             }
         }) 
-        console.log(projectDataList)
+        // console.log(projectDataList)
 
     </script>
 

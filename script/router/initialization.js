@@ -17,7 +17,7 @@ connection.connect((err) => {
         console.error('Error connecting to MySQL:', err);
         return;
     }
-    console.log('Connected to MySQL');
+    // console.log('Connected to MySQL');
 });
 
 // Create migration table if it doesn't exist
@@ -48,7 +48,7 @@ const runMigration = (migrationName, migrationQuery) => {
                 console.error('Error running migration:', err);
             }
         }else{
-            console.log(`Migration '${migrationName}' executed successfully`);
+            // console.log(`Migration '${migrationName}' executed successfully`);
             connection.query(migrationQuery, (err) => {
                 if (err) {
                     console.error('Error running migration query:', err);

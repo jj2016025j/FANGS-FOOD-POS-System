@@ -11,7 +11,7 @@ connection.connect(err => {
     return console.error('error: ' + err.message);
   }
 
-  console.log('Connected to the MySQL server.');
+  // console.log('Connected to the MySQL server.');
 
   const createDBAndTables = `
     CREATE DATABASE IF NOT EXISTS googledb;
@@ -43,13 +43,13 @@ connection.connect(err => {
     if (err) {
       return console.error(err.message);
     }
-    console.log('Database and table created, and initial data inserted');
+    // console.log('Database and table created, and initial data inserted');
   });
 
   connection.end(err => {
     if (err) {
       return console.error(err.message);
     }
-    console.log('Closed the database connection.');
+    // console.log('Closed the database connection.');
   });
 });

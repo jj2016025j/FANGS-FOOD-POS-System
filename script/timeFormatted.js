@@ -19,7 +19,7 @@ function TimeFormat(isoString) {
     hour12: false
   }).replace(/\//g, '-');
 
-  console.log(formattedDate);
+  // console.log(formattedDate);
   return formattedDate;
 }
 
@@ -40,7 +40,7 @@ function TimeFormat2(isoString) {
     hour12: false // 使用24小時制
   }).format(date);
 
-  console.log(formattedDate);
+  // console.log(formattedDate);
   return formattedDate;
 }
 

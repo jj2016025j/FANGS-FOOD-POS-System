@@ -70,7 +70,7 @@ document.getElementById("defaultOpen").click();
 //增量數量函式
 
 let increment = (id) => {
-    // console.log(id);return;
+    // // console.log(id);return;
     let productItem = id;
 
     let search = basket.find((x) => { return x.id === productItem.id})
@@ -108,7 +108,7 @@ let decrement = (id) => {
     else{
         search.item -= 1;
     }
-    // console.log(basket);
+    // // console.log(basket);
     updata(productItem.id);
     //移除數量為0的物件
     basket = basket.filter((x) => x.item !== 0);//回傳此條件為true的物件
@@ -144,7 +144,7 @@ let generateCartItem = (dom) => {
             let {id , item} = x;//物件解構賦值變數
             cartBtnContent.style.display = "block"
             let search = projectDataList.find((y) => y.id === id) || [];
-            // console.log(search);
+            // // console.log(search);
             return `
             <div class="cart-item">
                 <img class="cart-item-img" src=${search.img} alt="">
@@ -207,9 +207,9 @@ let sentOrderBtn = () => {
             generateMenuCard(menuVegetable, vegetableType);
             generateMenuCard(menuDumplings, dumplingsType);
             if (cartBtnList[i].id) {
-                console.log("notsent")
+                // console.log("notsent")
             }else {
-                console.log("sent")
+                // console.log("sent")
             }
         })  
     }
@@ -225,7 +225,7 @@ let generateOrderItem = () => {
             let {id , item} = x;//物件解構賦值變數
             
             let search = projectDataList.find((y) => y.id === id) || [];
-            // console.log(search);
+            // // console.log(search);
             return `
                 <div class="order-item">
                     <div class="order-info">

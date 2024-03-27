@@ -94,7 +94,7 @@ connection.connect((err) => {
         console.error('Error connecting to MySQL:', err);
         return;
     }
-    console.log('Connected to MySQL');
+    // // console.log('Connected to MySQL');
 });
 
 // 因為你不能在最頂層使用 await，所以我們創建一個立即執行的 async 函數
@@ -107,12 +107,12 @@ connection.connect((err) => {
         app.listen(port, () => {
             console.log(`官方網站: http://localhost:${port}`);
             console.log(`pos系統: http://localhost:${port}/pos`);
-            // console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
+            console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
             // if (publicIPOld) {
-            //     console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
+            //     // // console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
             // }
             // if (publicIP) {
-            //     console.log(`公網 IPv4 地址:  http://${publicIP}:${port}`);
+            //     // // console.log(`公網 IPv4 地址:  http://${publicIP}:${port}`);
             // }
         });
     } catch (error) {

@@ -6,18 +6,16 @@ const bcrypt = require("bcrypt");
 const LineStrategy = require("passport-line");
 
 passport.serializeUser((user, done) => {
-  console.log("Serialize使用者。。。");
-  //   console.log(user.id);
+  // console.log("Serialize使用者。。。");
+  //   // console.log(user.id);
   done(null, user.id); //資料庫的id，存在session，並將id簽名後以cookie形式傳給使用者
 });
 
 passport.deserializeUser(async (id, done) => {
-  console.log(
-    "Deserialize使用者。。。使用serializeUser儲存的id，去找到資料庫內的資料"
-  );
-  //   console.log(id);
+  // console.log("Deserialize使用者。。。使用serializeUser儲存的id，去找到資料庫內的資料");
+  //   // console.log(id);
   let [foundUser] = await pool.query("SELECT * FROM users WHERE id = ?", [id]);
-  //   console.log(foundUser);
+  //   // console.log(foundUser);
   done(null, foundUser); //將req.user這個屬性設為foundUser
 });
 
@@ -29,7 +27,7 @@ passport.use(
       callbackURL: "http://localhost:8080/auth/google/redirect",
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log("進入Google strategy的區域");
+      // console.log("進入Google strategy的區域");
       //先拿到使用者的email
       const email = profile.emails[0].value;
       //查資料庫使用者的email是否存在
@@ -39,7 +37,7 @@ passport.use(
       );
       if (existingUser) {
         //使用者存在
-        console.log("使用者已存在");
+        // console.log("使用者已存在");
         done(null, existingUser);
       } else {
         // 使用者不存在，將其資料插入到資料庫中
@@ -57,7 +55,7 @@ passport.use(
           "SELECT * FROM users WHERE email = ?",
           [email]
         );
-        console.log("新使用者已創建");
+        // console.log("新使用者已創建");
         done(null, newUser);
       }
     }
@@ -90,7 +88,7 @@ passport.use(
       callbackURL: "http://localhost:8080/auth/line/redirect",
     },
     async (accessToken, refreshToken, profile, done) => {
-      console.log("進入LineStrategy區域。。。");
+      // console.log("進入LineStrategy區域。。。");
       const id = profile.id;
       const [existingUser] = await pool.query(
         "SELECT * FROM users WHERE lineID = ?",
@@ -98,7 +96,7 @@ passport.use(
       );
       if (existingUser) {
         //使用者存在
-        console.log("使用者已存在");
+        // console.log("使用者已存在");
         done(null, existingUser);
       } else {
         // 使用者不存在，將其資料插入到資料庫中
@@ -111,7 +109,7 @@ passport.use(
           "SELECT * FROM users WHERE lineID = ?",
           [id]
         );
-        console.log("新使用者已創建");
+        // console.log("新使用者已創建");
         done(null, newUser);
       }
     }

@@ -59,7 +59,7 @@ let resetMenuCard = ()=> {
     categoryData.forEach((category)=> {
         var element = $('#tab_category_' + category.id).find('.items').get(0)
         var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
-        console.log(foodsForType)
+        // console.log(foodsForType)
         generateMenuCard(element, foodsForType);
     })
 }
@@ -89,7 +89,7 @@ $('.defaultCateogry').click()
 //增量數量函式
 
 let increment = (id) => {
-    // console.log(id);return;
+    // // console.log(id);return;
     let productItem = projectDataList.find(item=> item.id == id);
 
 
@@ -128,7 +128,7 @@ let decrement = (id) => {
     else{
         search.item -= 1;
     }
-    // console.log(basket);
+    // // console.log(basket);
     updata(productItem.id);
     //移除數量為0的物件
     basket = basket.filter((x) => x.item !== 0);//回傳此條件為true的物件
@@ -164,7 +164,7 @@ let generateCartItem = (dom) => {
             let {id , item} = x;//物件解構賦值變數
             cartBtnContent.style.display = "block"
             let search = projectDataList.find((y) => y.id === id) || [];
-            // console.log(search);
+            // // console.log(search);
             return `
             <div class="cart-item">
                 <img class="cart-item-img" src=${search.img} alt="">
@@ -263,7 +263,7 @@ let generateOrderItem = () => {
     //             let {id , item} = x;//物件解構賦值變數
                 
     //             let search = projectDataList.find((y) => y.id === id) || [];
-    //             // console.log(search);
+    //             // // console.log(search);
     //             return `
     //                 <div class="order-item">
     //                     <div class="order-info">
@@ -298,7 +298,7 @@ let generateOrderItem = () => {
                 return orderList.innerHTML = foods.map((x) => {
                     let id = x.food_id;
                     let search = projectDataList.find((y) => y.id === id) || [];
-                    // console.log(search);
+                    // // console.log(search);
                     return `
                         <div class="order-item">
                             <div class="order-info">
@@ -332,7 +332,7 @@ let generateOrderItem = () => {
     //         let {id , item} = x;//物件解構賦值變數
             
     //         let search = projectDataList.find((y) => y.id === id) || [];
-    //         // console.log(search);
+    //         // // console.log(search);
     //         return `
     //             <div class="order-item">
     //                 <div class="order-info">

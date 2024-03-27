@@ -95,7 +95,7 @@ $('#pay-line-pay-button').on('click', () => {
         url: "/pay/linepay/" + order.id,
         method: "POST",
         success: (result) => {
-            console.log(result.paymentUrl)
+            // console.log(result.paymentUrl)
             if (result.paymentUrl) {
                 // 如果服务器返回了支付URL，则跳转到该URL进行支付
                 window.location.href = result.paymentUrl;

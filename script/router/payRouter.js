@@ -25,7 +25,7 @@ const {
     LINEPAY_RETURN_CANCEL_URL,
 } = process.env;
 
-console.log(LINEPAY_CHANNEL_ID, LINEPAY_RETURN_HOST, LINEPAY_SITE, LINEPAY_VERSION, LINEPAY_CHANNEL_SECRET_KEY, LINEPAY_RETURN_CONFIRM_URL, LINEPAY_RETURN_CANCEL_URL)
+// console.log(LINEPAY_CHANNEL_ID, LINEPAY_RETURN_HOST, LINEPAY_SITE, LINEPAY_VERSION, LINEPAY_CHANNEL_SECRET_KEY, LINEPAY_RETURN_CONFIRM_URL, LINEPAY_RETURN_CANCEL_URL)
 // 数据库连接配置
 const pool = mysql.createPool({
     host: MYSQL_HOST, // 資料庫伺服器地址
@@ -51,7 +51,7 @@ router.post('/cash/:order_id', async (req, res) => {
         }
 
         const orderInfo = orders[0];
-        console.log(orderInfo)
+        // console.log(orderInfo)
 
         const [orderItems] = await pool.query(
             `SELECT od.food_id, od.quantity, od.unit_price, f.name 
@@ -60,10 +60,10 @@ router.post('/cash/:order_id', async (req, res) => {
                 WHERE od.order_id = ?`,
             [orderInfo.id]
         );
-        console.log("orderItems", orderItems)
+        // console.log("orderItems", orderItems)
 
         const formattedDate = TimeFormat(orderInfo.created_at)
-        console.log("formattedDate", formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
+        // console.log("formattedDate", formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
 
         const invoiceData = {
             dateTime: formattedDate,
@@ -85,14 +85,14 @@ router.post('/cash/:order_id', async (req, res) => {
             encoding: '1',
             products: convertToInvoiceFormat(orderItems),
         };
-        console.log(invoiceData)
+        // console.log(invoiceData)
 
         await dataRep.confirmPaymentByCash(orderId)
-        // console.log(orderId)
+        // // console.log(orderId)
         try {
             printInvoice(invoiceData)
         } catch (e) {
-            console.log(e)
+            // console.log(e)
         }
         return res.status(200).send(true);
     } catch (e) {
@@ -113,7 +113,7 @@ router.post("/linepay/:id", async (req, res) => {
             `SELECT id, trade_no, trade_amt FROM table_orders WHERE id = ?`,
             [id]
         );
-        //   console.log(orders);
+        //   // console.log(orders);
         if (orders.length === 0) {
             return res.status(404).send("Order not found");
         }
@@ -128,7 +128,7 @@ router.post("/linepay/:id", async (req, res) => {
               WHERE od.order_id = ?`,
             [orderInfo.id] // 使用订单ID查询详情
         );
-        // console.log(orderItems)
+        // // console.log(orderItems)
         // 转换为LinePay格式
         const linepayData = {
             orderId: orderInfo.trade_no,
@@ -148,17 +148,17 @@ router.post("/linepay/:id", async (req, res) => {
                 },
             ],
         };
-        // console.log(linepayData)
-        // console.log(linepayData.packages[0].products)
+        // // console.log(linepayData)
+        // // console.log(linepayData.packages[0].products)
 
         const linePayBody = createLinePayBody(linepayData);
-        //   console.log(linePayBody);
+        //   // console.log(linePayBody);
         // CreateSignature 建立加密內容
         const uri = "/payments/request";
         const headers = createSignature(uri, linePayBody);
         const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
         const linePayRes = await axios.post(url, linePayBody, { headers });
-        //   console.log(url, linePayRes.data.returnCode);
+        //   // console.log(url, linePayRes.data.returnCode);
         // 請求成功...
         if (linePayRes?.data?.returnCode === "0000") {
             res.json({ paymentUrl: linePayRes.data.info.paymentUrl.web });
@@ -171,14 +171,14 @@ router.post("/linepay/:id", async (req, res) => {
     } catch (err) {
         console.error(`Error: ${err.message}`);
         res.status(500).send('Server Error');
-        console.log(err);
+        // console.log(err);
     }
 });
 
 // http://localhost:5000/pay/lineConfirm
 router.get("/lineConfirm", async (req, res) => {
     const { transactionId, orderId } = req.query;
-    //   console.log(orderId);
+    //   // console.log(orderId);
     try {
         const [orders] = await pool.query(
             `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
@@ -189,12 +189,12 @@ router.get("/lineConfirm", async (req, res) => {
             amount: orders[0].trade_amt,
             currency: "TWD",
         };
-        console.log(linePayBody);
+        // console.log(linePayBody);
         const uri = `/payments/${transactionId}/confirm`;
         const headers = createSignature(uri, linePayBody);
         const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
         const linePayRes = await axios.post(url, linePayBody, { headers });
-        // console.log(linePayRes);
+        // // console.log(linePayRes);
         if (linePayRes?.data?.returnCode === "0000") {
             res.redirect(`/pay/success/${orderId}`);
         } else {
@@ -203,7 +203,7 @@ router.get("/lineConfirm", async (req, res) => {
             });
         }
     } catch (err) {
-        console.log(err);
+        // console.log(err);
     }
 });
 
@@ -213,8 +213,8 @@ router.get("/success/:orderId", async (req, res) => {
         `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
         [orderId]
     );
-    console.log(orders);
-    console.log(orders.id);
+    // console.log(orders);
+    // console.log(orders.id);
     await dataRep.confirmPaymentByCash(orders[0].id);
     res.redirect("/pos");
 });

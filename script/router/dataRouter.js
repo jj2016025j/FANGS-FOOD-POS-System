@@ -79,7 +79,7 @@ router.get('/marketing/participation', (req, res) => {
 });
 
 router.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    // console.log(`Server running at http://localhost:${port}`);
 });
 
 module.exports = router;

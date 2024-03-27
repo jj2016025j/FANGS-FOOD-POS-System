@@ -28,7 +28,7 @@ router.post('/', async (req, res) => {
 
     try {
         var result = await dataRep.addTableOrder(tableNum)
-        console.log(result.insertId)
+        // console.log(result.insertId)
         var orders = await dataRep.getPendingTableOrders();
         const obj = await dataRep.getTradeNoById(result.insertId)
         const trade_no = obj.trade_no
@@ -38,15 +38,15 @@ router.post('/', async (req, res) => {
         const url = req.originalUrl; // 请求的路径和查询字符串 '/some-path?query=value'
         // const fullUrl = `${protocol}://${host}${url}/${trade_no}`;
         const fullUrl = `${protocol}://${LocalIP}:3000/pos/phone/${trade_no}`;
-        console.log(fullUrl);
+        // console.log(fullUrl);
         try {
             printOrderWithQR(fullUrl, order_id, tableNum)
         } catch (e) {
-            console.log(e)
+            // console.log(e)
         }
         return res.status(200).json(orders);
     } catch (e) {
-        console.log(e)
+        // console.log(e)
         return res.status(400).json({
             error: e
         });
@@ -70,7 +70,7 @@ router.post('/:order_id', async (req, res) => {
     }
 
     const orderInfo = orders[0];
-    console.log("orderInfo", orderInfo)
+    // console.log("orderInfo", orderInfo)
 
     const [orderItems] = await pool.query(
         `SELECT od.food_id, od.quantity, od.unit_price, f.name 
@@ -79,10 +79,10 @@ router.post('/:order_id', async (req, res) => {
                 WHERE od.order_id = ?`,
         [orderInfo.id]
     );
-    console.log("orderItems",orderItems)
+    // console.log("orderItems",orderItems)
 
     const formattedDate = TimeFormat(orderInfo.created_at)
-    console.log("formattedDate",formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
+    // console.log("formattedDate",formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
 
     const orderData = {
         orderNumber: orderId,
@@ -101,7 +101,7 @@ router.post('/:order_id', async (req, res) => {
     try {
         printOrder(orderData)
     } catch (e) {
-        console.log(e)
+        // console.log(e)
     }
     return res.status(200).send(true);
     // } catch (e) {
@@ -118,7 +118,7 @@ router.delete('/foods/:order_id/:food_id', async (req, res) => {
 
     try {
         var result = await dataRep.deleteOrderFood(order_id, food_id)
-        console.log('delete result', result)
+        // console.log('delete result', result)
         return res.status(200).json(true);
     } catch (e) {
         return res.status(400).json({
@@ -131,10 +131,10 @@ router.delete('/foods/:order_id/:food_id', async (req, res) => {
 // http://localhost:3000/order/list/12
 router.get('/list/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
-    console.log('foods')
+    // console.log('foods')
     try {
         var foods = await dataRep.getOrderFoods(orderId)
-        console.log('foods', foods)
+        // console.log('foods', foods)
         return res.status(200).json(foods);
     } catch (e) {
         return res.status(400).json({

@@ -66,9 +66,9 @@ function getPublicIP() {
 
 // 使用方式 會返回類似 http://58.99.96.109 的格式
 // getNetIPAddress().then(ip => {
-//     // console.log("我的公網 IP 地址是: http://" + ip);
+//     // // console.log("我的公網 IP 地址是: http://" + ip);
 // }).catch(err => {
-//     console.log("錯誤: " + err.message);
+//     // console.log("錯誤: " + err.message);
 // });
 
 // 需要使用異步函數 會返回類似 58.99.96.109 的格式

@@ -75,7 +75,7 @@ const copyImageAndUpdatePath = async (item) => {
 
   try {
     await fs.copyFile(originalImagePath, newImagePath);
-    console.log(`Copied: ${newImageName}`);
+    // console.log(`Copied: ${newImageName}`);
     return '/images/' + newImageName; // 返回新的圖片URL
   } catch (error) {
     console.error(`Error copying file: ${error}`);
@@ -89,7 +89,7 @@ const processItemsAndInsert = async (items) => {
     if (newImgPath) {
       item.img = newImgPath; // 更新項目的圖片路徑
     } else {
-      console.log(`Image not found or copy failed for item: ${item.product}`);
+      // console.log(`Image not found or copy failed for item: ${item.product}`);
     }
   }
   pool.insertProjectDataList(items, categoryMap); // 呼叫函式將項目資料導入資料庫
@@ -97,7 +97,7 @@ const processItemsAndInsert = async (items) => {
 
 // 執行處理
 processItemsAndInsert(itemData).then(() => {
-  console.log('All items processed and inserted into the database.');
+  // console.log('All items processed and inserted into the database.');
 });
 
 const Items = {

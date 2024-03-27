@@ -34,6 +34,6 @@ const generateRandomOrders = (startDateStr, endDateStr, priceRange, tableCount, 
 
 // 示例用法
 const orders = generateRandomOrders('2023-03-01', '2024-03-31', [300, 5000], 20, 1000);
-console.log(orders);
+// // console.log(orders);
 
 module.exports = orders;

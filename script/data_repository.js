@@ -462,22 +462,22 @@ const repository = {
     //完成現金付款
     confirmPaymentByCash: (order_id) => {
         return new Promise(async (resolve, reject) => {
-            // console.log("await ")
+            // // console.log("await ")
             const order = await repository.getOrderById(order_id);
             const order_foods = await repository.getOrderFoods(order_id);
-            // console.log("await ")
+            // // console.log("await ")
             if (order && order_foods.length) {
                 // food_price INT NULL,
                 // service_fee INT NULL,
                 // trade_amt INT NULL,
                 // order_status TINYINT DEFAULT 1,
-                // console.log("if ")
+                // // console.log("if ")
 
                 const food_price = order_foods.map((x) => x.quantity * x.unit_price).reduce((x, y) => x + y, 0);
                 const service_fee = Math.round(food_price * 10 / 100);
                 const trade_amt = food_price + service_fee;
                 const order_status = 2;
-                // console.log("getConnection ")
+                // // console.log("getConnection ")
 
                 pool.getConnection((err, connection) => {
                     if (err) {
@@ -505,22 +505,22 @@ const repository = {
     //計算訂單總價
     calculateOrder: (order_id) => {
         return new Promise(async (resolve, reject) => {
-            // console.log("await ")
+            // // console.log("await ")
             const order = await repository.getOrderById(order_id);
             const order_foods = await repository.getOrderFoods(order_id);
-            // console.log("await ")
+            // // console.log("await ")
             if (order && order_foods.length) {
                 // food_price INT NULL,
                 // service_fee INT NULL,
                 // trade_amt INT NULL,
                 // order_status TINYINT DEFAULT 1,
-                // console.log("if ")
+                // // console.log("if ")
 
                 const food_price = order_foods.map((x) => x.quantity * x.unit_price).reduce((x, y) => x + y, 0);
                 const service_fee = Math.round(food_price * 10 / 100);
                 const trade_amt = food_price + service_fee;
                 const order_status = 2;
-                // console.log("getConnection ")
+                // // console.log("getConnection ")
 
                 pool.getConnection((err, connection) => {
                     if (err) {
@@ -564,7 +564,7 @@ const repository = {
                             reject(error);
                             return;
                         }
-                        console.log(results);
+                        // console.log(results);
                         resolve(results);
                     });
             });

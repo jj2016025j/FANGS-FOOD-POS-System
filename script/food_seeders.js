@@ -71,12 +71,12 @@ sample_foods.forEach(async (food) => {
     }
 
     if(!image_path){
-        console.log('Image not found:', food.product)
-        console.log(food);
+        // console.log('Image not found:', food.product)
+        // console.log(food);
     }else{
         var image_name = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + ext;
         insertFood(food.product, type, food.price, '/uploads/foods/' + image_name);
         await fs.copyFileSync(image_path, '../public/uploads/foods/' + image_name);
-        console.log('inserted:', food.product)
+        // console.log('inserted:', food.product)
     }
 });

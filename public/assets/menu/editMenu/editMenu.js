@@ -58,7 +58,7 @@ let customSelect = document.getElementsByClassName("custom-select");
         
 for(let i = 0; i < customSelect.length; i++) {
     let selItem = customSelect[i].getElementsByTagName("select")[0]//5 option
-    // console.log(selItem.length) //5
+    // // console.log(selItem.length) //5
     
     let selectedItem = document.createElement("div");
     selectedItem.setAttribute("class", "select-selected");
@@ -103,7 +103,7 @@ for(let i = 0; i < customSelect.length; i++) {
         this.classList.toggle("select-arrow-active")
     })
     //預設select顯示(程式控制 selected選項)
-    // console.log(selItem.selectedIndex)
+    // // console.log(selItem.selectedIndex)
     document.getElementsByClassName("select-items")[0].getElementsByTagName("div")[selItem.selectedIndex].setAttribute("class", "same-as-selected");
 }
 
@@ -195,13 +195,13 @@ let postUpdateForm = () => {
 
 let postNewForm = () => {
     toastMessage("菜單已新增");
-    console.log("New")
+    // console.log("New")
 }
 
 let deleteItem = (itemId) => {
     //post itemId
     toastMessage("菜單已刪除");
-    console.log("deleteItem")
+    // console.log("deleteItem")
 }
 
 // 提示訊息 msg:顯示訊息

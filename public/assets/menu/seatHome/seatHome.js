@@ -8,7 +8,7 @@ let generateSeat = () => {
     return seatContainer.innerHTML = seatList.map((x) => {
         let {seatNum} = x;
         let search = seatArray.find(y => y.seatNum == seatNum);
-        // console.log(search)
+        // // console.log(search)
         return `
             <div class="seat-layout">
                 <div class="seat" id=${seatNum}>
@@ -33,7 +33,7 @@ let displaySeatOption = () => {
     for(let i = 0; i < seat.length; i++) {
         seat[i].addEventListener("click", function(e) {
             e.stopPropagation();
-            // console.log("seat")
+            // // console.log("seat")
             let seatOptionContent = document.getElementsByClassName("seat-option-content");
             for (let j = 0; j < seatOptionContent.length; j++) {
                 seatOptionContent[j].style.display = "none"
@@ -47,7 +47,7 @@ displaySeatOption();
 //點空白處關閉選單
 let closeSeatOption = () => {
     seatContainer.addEventListener("click", function(e) {
-        console.log("seatContainer")
+        // console.log("seatContainer")
         let seatOptionContent = document.getElementsByClassName("seat-option-content");
         for (let j = 0; j < seatOptionContent.length; j++) {
             seatOptionContent[j].style.display = "none"
@@ -66,7 +66,7 @@ let generateQRcode = (e) => {
             //要傳給後端的桌號
             // let seatID = this.parentNode.previousElementSibling.getElementsByClassName("seat-number")[0].innerHTML;
             let seatID = e.target.getAttribute('data-seatnum');
-            // console.log(seatID);
+            // // console.log(seatID);
             let search = seatArray.find(x => x.seatNum == seatID);
             if(search  === undefined) {
                 seatArray.push({

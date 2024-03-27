@@ -38,7 +38,7 @@ let generateMenuCard = (dom, datalist) => {
 // let vegetableType = projectDataList.filter((x) => {return x.type === "vegetable"});
 // let dumplingsType = projectDataList.filter((x) => {return x.type === "dumplings"});
 // let hotpotType = projectDataList.filter((x) => {return x.type === "hotpot"});
-// console.log(categoryData)
+// // console.log(categoryData)
 
 // generateMenuCard(menuMeat, meatType);
 // generateMenuCard(menuSeafood, seafoodType);
@@ -49,7 +49,7 @@ let generateMenuCard = (dom, datalist) => {
 categoryData.forEach((category)=> {
     var element = $('#tab_category_' + category.id).find('.items').get(0)
     var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
-    console.log(foodsForType)
+    // console.log(foodsForType)
     generateMenuCard(element, foodsForType);
 })
 
@@ -73,7 +73,7 @@ let customSelect = document.getElementsByClassName("custom-select");
         
 for(let i = 0; i < customSelect.length; i++) {
     let selItem = customSelect[i].getElementsByTagName("select")[0]//5 option
-    // console.log(selItem.length) //5
+    // // console.log(selItem.length) //5
     
     let selectedItem = document.createElement("div");
     selectedItem.setAttribute("class", "select-selected");
@@ -118,7 +118,7 @@ for(let i = 0; i < customSelect.length; i++) {
         this.classList.toggle("select-arrow-active")
     })
     //預設select顯示(程式控制 selected選項)
-    // console.log(selItem.selectedIndex)
+    // // console.log(selItem.selectedIndex)
     document.getElementsByClassName("select-items")[0].getElementsByTagName("div")[selItem.selectedIndex].setAttribute("class", "same-as-selected");
 }
 
@@ -208,7 +208,7 @@ let postNewForm = () => {
     }else {
         return;
     }
-    console.log($("#item-name"))
+    // console.log($("#item-name"))
     $.ajax({
         url: "/menu",
         method: "POST",
@@ -274,10 +274,10 @@ let deleteItem = (itemId) => {
 
     // //post itemId
     // $.post("/menu/delete", itemName, function(data) {
-    //         console.log(data);
+    //         // console.log(data);
     // })
     // toastMessage(`菜單已刪除${itemName}`);
-    // console.log("deleteItem")
+    // // console.log("deleteItem")
     // closeDeleteConfirm();
 }
 

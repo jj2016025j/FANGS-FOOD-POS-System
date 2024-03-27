@@ -51,7 +51,7 @@ router.get(
 
 router.post("/signup", async (req, res) => {
   let { name, email, password } = req.body;
-  // console.log(name, email, password);
+  // // console.log(name, email, password);
   if (password.length < 8) {
     req.flash("error_msg", "密碼長度過短，至少需要8個數字或英文字。");
     return res.redirect("/auth/signup");
@@ -132,7 +132,7 @@ router.post("/forgot-password", async (req, res) => {
       if (error) {
         console.error("郵件發送失敗：", error);
       } else {
-        console.log("郵件已成功發送：", info.response);
+        // console.log("郵件已成功發送：", info.response);
       }
     }
   );
@@ -143,7 +143,7 @@ router.post("/forgot-password", async (req, res) => {
 
 router.get("/reset-password", async (req, res) => {
   const { token } = req.query;
-  // console.log(token);
+  // // console.log(token);
   const result = await pool.query("SELECT * FROM users WHERE reset_token = ?", [
     token,
   ]);
@@ -172,7 +172,7 @@ router.post("/reset-password", async (req, res) => {
       [token]
     );
     const users = result[0]; // 查詢結果應該是result的第一個元素
-    console.log(users);
+    // console.log(users);
     if (!users || users.length === 0) {
       // 確保users存在且不是空陣列
       req.flash("error_msg", "無效的重設密碼連結");
@@ -218,7 +218,7 @@ router.post("/change-password", async (req, res) => {
   }
 
   const user = req.user; // 通過 Passport 獲得當前登入的用戶
-  console.log(oldPassword, newPassword, confirmPassword);
+  // console.log(oldPassword, newPassword, confirmPassword);
   // 檢查舊密碼是否正確
   const isMatch = await bcrypt.compare(oldPassword, user.password);
   if (!isMatch) {

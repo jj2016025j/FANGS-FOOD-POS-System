@@ -33,8 +33,8 @@ function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, t
                 console.error('打印機連接錯誤:', error);
                 return;
             }
-            console.log('打印機連接成功');
-            console.log(url, orderNumber, tableNumber, contents);
+            // console.log('打印機連接成功');
+            // console.log(url, orderNumber, tableNumber, contents);
 
             const qrContent = `${url}`;
             const qrCode = qr.imageSync(qrContent, { type: 'png', size: 10 });
@@ -56,14 +56,14 @@ function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, t
                         this.feed()
                         this.align('lt')
 
-                        console.log(`桌號: ${tableNumber}`);
-                        console.log(`訂單編號: ${orderNumber}`);
-                        console.log(`時間: ${formatDateTime(new Date())}`);
-                        console.log(`QRCode: ${qrContent}`);
+                        // console.log(`桌號: ${tableNumber}`);
+                        // console.log(`訂單編號: ${orderNumber}`);
+                        // console.log(`時間: ${formatDateTime(new Date())}`);
+                        // console.log(`QRCode: ${qrContent}`);
 
                         contents.forEach(content => {
                             this.text("      " + content)
-                            console.log(content);
+                            // console.log(content);
                         })
 
                         this
@@ -88,14 +88,14 @@ function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, t
                         this.feed()
                         this.align('ct')
 
-                        console.log(`桌號: ${tableNumber}`);
-                        console.log(`訂單編號: ${orderNumber}`);
-                        console.log(`時間: ${formatDateTime(new Date())}`);
-                        console.log(`QRCode: ${qrContent}`);
+                        // console.log(`桌號: ${tableNumber}`);
+                        // console.log(`訂單編號: ${orderNumber}`);
+                        // console.log(`時間: ${formatDateTime(new Date())}`);
+                        // console.log(`QRCode: ${qrContent}`);
 
                         contents.forEach(content => {
                             this.text(content)
-                            console.log(content);
+                            // console.log(content);
                         })
 
                         this
@@ -104,10 +104,10 @@ function printOrderWithQR(url = `http://${LocalIP}:3000/pos`, orderNumber = 1, t
                             .close()
                     });
             } else {
-                console.log("尺寸沒有支援")
+                // console.log("尺寸沒有支援")
             }
 
-            console.log('打印結束');
+            // console.log('打印結束');
             return true
         });
     } catch {
@@ -124,13 +124,13 @@ function printOrder(insertOrder = defaultOrderData) {
 
         // 合併預設參數和傳入的自訂物件參數
         const order = { ...oldOrderData, ...insertOrder };
-        console.log(order);
+        // console.log(order);
         device.open(function (error) {
             if (error) {
                 console.error('打印機連接錯誤:', error);
                 return;
             }
-            console.log('打印機連接成功');
+            // console.log('打印機連接成功');
 
             if (size == 5.7) {
                 printer
@@ -221,10 +221,10 @@ function printOrder(insertOrder = defaultOrderData) {
                     .cut()
                     .close()
             } else {
-                console.log("尺寸沒有支援")
+                // console.log("尺寸沒有支援")
             }
 
-            console.log('打印完成');
+            // console.log('打印完成');
             return true
         });
     } catch {
@@ -251,10 +251,10 @@ async function printInvoice(insertInvoiceData = defaultInvoiceData) {
                 console.error(`打印機連接錯誤:`, error);
                 return;
             }
-            console.log(`打印機連接成功`);
+            // console.log(`打印機連接成功`);
             // 串接條碼內容
             const barcodeContent = `${invoiceData.invoicePeriod}${invoiceData.invoiceNumber}${invoiceData.randomCode}`;
-            console.log(invoiceData);
+            // console.log(invoiceData);
 
             if (size == 5.7) {
                 printer
@@ -319,10 +319,10 @@ async function printInvoice(insertInvoiceData = defaultInvoiceData) {
                         .close()
                 });
             } else {
-                console.log("尺寸沒有支援")
+                // console.log("尺寸沒有支援")
             }
 
-            console.log(`打印完成`);
+            // console.log(`打印完成`);
             return true
         });
     } catch {
@@ -458,7 +458,7 @@ function convertToInvoiceFormat(orderItems) {
 
 // 使用函數並顯示結果
 // const invoiceFormat = convertToInvoiceFormat(orderItems);
-// console.log(invoiceFormat);
+// // console.log(invoiceFormat);
 
 const defaultOrderData = {
     orderNumber: 'H123456789',

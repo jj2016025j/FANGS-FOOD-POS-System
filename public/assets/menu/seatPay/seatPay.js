@@ -16,7 +16,7 @@ let generateOrderItem = (dom) => {
             let {id , item} = x;//物件解構賦值變數
             
             let search = projectDataList.find((y) => y.id === id) || [];
-            // console.log(search);
+            // // console.log(search);
             return `
                 <div class="order-item">
                     <img class="order-item-img" src=${search.img} alt="">

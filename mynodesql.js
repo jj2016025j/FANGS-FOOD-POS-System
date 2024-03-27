@@ -5,9 +5,9 @@ const MYSQL_HOST = process.env.MYSQL_HOST;
 const MYSQL_USER = process.env.MYSQL_USER;
 const MYSQL_PASSWORD = process.env.MYSQL_PASSWORD;
 const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
-console.log(MYSQL_HOST)
-console.log(MYSQL_USER)
-console.log(MYSQL_PASSWORD)
+// console.log(MYSQL_HOST)
+// console.log(MYSQL_USER)
+// console.log(MYSQL_PASSWORD)
 
 // const {
 //   MYSQL_HOST,
@@ -15,7 +15,7 @@ console.log(MYSQL_PASSWORD)
 //   MYSQL_PASSWORD,
 //   MYSQL_DATABASE
 // } = process.env;
-// console.log(process.env)
+// // console.log(process.env)
 
 const local = mysql.createConnection({
   connectionLimit: 20, // 連接池大小
@@ -55,7 +55,7 @@ const dbOperations = {
   // 直接返回SQL物件
   // dbOperations.Connection()
   Connection: function () {
-    console.log("取得連線物件")
+    // console.log("取得連線物件")
     return connection
   },
 
@@ -67,7 +67,7 @@ const dbOperations = {
         console.error('連接資料庫失敗: ' + err.stack);
         return;
       }
-      console.log('資料庫連接成功，連接 ID ' + connection.threadId);
+      // console.log('資料庫連接成功，連接 ID ' + connection.threadId);
     });
   },
 
@@ -76,7 +76,7 @@ const dbOperations = {
   createDatabase: function (databaseName) {
     connection.query(`CREATE DATABASE IF NOT EXISTS ${databaseName} CHARACTER SET utf8 COLLATE utf8_general_ci;`, (err) => {
       if (err) throw err;
-      console.log(`${databaseName} 資料庫已創建或已存在`);
+      // console.log(`${databaseName} 資料庫已創建或已存在`);
     });
   },
   //CREATE DATABASE restaurant_order CHARACTER SET utf8 COLLATE utf8_general_ci;
@@ -86,7 +86,7 @@ const dbOperations = {
   alterDatabaseCharset: function (databaseName, charset = 'utf8mb4', collate = 'utf8mb4_unicode_ci') {
     connection.query(`ALTER DATABASE ${databaseName} CHARACTER SET = ${charset} COLLATE = ${collate}`, err => {
       if (err) throw err;
-      console.log(`${databaseName} 資料庫編碼轉換成功`);
+      // console.log(`${databaseName} 資料庫編碼轉換成功`);
     });
   },
 
@@ -95,7 +95,7 @@ const dbOperations = {
   useDatabase: function (databaseName) {
     connection.query(`USE ${databaseName}`, err => {
       if (err) throw err;
-      console.log(`已選擇 ${databaseName} 資料庫`);
+      // console.log(`已選擇 ${databaseName} 資料庫`);
     });
   },
 
@@ -106,7 +106,7 @@ const dbOperations = {
     queries.forEach((_query, index) => {
       connection.query(_query, function (err, results) {
         if (err) throw err;
-        console.log(`Table ${index + 1} created`);
+        // console.log(`Table ${index + 1} created`);
 
         // 當所有表都已創建完畢，關閉連接
         if (index === queries.length - 1) connection.end();
@@ -119,7 +119,7 @@ const dbOperations = {
   alterTableCharset: function (tableName, charset = 'utf8mb4', collate = 'utf8mb4_unicode_ci') {
     connection.query(`ALTER TABLE ${tableName} CONVERT TO CHARACTER SET ${charset} COLLATE ${collate}`, err => {
       if (err) throw err;
-      console.log(`${tableName} 表編碼轉換成功`);
+      // console.log(`${tableName} 表編碼轉換成功`);
     });
   },
 
@@ -128,7 +128,7 @@ const dbOperations = {
   UseMySQL: function (sql, values = "", explain = "") {
     connection.query(sql, values, (err) => {
       if (err) throw err;
-      console.log(`成功使用SQL :${explain}`)
+      // console.log(`成功使用SQL :${explain}`)
     })
   },
 
@@ -151,7 +151,7 @@ const dbOperations = {
           console.error("插入数据时发生错误: ", err);
           reject(err);
         } else {
-          console.log("成功插入資料, 插入的ID: ", results.insertId);
+          // console.log("成功插入資料, 插入的ID: ", results.insertId);
           resolve(results);
         }
       });
@@ -183,7 +183,7 @@ const dbOperations = {
           console.error("插入数据时发生错误: ", err);
           reject(err);
         } else {
-          console.log("更新資料成功，影響的行數：" + results.affectedRows);
+          // console.log("更新資料成功，影響的行數：" + results.affectedRows);
           resolve(results);
         }
       });
@@ -199,7 +199,7 @@ const dbOperations = {
           console.error(err);
           reject(err); // 如果有错误，拒绝Promise
         } else {
-          console.log(results);
+          // console.log(results);
           resolve(results); // 如果成功，解析Promise
         }
       });
@@ -222,7 +222,7 @@ const dbOperations = {
         console.error('執行更新失敗:', error);
         return;
       }
-      console.log(`更新資料成功，影響的行數：${results.affectedRows}`);
+      // console.log(`更新資料成功，影響的行數：${results.affectedRows}`);
     });
   },
   // 更新表中的資料 不好用乾脆直接寫
@@ -232,7 +232,7 @@ const dbOperations = {
   //   let updateSql = `UPDATE ${tableName} SET ${setClause} WHERE ${whereClause}`;
   //   connection.query(updateSql, updateValues, (err, results) => {
   //     if (err) throw err;
-  //     console.log('更新資料成功，影響的行數：', results.affectedRows);
+  //     // console.log('更新資料成功，影響的行數：', results.affectedRows);
   //   });
   // },
 
@@ -241,7 +241,7 @@ const dbOperations = {
     let alterSql = `ALTER TABLE ${tableName} ADD COLUMN ${columnName} ${dataType}`;
     connection.query(alterSql, (err, results) => {
       if (err) throw err;
-      console.log('列表欄已增加');
+      // console.log('列表欄已增加');
     });
   },
 
@@ -250,7 +250,7 @@ const dbOperations = {
     let alterSql = `ALTER TABLE ${tableName} DROP COLUMN ${columnName}`;
     connection.query(alterSql, (err, results) => {
       if (err) throw err;
-      console.log('列表欄已移除');
+      // console.log('列表欄已移除');
     });
   },
 
@@ -259,7 +259,7 @@ const dbOperations = {
   deleteFromTable: function (tableName, dataName, values) {
     connection.query(`DELETE FROM ${tableName} WHERE ${dataName} = ?`, values, (err, results) => {
       if (err) throw err;
-      console.log('刪除資料成功，影響的行數：' + results.affectedRows);
+      // console.log('刪除資料成功，影響的行數：' + results.affectedRows);
     });
   },
 
@@ -274,7 +274,7 @@ const dbOperations = {
           console.error("刪除資料时发生错误: ", err);
           reject(err);
         } else {
-          console.log("刪除資料成功，影響的行數：" + results.affectedRows);
+          // console.log("刪除資料成功，影響的行數：" + results.affectedRows);
           resolve(results);
         }
       });
@@ -285,7 +285,7 @@ const dbOperations = {
   dropTable: function (tableName) {
     connection.query(`DROP TABLE IF EXISTS ${tableName}`, (err, results) => {
       if (err) throw err;
-      console.log(`${tableName} 資料表已刪除或原本就不存在`);
+      // console.log(`${tableName} 資料表已刪除或原本就不存在`);
     });
   },
 
@@ -293,7 +293,7 @@ const dbOperations = {
   dropDatabase: function (databaseName) {
     connection.query(`DROP DATABASE IF EXISTS ${databaseName}`, (err, results) => {
       if (err) throw err;
-      console.log(`${databaseName} 資料庫已刪除或原本就不存在`);
+      // console.log(`${databaseName} 資料庫已刪除或原本就不存在`);
     });
   },
 
@@ -301,7 +301,7 @@ const dbOperations = {
   closeConnection: function () {
     connection.end(err => {
       if (err) return console.error('關閉資料庫連接時出錯：', err);
-      console.log('資料庫連接已關閉');
+      // console.log('資料庫連接已關閉');
     });
   }
 };

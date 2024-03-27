@@ -9,7 +9,7 @@ const authCheck = (req, res, next) => {
 };
 
 router.get("/", authCheck, (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   return res.render("profile", { user: req.user });
 });
 
@@ -18,7 +18,7 @@ router.get("/gift", authCheck, (req, res) => {
 });
 
 router.get("/edit", authCheck, (req, res) => {
-  console.log(req.user);
+  // console.log(req.user);
   return res.render("edit", { user: req.user });
 });
 
