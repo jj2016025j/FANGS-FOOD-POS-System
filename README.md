@@ -1,4 +1,5 @@
 # FANGS-FOOD-POS
+test
 
 # 芳鍋火鍋網站及POS系統
 
