@@ -1,12 +1,14 @@
-# FANGS-FOOD-POS
-test
+### 想要推送內容
+請從test分支開發
+並對test分支發送pull request
+
+### 如何使用
 
 1.
 # 更改環境變數
 開啟.env檔案
 MYSQL_DATABASE為要使用的資料庫名稱
 TEST_MYSQL_DATABASE為測試用資料庫名稱
-
 
 2.
 # 初始化
@@ -23,5 +25,4 @@ TEST_MYSQL_DATABASE為測試用資料庫名稱
 
 
 目前問題:
-如果對同一筆訂單重複結帳伺服器會卡死 盡量避免
 有時候結帳在首頁並不會刷新當前狀況

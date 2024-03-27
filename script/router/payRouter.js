@@ -38,69 +38,68 @@ const pool = mysql.createPool({
     queueLimit: 0
 });
 
-
 //現金結帳
 router.post('/cash/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
-    // try {
-    const [orders] = await pool.query(
-        `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
-        [orderId]
-    );
-    if (orders.length === 0) {
-        return res.json('Order not found');
-    }
+    try {
+        const [orders] = await pool.query(
+            `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
+            [orderId]
+        );
+        if (orders.length === 0) {
+            return res.json('Order not found');
+        }
 
-    const orderInfo = orders[0];
-    console.log(orderInfo)
+        const orderInfo = orders[0];
+        console.log(orderInfo)
 
-    const [orderItems] = await pool.query(
-        `SELECT od.food_id, od.quantity, od.unit_price, f.name 
+        const [orderItems] = await pool.query(
+            `SELECT od.food_id, od.quantity, od.unit_price, f.name 
                 FROM orders_items od 
                 JOIN foods f ON od.food_id = f.id 
                 WHERE od.order_id = ?`,
-        [orderInfo.id]
-    );
-    console.log("orderItems", orderItems)
+            [orderInfo.id]
+        );
+        console.log("orderItems", orderItems)
 
-    const formattedDate = TimeFormat(orderInfo.created_at)
-    console.log("formattedDate", formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
+        const formattedDate = TimeFormat(orderInfo.created_at)
+        console.log("formattedDate", formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
 
-    const invoiceData = {
-        dateTime: formattedDate,
-        invoicePeriod: '10404',
-        items: orderItems.map(item => ({
-            name: item.name,
-            quantity: item.quantity,
-            unitPrice: item.unit_price,
-            totalPrice: item.quantity * item.unit_price
-        })),
-        subTotal: orderInfo.food_price,
-        tax: orderInfo.service_fee,
-        total: orderInfo.trade_amt,
-        date: '1100301',
-        salesAmount: '00002710',
-        encryptionInfo: 'encryptedStringHere',
-        selfUseArea: '**********',
-        itemCount: '5',
-        encoding: '1',
-        products: convertToInvoiceFormat(orderItems),
-    };
-    console.log(invoiceData)
+        const invoiceData = {
+            dateTime: formattedDate,
+            invoicePeriod: '10404',
+            items: orderItems.map(item => ({
+                name: item.name,
+                quantity: item.quantity,
+                unitPrice: item.unit_price,
+                totalPrice: item.quantity * item.unit_price
+            })),
+            subTotal: orderInfo.food_price,
+            tax: orderInfo.service_fee,
+            total: orderInfo.trade_amt,
+            date: '1100301',
+            salesAmount: '00002710',
+            encryptionInfo: 'encryptedStringHere',
+            selfUseArea: '**********',
+            itemCount: '5',
+            encoding: '1',
+            products: convertToInvoiceFormat(orderItems),
+        };
+        console.log(invoiceData)
 
-    await dataRep.confirmPaymentByCash(orderId)
-    // console.log(orderId)
-    try {
-        printInvoice(invoiceData)
+        await dataRep.confirmPaymentByCash(orderId)
+        // console.log(orderId)
+        try {
+            printInvoice(invoiceData)
+        } catch (e) {
+            console.log(e)
+        }
+        return res.status(200).send(true);
     } catch (e) {
-        console.log(e)
+        return res.status(400).json({
+            error: e
+        });
     }
-    return res.status(200).send(true);
-    // } catch (e) {
-    //     return res.status(400).json({
-    //         error: e
-    //     });
-    // }
 });
 
 // POST /linepay/:trade_no 路由处理
@@ -108,72 +107,72 @@ router.post('/cash/:order_id', async (req, res) => {
 router.post("/linepay/:id", async (req, res) => {
     const id = req.params.id;
 
-    // try {
-    // 查询订单基本信息
-    const [orders] = await pool.query(
-        `SELECT id, trade_no, trade_amt FROM table_orders WHERE id = ?`,
-        [id]
-    );
-    //   console.log(orders);
-    if (orders.length === 0) {
-        return res.status(404).send("Order not found");
-    }
+    try {
+        // 查询订单基本信息
+        const [orders] = await pool.query(
+            `SELECT id, trade_no, trade_amt FROM table_orders WHERE id = ?`,
+            [id]
+        );
+        //   console.log(orders);
+        if (orders.length === 0) {
+            return res.status(404).send("Order not found");
+        }
 
-    const orderInfo = orders[0]; // 直接取得订单对象
+        const orderInfo = orders[0]; // 直接取得订单对象
 
-    // 查询订单项详情
-    const [orderItems] = await pool.query(
-        `SELECT od.food_id, od.quantity, od.unit_price, f.name 
+        // 查询订单项详情
+        const [orderItems] = await pool.query(
+            `SELECT od.food_id, od.quantity, od.unit_price, f.name 
               FROM orders_items od 
               JOIN foods f ON od.food_id = f.id 
               WHERE od.order_id = ?`,
-        [orderInfo.id] // 使用订单ID查询详情
-    );
-    // console.log(orderItems)
-    // 转换为LinePay格式
-    const linepayData = {
-        orderId: orderInfo.trade_no,
-        amount: orderInfo.trade_amt,
-        currency: "TWD",
-        packages: [
-            {
-                id: "1",
-                amount: orderInfo.trade_amt,
-                products: [
-                    {
-                        name: "芳鍋",
-                        quantity: 1,
-                        price: orderInfo.trade_amt,
-                    },
-                ],
-            },
-        ],
-    };
-    // console.log(linepayData)
-    // console.log(linepayData.packages[0].products)
+            [orderInfo.id] // 使用订单ID查询详情
+        );
+        // console.log(orderItems)
+        // 转换为LinePay格式
+        const linepayData = {
+            orderId: orderInfo.trade_no,
+            amount: orderInfo.trade_amt,
+            currency: "TWD",
+            packages: [
+                {
+                    id: "1",
+                    amount: orderInfo.trade_amt,
+                    products: [
+                        {
+                            name: "芳鍋",
+                            quantity: 1,
+                            price: orderInfo.trade_amt,
+                        },
+                    ],
+                },
+            ],
+        };
+        // console.log(linepayData)
+        // console.log(linepayData.packages[0].products)
 
-    const linePayBody = createLinePayBody(linepayData);
-    //   console.log(linePayBody);
-    // CreateSignature 建立加密內容
-    const uri = "/payments/request";
-    const headers = createSignature(uri, linePayBody);
-    const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
-    const linePayRes = await axios.post(url, linePayBody, { headers });
-    //   console.log(url, linePayRes.data.returnCode);
-    // 請求成功...
-    if (linePayRes?.data?.returnCode === "0000") {
-        res.json({ paymentUrl: linePayRes.data.info.paymentUrl.web });
-    } else {
-        res.status(400).send({
-            message: "訂單不存在",
-        });
+        const linePayBody = createLinePayBody(linepayData);
+        //   console.log(linePayBody);
+        // CreateSignature 建立加密內容
+        const uri = "/payments/request";
+        const headers = createSignature(uri, linePayBody);
+        const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
+        const linePayRes = await axios.post(url, linePayBody, { headers });
+        //   console.log(url, linePayRes.data.returnCode);
+        // 請求成功...
+        if (linePayRes?.data?.returnCode === "0000") {
+            res.json({ paymentUrl: linePayRes.data.info.paymentUrl.web });
+        } else {
+            res.status(400).send({
+                message: "訂單不存在",
+            });
+        }
+
+    } catch (err) {
+        console.error(`Error: ${err.message}`);
+        res.status(500).send('Server Error');
+        console.log(err);
     }
-
-    // } catch (err) {
-    // console.error(`Error: ${err.message}`);
-    // res.status(500).send('Server Error');
-    // console.log(err);
-    // }
 });
 
 // http://localhost:5000/pay/lineConfirm
