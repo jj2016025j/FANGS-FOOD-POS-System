@@ -412,12 +412,11 @@ let sendCart = () => {
         url: "/order/" + order.id,
         method: "POST",
         data: JSON.stringify(basket),
-        dataType: "json",
-        contentType: "application/json;charset=utf-8",        
-        success: ()=> {
-            alert('訂單已送出！')
+        contentType: "application/json",
+        success: (result) => {
+            basket = [];
+            alert('送出訂單成功！')
             clearCart();
-            hideCart();
             generateOrderItem();
         }
     })
