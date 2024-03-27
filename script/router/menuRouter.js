@@ -1,5 +1,5 @@
 const express = require('express');
-const dbOperations = require('../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
+const dbOperations = require('../../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
 const router = express.Router();
 const dataRep = require('../data_repository');
 const multer = require('multer')
@@ -90,7 +90,7 @@ const Items = {
 // });
 
 //新增品項
-// http://localhost:5001/menu/items
+// http://localhost:5001/menu
 router.post('/', foodsUpload.single('item-img'), async (req, res) => {
     let formData = req.body;
 

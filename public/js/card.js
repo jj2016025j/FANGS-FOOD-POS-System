@@ -28,3 +28,14 @@ cards.forEach(card => {
 
 
 });
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+  var navbarToggle = document.querySelector('.navbar-toggler');
+  var navbarCollapse = document.querySelector('.navbar-collapse');
+
+  navbarToggle.addEventListener('click', function() {
+  navbarCollapse.classList.toggle('show');
+  });
+});

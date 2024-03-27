@@ -12,6 +12,10 @@ const mysql = require('mysql2/promise');
 const dataRep = require('../data_repository');
 
 const {
+    MYSQL_HOST,
+    MYSQL_USER,
+    MYSQL_PASSWORD,
+    MYSQL_DATABASE,
     LINEPAY_CHANNEL_ID,
     LINEPAY_RETURN_HOST,
     LINEPAY_SITE,
@@ -24,48 +28,16 @@ const {
 console.log(LINEPAY_CHANNEL_ID, LINEPAY_RETURN_HOST, LINEPAY_SITE, LINEPAY_VERSION, LINEPAY_CHANNEL_SECRET_KEY, LINEPAY_RETURN_CONFIRM_URL, LINEPAY_RETURN_CANCEL_URL)
 // 数据库连接配置
 const pool = mysql.createPool({
-    host: "localhost", // 資料庫伺服器地址
-    user: "root", // 資料庫用戶名
-    password: "", // 資料庫密碼
-    database: "fang_project", // 要操作的数据库名 庫名不一定要
+    host: MYSQL_HOST, // 資料庫伺服器地址
+    user: MYSQL_USER, // 資料庫用戶名
+    password: MYSQL_PASSWORD, // 資料庫密碼
+    database: MYSQL_DATABASE, // 要操作的数据库名 庫名不一定要
     charset: "utf8mb4", // 確保使用 utf8mb4
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
-// // 結帳
-// router.post('/pay', (req, res) => {
-//     const { orderId, paymentMethod, amount } = req.body;
-//     const receiptId = `receipt${Object.keys(orders).length + 1}`;
-//     const receipt = {
-//         receiptId,
-//         amount,
-//         paymentMethod,
-//         status: "已支付"
-//     };
-//     orders[orderId].receipt = receipt;
-//     // 返回支付成功或失敗
-//     res.json({ success: true, message: "支付成功", receipt });
-// });
-
-// // 發票開具 X
-// router.post('/invoice', (req, res) => {
-//     const { orderId, receiptId, invoiceType, carrier } = req.body;
-//     const invoiceId = `invoice${Object.keys(orders).length + 1}`;
-//     const invoice = {
-//         invoiceId,
-//         orderId,
-//         receiptId,
-//         invoiceType,
-//         carrier,
-//         status: "已開具"
-//     };
-//     if (orders[orderId]) orders[orderId].invoice = invoice;
-//     const isSuccess = printInvoice(invoiceData);
-
-//     res.json({ success: isSuccess, message: "發票已開具", invoice });
-// });
 
 //現金結帳
 router.post('/cash/:order_id', async (req, res) => {
@@ -76,7 +48,7 @@ router.post('/cash/:order_id', async (req, res) => {
         [orderId]
     );
     if (orders.length === 0) {
-        return res.status(404).send('Order not found');
+        return res.json('Order not found');
     }
 
     const orderInfo = orders[0];
@@ -119,7 +91,7 @@ router.post('/cash/:order_id', async (req, res) => {
     await dataRep.confirmPaymentByCash(orderId)
     // console.log(orderId)
     try {
-        // printInvoice(invoiceData)
+        printInvoice(invoiceData)
     } catch (e) {
         console.log(e)
     }
@@ -133,8 +105,8 @@ router.post('/cash/:order_id', async (req, res) => {
 
 // POST /linepay/:trade_no 路由处理
 // http://localhost:5000/pay/linepay/:trade_no
-router.post('/linepay/:order_id', async (req, res) => {
-    const id = req.params.order_id;
+router.post("/linepay/:id", async (req, res) => {
+    const id = req.params.id;
 
     // try {
     // 查询订单基本信息
@@ -142,9 +114,9 @@ router.post('/linepay/:order_id', async (req, res) => {
         `SELECT id, trade_no, trade_amt FROM table_orders WHERE id = ?`,
         [id]
     );
-    console.log(orders)
+    //   console.log(orders);
     if (orders.length === 0) {
-        return res.status(404).send('Order not found');
+        return res.status(404).send("Order not found");
     }
 
     const orderInfo = orders[0]; // 直接取得订单对象
@@ -152,9 +124,9 @@ router.post('/linepay/:order_id', async (req, res) => {
     // 查询订单项详情
     const [orderItems] = await pool.query(
         `SELECT od.food_id, od.quantity, od.unit_price, f.name 
-            FROM orders_items od 
-            JOIN foods f ON od.food_id = f.id 
-            WHERE od.order_id = ?`,
+              FROM orders_items od 
+              JOIN foods f ON od.food_id = f.id 
+              WHERE od.order_id = ?`,
         [orderInfo.id] // 使用订单ID查询详情
     );
     // console.log(orderItems)
@@ -167,24 +139,27 @@ router.post('/linepay/:order_id', async (req, res) => {
             {
                 id: "1",
                 amount: orderInfo.trade_amt,
-                products: [{
-                    name: "芳鍋",
-                    quantity: 1,
-                    price: orderInfo.trade_amt
-                }]
-            }
-        ]
+                products: [
+                    {
+                        name: "芳鍋",
+                        quantity: 1,
+                        price: orderInfo.trade_amt,
+                    },
+                ],
+            },
+        ],
     };
     // console.log(linepayData)
     // console.log(linepayData.packages[0].products)
 
     const linePayBody = createLinePayBody(linepayData);
+    //   console.log(linePayBody);
     // CreateSignature 建立加密內容
     const uri = "/payments/request";
     const headers = createSignature(uri, linePayBody);
     const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
     const linePayRes = await axios.post(url, linePayBody, { headers });
-    console.log(url, linePayRes.data.returnCode);
+    //   console.log(url, linePayRes.data.returnCode);
     // 請求成功...
     if (linePayRes?.data?.returnCode === "0000") {
         res.json({ paymentUrl: linePayRes.data.info.paymentUrl.web });
@@ -193,7 +168,6 @@ router.post('/linepay/:order_id', async (req, res) => {
             message: "訂單不存在",
         });
     }
-
 
     // } catch (err) {
     // console.error(`Error: ${err.message}`);
@@ -205,6 +179,7 @@ router.post('/linepay/:order_id', async (req, res) => {
 // http://localhost:5000/pay/lineConfirm
 router.get("/lineConfirm", async (req, res) => {
     const { transactionId, orderId } = req.query;
+    //   console.log(orderId);
     try {
         const [orders] = await pool.query(
             `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
@@ -212,26 +187,37 @@ router.get("/lineConfirm", async (req, res) => {
         );
 
         const linePayBody = {
-            amount: orders.trade_amt,
+            amount: orders[0].trade_amt,
             currency: "TWD",
         };
-
+        console.log(linePayBody);
         const uri = `/payments/${transactionId}/confirm`;
         const headers = createSignature(uri, linePayBody);
         const url = `${LINEPAY_SITE}/${LINEPAY_VERSION}${uri}`;
         const linePayRes = await axios.post(url, linePayBody, { headers });
+        // console.log(linePayRes);
         if (linePayRes?.data?.returnCode === "0000") {
-            res.redirect(`/success/${orderId}`);
+            res.redirect(`/pay/success/${orderId}`);
         } else {
             res.status(400).send({
                 message: linePayRes,
             });
         }
-        await dataRep.confirmPaymentByCash(orderId)
-
     } catch (err) {
         console.log(err);
     }
+});
+
+router.get("/success/:orderId", async (req, res) => {
+    const { orderId } = req.params;
+    const [orders] = await pool.query(
+        `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
+        [orderId]
+    );
+    console.log(orders);
+    console.log(orders.id);
+    await dataRep.confirmPaymentByCash(orders[0].id);
+    res.redirect("/pos");
 });
 
 // http://localhost:5000/pay/creditcard/:trade_no
@@ -287,3 +273,38 @@ function createSignature(uri, linePayBody) {
 }
 
 module.exports = router;
+
+
+
+// // 結帳
+// router.post('/pay', (req, res) => {
+//     const { orderId, paymentMethod, amount } = req.body;
+//     const receiptId = `receipt${Object.keys(orders).length + 1}`;
+//     const receipt = {
+//         receiptId,
+//         amount,
+//         paymentMethod,
+//         status: "已支付"
+//     };
+//     orders[orderId].receipt = receipt;
+//     // 返回支付成功或失敗
+//     res.json({ success: true, message: "支付成功", receipt });
+// });
+
+// // 發票開具 X
+// router.post('/invoice', (req, res) => {
+//     const { orderId, receiptId, invoiceType, carrier } = req.body;
+//     const invoiceId = `invoice${Object.keys(orders).length + 1}`;
+//     const invoice = {
+//         invoiceId,
+//         orderId,
+//         receiptId,
+//         invoiceType,
+//         carrier,
+//         status: "已開具"
+//     };
+//     if (orders[orderId]) orders[orderId].invoice = invoice;
+//     const isSuccess = printInvoice(invoiceData);
+
+//     res.json({ success: isSuccess, message: "發票已開具", invoice });
+// });

@@ -7,7 +7,7 @@
   <link rel="icon" type="image/png" href="./image/圖層 0.png" />
   <title>芳鍋</title>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="./css/page.css" />
   <script src="https://unpkg.com/scrollreveal"></script>
   <script>
@@ -26,45 +26,44 @@
   <nav class="navbar navbar-expand-lg navbar-light ">
     <div class="container-fluid">
       <a class="navbar-brand" href="./home"><img src="./image/芳鍋logo1.png" style="width: 200px;" /></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll"
-        aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
 
-      <div class="navbar-collapse justify-content-end" id="navbarScroll">
-        <ul class="navbar-nav " style="--bs-scroll-height: 100px;width: 1000px;font-size: 20px;">
-          <li class="nav-item h3">
-            <a class="nav-link active" aria-current="page" href="./home"><b>首頁</b></a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarScroll">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="./home"><b>首頁</b></a>
           </li>
-          <li class="nav-item h3">
+          <li class="nav-item">
             <a class="nav-link active" href="./news"><b>最新活動</b></a>
           </li>
-          <li class="nav-item dropdown h3">
+          <li class="nav-item dropdown h3 pt-2">
             <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
               <b>菜單資訊</b>
             </a>
-            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown">
+            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown" style="background-image: url(./image/backgroundY.jpg);">
               <li><a class="dropdown-item" href="./menu_base"><b>鍋物湯底</b></a></li>
               <hr />
               <li><a class="dropdown-item" href="./menu_meat"><b>單點品項</b></a></li>
             </ul>
           </li>
-          <li class="nav-item h3">
+          <li class="nav-item">
             <a class="nav-link active" href="./contactus"><b>聯繫我們</b></a>
           </li>
 
-          <li class="nav-item h3">
+          <li class="nav-item">
             <a class="nav-link active" href="./aboutus"><b>關於芳鍋</b></a>
           </li>
 
-          <li class="nav-item dropdown h3">
+          <li class="nav-item dropdown h3 pt-2">
             <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button"
               data-bs-toggle="dropdown" aria-expanded="false">
               <b>會員登入</b>
             </a>
-            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown">
+            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown" style="background-image: url(./image/backgroundY.jpg);">
               <li>
                 <a class="dropdown-item" href="/auth/login"><b>登入</b></a>
               </li>
@@ -198,7 +197,7 @@
 
 
   <!--part4 start-->
-  <div class="part4-1 text-center mb-0 recommend" style="margin-top: 100px;height: 100px;">
+  <div class="part4-1 text-center mb-0 recommend" style="margin-top: 50px;">
     <p style="color: rgb(89, 83, 83);">- recommend -</p>
     <p style="font-size: 60px;"><b>推薦餐點</b></p>
   </div>
@@ -208,8 +207,7 @@
 
 
 
-  <div id="carouselExampleDark" class="carousel slide m-auto carousel-dark carousel-fade" data-bs-ride="carousel"
-    style="width: 60%;">
+  <div id="carouselExampleDark" class="carousel slide carousel-dark carousel-fade" data-bs-ride="carousel" style="width: 60%;margin-top: -100px;margin-left: auto;margin-right: auto;">
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleDark" data-bs-slide-to="0" class="active"
         aria-current="true" aria-label="Slide 1"></button>
@@ -218,13 +216,13 @@
     </div>
     <div class="carousel-inner">
       <div class="carousel-item active" data-bs-interval="2000">
-        <img src="./image/廣告/未命名-1.png" class="d-block w-100" alt="...">
+        <img src="./image/廣告/未命名-1.png" class="d-block w-100" alt="..." />
       </div>
       <div class="carousel-item" data-bs-interval="2000">
-        <img src="./image/廣告/未命名-2.png" class="d-block w-100" alt="...">
+        <img src="./image/廣告/未命名-2.png" class="d-block w-100" alt="..." />
       </div>
       <div class="carousel-item" data-bs-interval="2000">
-        <img src="./image/廣告/未命名-3.png" class="d-block w-100" alt="...">
+        <img src="./image/廣告/未命名-3.png" class="d-block w-100" alt="..." />
       </div>
     </div>
     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleDark" data-bs-slide="prev"
@@ -251,8 +249,7 @@
   <!--footer start-->
 
 
-  <div class="footer container-fluid" style="position: relative;width: 100%;">
-
+  <div class="footer container-fluid" style="position: relative;width: 100%;margin-top: -150px;">
     <!--logo-->
     <img style="width: 200px;position: absolute;left: 129px;top: 259px;" src="./image/圖層 0.png" alt="">
 
