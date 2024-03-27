@@ -1,6 +1,9 @@
 ### 想要推送內容
-請從test分支開發
-並對test分支發送pull request
+請從 feature 分支開發
+並對 feature 分支發送pull request
+
+管理者會確認 feature 分支執行有無問題
+無問題會 merge 至 main 分支
 
 ### 如何使用
 
