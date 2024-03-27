@@ -1,8 +1,12 @@
+# FANGS-FOOD-POS
+test
+
 1.
 # 更改環境變數
 開啟.env檔案
 MYSQL_DATABASE為要使用的資料庫名稱
 TEST_MYSQL_DATABASE為測試用資料庫名稱
+
 
 2.
 # 初始化
