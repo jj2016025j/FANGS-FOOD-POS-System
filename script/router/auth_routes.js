@@ -17,6 +17,7 @@ router.get("/logout", (req, res) => {
     return res.redirect("/");
   });
 });
+
 //http://localhost:3001/auth/signup
 router.get("/signup", (req, res) => {
   return res.render("signup", { user: req.user });

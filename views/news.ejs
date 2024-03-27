@@ -1,74 +1,82 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="./image/圖層 0.png" />
-    <title>芳鍋</title>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="./css/page.css" />
-    <script src="https://unpkg.com/scrollreveal"></script>
-    <script>
-        ScrollReveal({ reset: true });
-    </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/png" href="./image/圖層 0.png" />
+  <title>芳鍋</title>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./css/page.css" />
+  <script src="https://unpkg.com/scrollreveal"></script>
+  <script>
+    ScrollReveal({ reset: true });
+  </script>
 </head>
+
 <body>
 
-<!--nav start-->
+  <!--nav start-->
   <nav class="navbar navbar-expand-lg navbar-light ">
     <div class="container-fluid">
       <a class="navbar-brand" href="./home"><img src="./image/芳鍋logo1.png" style="width: 200px;" /></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarScroll" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" aria-controls="navbarScroll" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
 
 
-      <div class="navbar-collapse justify-content-end" id="navbarScroll">
-        <ul class="navbar-nav " style="--bs-scroll-height: 100px;width: 1000px;font-size: 20px;">
-          <li class="nav-item h3">
-            <a class="nav-link active" aria-current="page" href="./home"><b>首頁</b></a>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarScroll">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="./home"><b>首頁</b></a>
           </li>
-          <li class="nav-item h3">
+          <li class="nav-item">
             <a class="nav-link active" href="./news"><b>最新活動</b></a>
           </li>
-          <li class="nav-item dropdown h3">
-            <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <b>菜單資訊</b>
+          <li class="nav-item dropdown h3 pt-2">
+            <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <b>菜單資訊</b>
             </a>
-            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown">
+            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown" style="background-image: url(./image/backgroundY.jpg);">
               <li><a class="dropdown-item" href="./menu_base"><b>鍋物湯底</b></a></li>
               <hr />
               <li><a class="dropdown-item" href="./menu_meat"><b>單點品項</b></a></li>
             </ul>
           </li>
-          <li class="nav-item h3">
+          <li class="nav-item">
             <a class="nav-link active" href="./contactus"><b>聯繫我們</b></a>
           </li>
 
-          <li class="nav-item h3" >
+          <li class="nav-item">
             <a class="nav-link active" href="./aboutus"><b>關於芳鍋</b></a>
           </li>
 
-          <li class="nav-item dropdown h3">
-            <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <b>會員登入</b>
+          <li class="nav-item dropdown h3 pt-2">
+            <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button"
+              data-bs-toggle="dropdown" aria-expanded="false">
+              <b>會員登入</b>
             </a>
-            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown">
-              <li><a class="dropdown-item" href="./login"><b>登入</b></a></li>
+            <ul class="dropdown-menu w-50" aria-labelledby="navbarScrollingDropdown" style="background-image: url(./image/backgroundY.jpg);">
+              <li>
+                <a class="dropdown-item" href="/auth/login"><b>登入</b></a>
+              </li>
               <hr />
-              <li><a class="dropdown-item" href="./signup"><b>註冊</b></a></li>
-        </ul>
+              <li>
+                <a class="dropdown-item" href="/auth/signup"><b>註冊</b></a>
+              </li>
+            </ul>
           </li>
 
         </ul>
-        
+
       </div>
 
     </div>
   </nav>
 
-<!--nav end-->
+  <!--nav end-->
 
 
 
@@ -88,13 +96,13 @@
   <!--infomation1-->
   <div class="container mt-5">
     <div class="row">
-      <div class="col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;">
+      <div class="part1-1 col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;">
         <div class="cardEffect" style="width: 80%;">
-          <img class="card-img"  src="./image/廣告/活動3.png" />
+          <img class="card-img" src="./image/廣告/活動3.png" />
 
         </div>
       </div>
-      <div class="part3-2 col-xl-5 mt-5 pt-5" style="margin-left: 50px;">
+      <div class="part1-2 col-xl-5 mt-5 pt-5" style="margin-left: 50px;">
         <p>2024.02.06 - 2024.07.31</p>
         <h1><b>芳鍋會員優惠 登入換好禮</b></h1><br />
         <h4><b>芳鍋感謝回饋　登入會員免費招待您!</b></h4>
@@ -115,7 +123,7 @@
   <!--infomation2-->
   <div class="container mt-5">
     <div class="row">
-      <div class="part2-1 col-xl-5 mt-5 pt-5 ps-5" >
+      <div class="part2-1 col-xl-5 mt-5 pt-5 ps-5">
         <p>活動期間：即日起~2024/12/31</p>
         <h1><b>饗樂生活卡 您生日 我請客</b></h1>
         <h4><b>活動期間平日天天饗最優9折!</b></h4>
@@ -129,9 +137,9 @@
         </div>
       </div>
 
-      <div class="col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;margin-right: 50px;">
+      <div class="part2-2 col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;margin-right: 50px;">
         <div class="cardEffect" style="width: 90%;">
-          <img class="card-img"  src="./image/廣告/活動2.png" />
+          <img class="card-img" src="./image/廣告/活動2.png" />
 
         </div>
       </div>
@@ -140,16 +148,16 @@
   </div>
 
 
-  <!--infomation3-->    
+  <!--infomation3-->
   <div class="container mt-5">
-    <div class="row" >
-      <div class="col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;">
+    <div class="row">
+      <div class="part3-1 col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 100px;">
         <div class="cardEffect" style="width: 80%;">
-          <img class="card-img"  src="./image/廣告/活動1.png" />
+          <img class="card-img" src="./image/廣告/活動1.png" />
 
         </div>
       </div>
-      <div class="part1-2 col-xl-5 mt-5 pt-5" style="margin-left: 50px;">
+      <div class="part3-2 col-xl-5 mt-5 pt-5" style="margin-left: 50px;">
         <p>2024.01.01 - 2024.06.30</p>
         <h1><b>2024Pay陪你瘋點數</b></h1>
         <h4><b>綁定指定信用卡可享瘋點數最高10%!!</b></h4>
@@ -164,7 +172,7 @@
   </div>
 
 
-  <!--infomation4-->   
+  <!--infomation4-->
   <div class="container mt-5 mb-5">
     <div class="row">
       <div class="part4-1 col-xl-5 mt-5 pt-5 ps-5">
@@ -176,21 +184,21 @@
           📌特點說明：<br />
 
           -送禮自用兩相宜<br />
-          
+
           -商品卡可折抵餐飲及服務費，內用外帶皆適用<br />
-          
+
           -未使用完之餘額保留於商品卡內無使用期限<br />
-          
+
           -全台分店皆可使用、不分平假日<br />
-          
+
           -本卡可多張同時使用折抵
-          
+
         </div>
       </div>
 
       <div class="col-xl-7 h-100 containerCARD" style="width: 50%;padding-top: 120px;margin-right: 50px;">
         <div class="cardEffect" style="width: 90%;">
-          <img class="card-img"  src="./image/廣告/活動4.png" />
+          <img class="card-img" src="./image/廣告/活動4.png" />
 
         </div>
       </div>
@@ -200,67 +208,77 @@
 
 
 
-<!--footer start-->
-    <div class="footer" style="position: relative;">
+  <!--footer start-->
+  <div class="footer" style="position: relative;">
 
-      <!--logo-->
-      <img style="width: 200px;position: absolute;left: 129px;top: 259px;" src="./image/圖層 0.png" alt="">
-      
-
-      <!--footer選項-->
-      <div style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left: 509px;bottom: 130px;">
-        <a href="#" style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">隱私權政策</a>
-      </div>
-
-      <div style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:629px;bottom: 153px;">
-        <a href="./contactUsPage.html" style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">聯絡我們</a>
-      </div>
-
-      <div style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:749px;bottom: 153px;">
-        <a href="./infomationPage.html" style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">最新消息</a>
-      </div>
-
-      <div style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:869px;bottom: 153px;">
-        <a href="./storyPage.html" style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">關於我們</a>
-      </div>
-
-      <!--fb,ig-->
-      <div id="connect">
-        <div style="display: flex;align-items: flex-start;gap: 10px;left:869px;bottom: 153px;">
-          <a href="#" style="position: absolute;right: 231px;bottom: 148px;"><img src="./image/instagram.png" style="width: 80px;" /></a>
-        </div>
-
-        <div style="display: flex;align-items: flex-start;gap: 10px;left:869px;bottom: 153px;">
-          <a href="#" style="position: absolute;right: 113px;bottom: 148px;"><img src="./image/facebook.png" style="width: 80px;" /></a>
-        </div>
-      </div>  
+    <!--logo-->
+    <img style="width: 200px;position: absolute;left: 129px;top: 259px;" src="./image/圖層 0.png" alt="">
 
 
-      <!--隱私權-->
-      <div style="display: flex;align-items: flex-start;gap: 10px;" id="privacy">
-        <p style="position: absolute;right: 50px;bottom: 20px;font-size: 10px;">芳鍋 版權所有 2024 ©All rights reserved</p>
-      </div>
-  
-
+    <!--footer選項-->
+    <div
+      style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left: 509px;bottom: 130px;">
+      <a href="#" style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">隱私權政策</a>
     </div>
-<!--footer end-->
+
+    <div
+      style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:629px;bottom: 153px;">
+      <a href="./contactUsPage.html"
+        style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">聯絡我們</a>
+    </div>
+
+    <div
+      style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:749px;bottom: 153px;">
+      <a href="./infomationPage.html"
+        style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">最新消息</a>
+    </div>
+
+    <div
+      style="display: flex;flex-direction: column;align-items: flex-start;gap: 10px;position: absolute;left:869px;bottom: 153px;">
+      <a href="./storyPage.html"
+        style="writing-mode: vertical-rl;font-size: 20px;font-weight: bold; text-decoration: none;">關於我們</a>
+    </div>
+
+    <!--fb,ig-->
+    <div id="connect">
+      <div style="display: flex;align-items: flex-start;gap: 10px;left:869px;bottom: 153px;">
+        <a href="#" style="position: absolute;right: 231px;bottom: 148px;"><img src="./image/instagram.png"
+            style="width: 80px;" /></a>
+      </div>
+
+      <div style="display: flex;align-items: flex-start;gap: 10px;left:869px;bottom: 153px;">
+        <a href="#" style="position: absolute;right: 113px;bottom: 148px;"><img src="./image/facebook.png"
+            style="width: 80px;" /></a>
+      </div>
+    </div>
+
+
+    <!--隱私權-->
+    <div style="display: flex;align-items: flex-start;gap: 10px;" id="privacy">
+      <p style="position: absolute;right: 50px;bottom: 20px;font-size: 10px;">芳鍋 版權所有 2024 ©All rights reserved</p>
+    </div>
+
+
+  </div>
+  <!--footer end-->
 
   <script>
     ScrollReveal().reveal('#infoTitle', { delay: 100 });
 
     ScrollReveal().reveal('.part1-1', { delay: 100 });
     ScrollReveal().reveal('.part1-2', { delay: 400 });
-  
-    ScrollReveal().reveal('.part2-2', { delay: 100 });
-    ScrollReveal().reveal('.part2-1', { delay: 400 });
+
+    ScrollReveal().reveal('.part2-1', { delay: 100 });
+    ScrollReveal().reveal('.part2-2', { delay: 400 });
 
     ScrollReveal().reveal('.part3-1', { delay: 100 });
     ScrollReveal().reveal('.part3-2', { delay: 400 });
-  
-    ScrollReveal().reveal('.part4-2', { delay: 100 });
-    ScrollReveal().reveal('.part4-1', { delay: 400 });
+
+    ScrollReveal().reveal('.part4-1', { delay: 100 });
+    ScrollReveal().reveal('.part4-2', { delay: 400 });
   </script>
   <script src="./js/card.js"></script>
-    
+
 </body>
+
 </html>

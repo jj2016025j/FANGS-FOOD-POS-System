@@ -12,11 +12,14 @@
   }
 
   #navbarScroll {
-    height: 300px;
+    height: 400px;
   }
 
   #privacy {
     visibility: hidden;
+  }
+  #infoTitle{
+    margin-bottom: 100px;
   }
 
 
@@ -335,11 +338,13 @@ a:active {
 }
 
 .dropdown-item:hover {
-  font-size: 18px;
+  font-size: 17px;
+  background-color: rgba(255, 255, 255, 0);
 }
 
 
 .popup {
+  z-index: 101;
   width: 400px;
   background-color: #fff;
   border-radius: 6px;

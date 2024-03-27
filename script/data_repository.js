@@ -11,11 +11,16 @@ const pool = mysql.createPool({
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
-    multipleStatements: true
+    multipleStatements: true,
+    charset: "utf8mb4", // 確保使用 utf8mb4
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Repository functions
 const repository = {
+    getPool: () => { return pool },
     /**
      * 取得報表
      * 1.本日營業額: dayTurnover
@@ -75,11 +80,23 @@ const repository = {
             });
         });
     },
-    uploadImage: (file, target_path) => {
+    // 檢查目標文件夾是否存在，如果不存在則創建
+    ensureDirectoryExistence: (filePath) => {
+        var dirname = path.dirname(filePath);
+        if (fs.existsSync(dirname)) {
+            return true;
+        }
+        repository.ensureDirectoryExistence(dirname);
+        fs.mkdirSync(dirname);
+    },
+    uploadImage: (file, target_dir) => {
         var tmp_path = file.path;
         var image_name = Date.now() + '_' + Math.random().toString(36).substring(7) + '.' + mime.extension(file.mimetype);
-        var target_path = target_path + '/' + image_name;
-        fs.rename(tmp_path, target_path, function (err) { });
+        var target_path = path.join(target_dir, image_name);
+        repository.ensureDirectoryExistence(target_path); // 確保目標文件夾存在
+        fs.rename(tmp_path, target_path, function (err) {
+            if (err) throw err; // 如果有錯誤，拋出以便處理
+        });
         return image_name;
     },
     uploadFood: async (formData, imageFile) => {
