@@ -18,6 +18,7 @@
         <!-- end of container -->
         <div class="form-layout">
             <div class="tab">
+                <a href="/pos"><i class="bi bi-arrow-left-short"></i></a>
                 <% categories.forEach(function(category, idx) { %>
                     <button class="tablinks <%= (idx == 1 ? 'defaultCateogry' : '') %>" onclick="openMenu('tab_category_<%= category.id %>')"><%= category.category %></button>
                 <% }) %>                
@@ -74,7 +75,7 @@
 
         <div class="navbar-container cart-width">
             <div class="goback-content">
-                <a href="/pos"><i class="bi bi-arrow-left-short"></i></a>
+                <!-- <a href="/pos"><i class="bi bi-arrow-left-short"></i></a> -->
                 <div>桌號<span id="table-number">0</span></div>
             </div>
             <div class="cart-content">
