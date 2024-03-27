@@ -26,7 +26,7 @@
             <!-- Tab links -->
             <div class="tab">
                 <% categories.forEach(function(category, idx) { %>
-                    <button class="tablinks <%= (idx == 0 ? 'defaultCateogry' : '') %>" onclick="openMenu('tab_category_<%= category.id %>')"><%= category.category %></button>
+                    <button class="tablinks <%= (idx == 1 ? 'defaultCateogry' : '') %>" onclick="openMenu('tab_category_<%= category.id %>')"><%= category.category %></button>
                 <% }) %>
                 <!-- <button class="tablinks" onclick="openMenu('hotpot-page')">鍋類</button>
                 <button id="defaultOpen" class="tablinks"  onclick="openMenu('meat-page')">肉類</button>
