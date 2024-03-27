@@ -59,7 +59,7 @@ let resetMenuCard = ()=> {
     categoryData.forEach((category)=> {
         var element = $('#tab_category_' + category.id).find('.items').get(0)
         var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
-        console.log(foodsForType)
+        // console.log(foodsForType)
         generateMenuCard(element, foodsForType);
     })
 }

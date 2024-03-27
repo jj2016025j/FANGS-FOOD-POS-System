@@ -47,7 +47,7 @@ displaySeatOption();
 //點空白處關閉選單
 let closeSeatOption = () => {
     seatContainer.addEventListener("click", function(e) {
-        console.log("seatContainer")
+        // console.log("seatContainer")
         let seatOptionContent = document.getElementsByClassName("seat-option-content");
         for (let j = 0; j < seatOptionContent.length; j++) {
             seatOptionContent[j].style.display = "none"

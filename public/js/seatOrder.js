@@ -207,9 +207,9 @@ let sentOrderBtn = () => {
             generateMenuCard(menuVegetable, vegetableType);
             generateMenuCard(menuDumplings, dumplingsType);
             if (cartBtnList[i].id) {
-                console.log("notsent")
+                // console.log("notsent")
             }else {
-                console.log("sent")
+                // console.log("sent")
             }
         })  
     }

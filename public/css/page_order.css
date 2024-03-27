@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
-
 :root {
     --doc-height: 100%
 }
@@ -16,7 +15,6 @@ body {
     top: 0;
     width: 100%;
     height: var(--doc-height);
-    overflow: hidden;
 }
 
 .card {
@@ -25,7 +23,7 @@ body {
 
 .page-wrapper {
     position: relative;
-    top: 120px;
+    top: 135px;
     height: calc(100% - 120px);
     width: 100%;
     background-color: #fff;
@@ -73,7 +71,7 @@ body {
     padding-bottom: 10px;
 }
 
-.item>a {
+.item > a {
     text-decoration: none;
     color: black;
 }
@@ -126,8 +124,7 @@ body {
     flex: 45%;
 }
 
-.bi-dash,
-.bi-plus {
+.bi-dash, .bi-plus {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -144,8 +141,7 @@ body {
 }
 
 
-.bi-dash:hover,
-.bi-plus:hover {
+.bi-dash:hover, .bi-plus:hover {
     background-color: #d68102;
     color: black;
     border: 1px solid rgba(27, 27, 27, 0.5);
@@ -194,7 +190,7 @@ body {
     /* background-color: grey; */
 }
 
-.order-info>div {
+.order-info > div {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -211,8 +207,7 @@ body {
     margin-inline: 10px;
 }
 
-#order-count,
-#order-price {
+#order-count, #order-price {
     display: inline-block;
     text-align: center;
     margin-right: 5px;
@@ -225,7 +220,7 @@ input[name="hotPot"] {
     display: none;
 }
 
-input[name="hotPot"]:checked+.hotPot-label .hotPot-radio::after {
+input[name="hotPot"]:checked + .hotPot-label .hotPot-radio::after{
     opacity: 1;
 }
 

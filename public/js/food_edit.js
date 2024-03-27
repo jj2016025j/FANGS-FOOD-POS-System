@@ -49,7 +49,7 @@ let generateMenuCard = (dom, datalist) => {
 categoryData.forEach((category)=> {
     var element = $('#tab_category_' + category.id).find('.items').get(0)
     var foodsForType = projectDataList.filter((x) => {return x.type === category.id})
-    console.log(foodsForType)
+    // console.log(foodsForType)
     generateMenuCard(element, foodsForType);
 })
 
@@ -208,7 +208,7 @@ let postNewForm = () => {
     }else {
         return;
     }
-    console.log($("#item-name"))
+    // console.log($("#item-name"))
     $.ajax({
         url: "/menu",
         method: "POST",

@@ -114,7 +114,7 @@ pool.insertProjectDataList(itemData, categoryMap)
 //     UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 //     FOREIGN KEY (CategoryId) REFERENCES Categories(CategoryId))`
 // )
-console.log("MenuItems")
+// console.log("MenuItems")
 
 // const Items = {
 //   MenuItemId: 20,

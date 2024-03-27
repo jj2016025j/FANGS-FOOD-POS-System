@@ -9,7 +9,7 @@ async function getMenu(categoryId) {
         const response = await axios.get(`${baseUrl}/menu`, {
             params: { category: categoryId }
         });
-        console.log('獲取菜單列表:', response.data);
+        // console.log('獲取菜單列表:', response.data);
     } catch (error) {
         console.error('獲取菜單列表錯誤:', error.response.data);
     }
@@ -25,7 +25,7 @@ async function addItem() {
             CategoryId: 1, // 假設您已有此類別ID
             IsActive: true
         });
-        console.log('新增菜單項目:', response.data);
+        // console.log('新增菜單項目:', response.data);
     } catch (error) {
         console.error('新增菜單項目錯誤:', error.response.data);
     }
@@ -41,7 +41,7 @@ async function updateItem(itemId) {
             CategoryId: 1, // 確保此ID存在
             IsActive: true
         });
-        console.log('修改菜單項目:', response.data);
+        // console.log('修改菜單項目:', response.data);
     } catch (error) {
         console.error('修改菜單項目錯誤:', error.response.data);
     }
@@ -51,7 +51,7 @@ async function updateItem(itemId) {
 async function deleteItem(itemId) {
     try {
         const response = await axios.delete(`${baseUrl}/items/${itemId}`);
-        console.log('刪除菜單項目:', response.data);
+        // console.log('刪除菜單項目:', response.data);
     } catch (error) {
         console.error('刪除菜單項目錯誤:', error.response.data);
     }

@@ -1,3 +1,4 @@
+// 卡片動畫
 const cards = document.querySelectorAll(".cardEffect");
 
 const cardImg = document.querySelectorAll('.card-img');
@@ -28,8 +29,6 @@ cards.forEach(card => {
 
 
 });
-
-
 
 document.addEventListener("DOMContentLoaded", function() {
   var navbarToggle = document.querySelector('.navbar-toggler');

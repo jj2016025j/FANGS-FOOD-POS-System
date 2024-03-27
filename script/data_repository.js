@@ -564,7 +564,7 @@ const repository = {
                             reject(error);
                             return;
                         }
-                        console.log(results);
+                        // console.log(results);
                         resolve(results);
                     });
             });

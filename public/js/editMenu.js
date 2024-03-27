@@ -195,13 +195,13 @@ let postUpdateForm = () => {
 
 let postNewForm = () => {
     toastMessage("菜單已新增");
-    console.log("New")
+    // console.log("New")
 }
 
 let deleteItem = (itemId) => {
     //post itemId
     toastMessage("菜單已刪除");
-    console.log("deleteItem")
+    // console.log("deleteItem")
 }
 
 // 提示訊息 msg:顯示訊息

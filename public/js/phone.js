@@ -203,7 +203,7 @@ let decrement = (id) => {
 //更新函式input值
 let updata = (id) => {
     let search = basket.find((x) => x.id === id);
-    console.log(search)
+    // console.log(search)
     if (search !== undefined) {
         document.getElementById(id).innerHTML = search.item;
     }
@@ -391,7 +391,7 @@ generateCartItem(cartContainer);
 // 開啟購物車
 let displayCart = () =>{
     document.getElementById("cart-page").style.transform = "translateY(0%)";
-    console.log("ok");
+    // console.log("ok");
     document.querySelector("#order-info > div").setAttribute('onclick',"sendCart()");
     document.getElementById("order-title").innerHTML = "送出";
     document.querySelector("#order-info > div > div:nth-child(2)").style.display = "none";
@@ -407,7 +407,7 @@ let hideCart = () => {
 
 //送單
 let sendCart = () => {
-    console.log("sendCart", basket);  
+    // console.log("sendCart", basket);  
     $.ajax({
         url: "/order/" + order.id,
         method: "POST",

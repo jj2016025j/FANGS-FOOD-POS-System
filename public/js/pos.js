@@ -1,7 +1,7 @@
 let seatArray = JSON.parse(localStorage.getItem("seatIsON")) || [];
 //座位陣列
 
-console.log(pendingOrders)
+// console.log(pendingOrders)
 
 const seatContainer = document.getElementById("seat-container");
 
@@ -10,7 +10,7 @@ let generateSeat = () => {
     seatContainer.innerHTML = seatList.map((x) => {
         let {seatNum} = x;
         let search = pendingOrders.find(y => y.table_number == seatNum);
-        console.log(search)
+        // console.log(search)
         const qrcodeUrl = search ? window.location.protocol + '//' + window.location.host + '/pos/phone/' + search.trade_no : ''
         const orderUrl = search ? '/pos/order/' + search.trade_no: ''
         return `
@@ -35,7 +35,7 @@ let generateSeat = () => {
     pendingOrders.forEach((order)=> {
         var elementId = `qrcode_${order.trade_no}`
         var url = window.location.protocol + '//' + window.location.host + '/order/' + order.trade_no
-        console.log(url)    
+        // console.log(url)    
         $('#'+elementId).qrcode({width: 100,height: 100,text: url})
 
     })
@@ -50,7 +50,7 @@ let displaySeatOption = () => {
     for(let i = 0; i < seat.length; i++) {
         seat[i].addEventListener("click", function(e) {
             e.stopPropagation();
-            // console.log("seat")
+            // // console.log("seat")
             let seatOptionContent = document.getElementsByClassName("seat-option-content");
             for (let j = 0; j < seatOptionContent.length; j++) {
                 seatOptionContent[j].style.display = "none"
@@ -64,7 +64,7 @@ displaySeatOption();
 //點空白處關閉選單
 let closeSeatOption = () => {
     seatContainer.addEventListener("click", function(e) {
-        console.log("seatContainer")
+        // console.log("seatContainer")
         let seatOptionContent = document.getElementsByClassName("seat-option-content");
         for (let j = 0; j < seatOptionContent.length; j++) {
             seatOptionContent[j].style.display = "none"
@@ -82,7 +82,7 @@ let generateQRcode = (e) => {
             //要傳給後端的桌號
             // let seatID = this.parentNode.previousElementSibling.getElementsByClassName("seat-number")[0].innerHTML;
             let seatID = (e.target.getAttribute('data-seatnum')) ? e.target.getAttribute('data-seatnum') : "1";
-            console.log(seatID)
+            // console.log(seatID)
             $.ajax({
                 url: "/order",
                 method: "POST",
@@ -91,7 +91,7 @@ let generateQRcode = (e) => {
                 },
                 success: function(result){
                     pendingOrders = result
-                    console.log(pendingOrders)
+                    // // console.log(pendingOrders)
                     updataState()
                 },
                 error: function(error){

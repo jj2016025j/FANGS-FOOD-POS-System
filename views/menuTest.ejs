@@ -57,7 +57,7 @@
                 }
                 const items = await response.json();
                 response1.innerHTML = JSON.stringify(items);
-                console.log(items);
+                // console.log(items);
                 // 处理items数据
             } catch (error) {
                 console.error('Failed to fetch menu items:', error);
@@ -78,7 +78,7 @@
                 }
                 const result = await response.text();
                 response2.innerHTML = JSON.stringify(result);
-                console.log(result);
+                // console.log(result);
                 // 处理成功逻辑
             } catch (error) {
                 console.error('Failed to add menu item:', error);
@@ -99,7 +99,7 @@
                 }
                 const result = await response.text();
                 response3.innerHTML = JSON.stringify(result);
-                console.log(result);
+                // console.log(result);
                 // 处理成功逻辑
             } catch (error) {
                 console.error('Failed to update menu item:', error);
@@ -120,7 +120,7 @@
                 }
                 const result = await response.text();
                 response4.innerHTML = JSON.stringify(result);
-                console.log(result);
+                // console.log(result);
                 // 处理成功逻辑
             } catch (error) {
                 console.error('Failed to delete menu item:', error);
