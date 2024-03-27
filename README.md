@@ -14,7 +14,7 @@ TEST_MYSQL_DATABASE為測試用資料庫名稱
 3.
 # 執行
 確保 MYSQL_DATABASE 名稱已經用 TEST_MYSQL_DATABASE 名稱建立過資料庫
-輸入 npm start
+輸入 npm start 即可啟動系統
 
 
 
