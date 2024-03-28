@@ -67,7 +67,7 @@ router.get('/report', async (req, res) => {
     });
 });
 
-//確認付款
+//確認付款畫面
 router.get('/confirmpayment/:order_id', async (req, res) => {
     const order_id = req.params['order_id'];
     const order = await dataRep.getOrderById(order_id);
