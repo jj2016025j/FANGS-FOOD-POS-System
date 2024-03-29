@@ -9,7 +9,7 @@ dotenv.config();
 const { printInvoice, convertToInvoiceFormat } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
 const mysql = require('mysql2/promise');
-const dataRep = require('../data_repository');
+const dbOperations = require('../../mynodesql'); 
 
 const {
     MYSQL_HOST,
@@ -87,7 +87,7 @@ router.post('/cash/:order_id', async (req, res) => {
         };
         // console.log(invoiceData)
 
-        await dataRep.confirmPaymentByCash(orderId)
+        await dbOperations.confirmPaymentByCash(orderId)
         // // console.log(orderId)
         try {
             printInvoice(invoiceData)
@@ -215,7 +215,7 @@ router.get("/success/:orderId", async (req, res) => {
     );
     // console.log(orders);
     // console.log(orders.id);
-    await dataRep.confirmPaymentByCash(orders[0].id);
+    await dbOperations.confirmPaymentByCash(orders[0].id);
     res.redirect("/pos");
 });
 
@@ -224,7 +224,7 @@ router.post('/creditcard/:order_id', async (req, res) => {
     // const orderId = req.params['trade_no']
     const orderId = req.params['order_id']
 
-    await dataRep.confirmPaymentByCash(orderId)
+    await dbOperations.confirmPaymentByCash(orderId)
 
     res.json(orderId);
 })
@@ -233,7 +233,7 @@ router.post('/creditcard/:order_id', async (req, res) => {
 // http://localhost:5000/pay/checkout
 router.post('/checkout', async (req, res) => {
     // try {
-    var results = await dataRep.OneClickCheckoutAll();
+    var results = await dbOperations.OneClickCheckoutAll();
     return res.status(200).json(results);
     // } catch (error) {
     //     console.error(error);

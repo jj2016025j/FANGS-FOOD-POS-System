@@ -1,9 +1,20 @@
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const pool = require("./user_model"); // 引用 MySQL 連線
 const LocalStrategy = require("passport-local");
 const bcrypt = require("bcrypt");
 const LineStrategy = require("passport-line");
+const mysql = require("mysql");
+const util = require("util");
+
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "127.0.0.1",
+  user: "root",
+  password: "",
+  database: "fang_project",
+});
+// 將 pool.query 轉換為 Promise 形式
+pool.query = util.promisify(pool.query);
 
 passport.serializeUser((user, done) => {
   // console.log("Serialize使用者。。。");

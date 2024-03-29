@@ -1,9 +1,20 @@
 const router = require("express").Router();
 const passport = require("passport");
-const pool = require("../user_model");
 const bcrypt = require("bcrypt");
 const nodemailer = require("nodemailer");
 const crypto = require("crypto");
+const mysql = require("mysql");
+const util = require("util");
+
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: "127.0.0.1",
+  user: "root",
+  password: "",
+  database: "fang_project",
+});
+// 將 pool.query 轉換為 Promise 形式
+pool.query = util.promisify(pool.query);
 
 //http://localhost:3001/auth/login
 router.get("/login", (req, res) => {

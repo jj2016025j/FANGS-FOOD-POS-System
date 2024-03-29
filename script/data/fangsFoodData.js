@@ -1,321 +1,358 @@
 let projectDataList = [
-    {   
-        id: "product01",
-        img: "/image/product/product01.webp",
-        price: 300,
-        product: "梅花豬肉",
-        type: "meat",
-    }
-    ,
     {
-        id: "product02",
-        img: "/image/product/product02.webp",
-        price: 250,
-        product: "五花肉",
-        type: "meat",
-    }
-    ,
-    {
-        id: "product03",
-        img: "/image/product/product03.webp",
-        price: 350,
-        product: "梅花牛肉",
-        type: "meat",
-    }
-    ,
-    {
-        id: "product04",
-        img: "/image/product/product04.webp",
-        price: 300,
-        product: "五花牛",
-        type: "meat",
-    }
-    ,
-    {
-        id: "product05",
-        img: "/image/product/product05.webp",
-        price: 450,
-        product: "澳洲和牛",
-        type: "meat",
-    }
-    ,
-    {
-        id: "product06",
-        img: "/image/product/product06.webp",
-        price: 250,
-        product: "蝦",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product07",
-        img: "/image/product/product07.webp",
-        price: 250,
-        product: "蛤蜊",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product08",
-        img: "/image/product/product08.webp",
-        price: 400,
-        product: "石班魚肉",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product09",
-        img: "/image/product/product09.webp",
-        price: 250,
-        product: "鱸魚肉",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product10",
-        img: "/image/product/product10.webp",
-        price: 350,
-        product: "小捲",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product11",
-        img: "/image/product/product11.webp",
-        price: 300,
-        product: "牡蠣",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product12",
-        img: "/image/product/product11.webp",
-        price: 350,
-        product: "蟹腳肉",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product14",
-        img: "/image/product/product11.webp",
-        price: 45,
-        product: "芋泥包",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product15",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "蟹肉丸",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product16",
-        img: "/image/product/product11.webp",
-        price: 40,
-        product: "三角豆腐",
-        type: "vegetable",
-    }
-    ,
-    {
-        id: "product18",
-        img: "/image/product/product11.webp",
-        price: 80,
-        product: "蔬菜片",
-        type: "vegetable",
-    }
-    ,
-    {
-        id: "product19",
-        img: "/image/product/product11.webp",
-        price: 80,
-        product: "三角蔬菜豆腐",
-        type: "vegetable",
-    }
-    ,
-    {
-        id: "product20",
-        img: "/image/product/product11.webp",
-        price: 40,
-        product: "大甲芋頭",
-        type: "vegetable",
-    }
-    ,
-    {
-        id: "product21",
-        img: "/image/product/product11.webp",
-        price: 100,
-        product: "牛肉丸",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product22",
-        img: "/image/product/product11.webp",
-        price: 45,
-        product: "鴨肉丸大顆",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product23",
-        img: "/image/product/product11.webp",
-        price: 45,
-        product: "芋角貢丸",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product24",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "蔬菜豆腐正方形",
-        type: "vegetable",
-    }
-    ,
-    {
-        id: "product25",
-        img: "/image/product/product11.webp",
-        price: 60,
-        product: "蛋餃",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product26",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "花枝腸",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product27",
-        img: "/image/product/product11.webp",
-        price: 60,
-        product: "日本蝦球",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product28",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "魚蛋腸",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product29",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "北海章魚",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product30",
-        img: "/image/product/product11.webp",
-        price: 60,
-        product: "魚卵蝦球",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product31",
-        img: "/image/product/product11.webp",
-        price: 110,
-        product: "帝王蟹棒",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product32",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "炙燒起司",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product33",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "月亮蝦餅",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product34",
-        img: "/image/product/product11.webp",
-        price: 60,
-        product: "明太子爆漿魚卵",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product35",
-        img: "/image/product/product11.webp",
-        price: 80,
-        product: "章魚條",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product36",
-        img: "/image/product/product11.webp",
-        price: 85,
-        product: "日本干貝",
-        type: "seafood",
-    }
-    ,
-    {
-        id: "product37",
-        img: "/image/product/product11.webp",
-        price: 50,
-        product: "南瓜包",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product38",
-        img: "/image/product/product11.webp",
-        price: 60,
-        product: "芝心包拉絲起司",
-        type: "dumplings",
-    }
-    ,
-    {
-        id: "product39",
-        img: "/image/product/product11.webp",
-        price: 40,
-        product: "切花枝揚",
-        type: "dumplings",
+        Price: 300,
+        MenuItemName: "梅花豬肉",
+        Category: "meat",
     },
     {
-        id: "product40",
-        img: "/image/product/product11.webp",
-        price: 750,
-        product: "牛肉鍋",
-        type: "hotpot",
-    }
-    ,
+        Price: 250,
+        MenuItemName: "五花肉",
+        Category: "meat",
+    },
     {
-        id: "product41",
-        img: "/image/product/product11.webp",
-        price: 650,
-        product: "豬肉鍋",
-        type: "hotpot",
-    }
-    ,
+        Price: 350,
+        MenuItemName: "梅花牛肉",
+        Category: "meat",
+    },
     {
-        id: "product42",
-        img: "/image/product/product11.webp",
-        price: 900,
-        product: "魚翅鍋",
-        type: "hotpot",
+        Price: 300,
+        MenuItemName: "五花牛",
+        Category: "meat",
+    },
+    {
+        Price: 450,
+        MenuItemName: "澳洲和牛",
+        Category: "meat",
+    },
+    {
+        Price: 250,
+        MenuItemName: "蝦",
+        Category: "seafood",
+    },
+    {
+        Price: 150,
+        MenuItemName: "蛤蜊",
+        Category: "seafood",
+    },
+    {
+        Price: 400,
+        MenuItemName: "石班魚肉",
+        Category: "seafood",
+    },
+    {
+        Price: 250,
+        MenuItemName: "鱸魚肉",
+        Category: "seafood",
+    },
+    {
+        Price: 350,
+        MenuItemName: "小卷",
+        Category: "seafood",
+    },
+    {
+        Price: 180,
+        MenuItemName: "牡蠣",
+        Category: "seafood",
+    },
+    {
+        Price: 350,
+        MenuItemName: "蟹腳肉",
+        Category: "seafood",
+    },
+    {
+        Price: 350,
+        MenuItemName: "鱸魚肉",
+        Category: "seafood",
+    },
+    {
+        Price: 350,
+        MenuItemName: "小捲",
+        Category: "seafood",
+    },
+    {
+        Price: 350,
+        MenuItemName: "鱸魚肉",
+        Category: "seafood",
+    },
+    {
+        Price: 120,
+        MenuItemName: "魚冊",
+        Category: "seafood",
+    },
+    {
+        Price: 120,
+        MenuItemName: "魚餃",
+        Category: "seafood",
+    },
+    {
+        Price: 45,
+        MenuItemName: "芋泥堡",
+        Category: "seafood",
+    },
+    {
+        Price: 50,
+        MenuItemName: "蟹肉丸",
+        Category: "seafood",
+    },
+    {
+        Price: 45,
+        MenuItemName: "芋泥包",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "蟹肉丸",
+        Category: "dumplings",
+    },
+    {
+        Price: 40,
+        MenuItemName: "三角豆腐",
+        Category: "vegetable",
+    },
+    {
+        Price: 80,
+        MenuItemName: "蔬菜片",
+        Category: "vegetable",
+    },
+    {
+        Price: 80,
+        MenuItemName: "三角蔬菜豆腐",
+        Category: "vegetable",
+    },
+    {
+        Price: 40,
+        MenuItemName: "大甲芋頭",
+        Category: "vegetable",
+    },
+    {
+        Price: 100,
+        MenuItemName: "牛肉丸",
+        Category: "dumplings",
+    },
+    {
+        Price: 45,
+        MenuItemName: "鴨肉丸大顆",
+        Category: "dumplings",
+    },
+    {
+        Price: 45,
+        MenuItemName: "芋角貢丸",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "蔬菜豆腐正方形",
+        Category: "vegetable",
+    },
+    {
+        Price: 60,
+        MenuItemName: "蛋餃",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "花枝腸",
+        Category: "dumplings",
+    },
+    {
+        Price: 60,
+        MenuItemName: "日本蝦球",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "魚蛋腸",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "北海章魚",
+        Category: "seafood",
+    },
+    {
+        Price: 60,
+        MenuItemName: "魚卵蝦球",
+        Category: "dumplings",
+    },
+    {
+        Price: 110,
+        MenuItemName: "帝王蟹棒",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "炙燒起司",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "月亮蝦餅",
+        Category: "dumplings",
+    },
+    {
+        Price: 60,
+        MenuItemName: "明太子爆漿魚卵",
+        Category: "dumplings",
+    },
+    {
+        Price: 80,
+        MenuItemName: "章魚條",
+        Category: "seafood",
+    },
+    {
+        Price: 85,
+        MenuItemName: "日本干貝",
+        Category: "seafood",
+    },
+    {
+        Price: 50,
+        MenuItemName: "南瓜包",
+        Category: "dumplings",
+    },
+    {
+        Price: 60,
+        MenuItemName: "芝心包拉絲起司",
+        Category: "dumplings",
+    },
+    {
+        Price: 40,
+        MenuItemName: "切花枝揚",
+        Category: "dumplings",
+    },
+    {
+        Price: 750,
+        MenuItemName: "牛肉鍋",
+        Category: "hotpot",
+    },
+    {
+        Price: 650,
+        MenuItemName: "豬肉鍋",
+        Category: "hotpot",
+    },
+    {
+        Price: 900,
+        MenuItemName: "魚翅鍋",
+        Category: "hotpot",
+    },
+    {
+        Price: 70,
+        MenuItemName: "草蝦丸",
+        Category: "dumplings",
+    },
+    {
+        Price: 60,
+        MenuItemName: "芝心包（拉絲起司)",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "南瓜堡",
+        Category: "dumplings",
+    },
+    {
+        Price: 60,
+        MenuItemName: "明太子（爆漿魚卵）",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "月亮蝦餅",
+        Category: "dumplings",
+    },
+    {
+        Price: 50,
+        MenuItemName: "炙燒（起司）",
+        Category: "dumplings",
+    },
+    {
+        Price: 258,
+        MenuItemName: "龍膽石斑魚",
+        Category: "dumplings",
+    },
+    {
+        Price: 300,
+        MenuItemName: "白蝦大隻5隻",
+        Category: "dumplings",
+    },
+    {
+        Price: 350,
+        MenuItemName: "白蝦小隻",
+        Category: "dumplings",
+    },
+    {
+        Price: 250,
+        MenuItemName: "干貝",
+        Category: "dumplings",
+    },
+    {
+        Price: 600,
+        MenuItemName: "魚翅",
+        Category: "dumplings",
+    },
+    {
+        Price: 158,
+        MenuItemName: "蟹肉",
+        Category: "dumplings",
+    },
+    {
+        Price: 238,
+        MenuItemName: "美國牛梅花小100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 450,
+        MenuItemName: "美國牛梅花大200克",
+        Category: "dumplings",
+    },
+    {
+        Price: 238,
+        MenuItemName: "美國牛板腱小100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 450,
+        MenuItemName: "美國牛板腱大200克",
+        Category: "dumplings",
+    },
+    {
+        Price: 396,
+        MenuItemName: "美國安格斯黑牛肩小排小100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 760,
+        MenuItemName: "美國安格斯黑牛肩小排大200克",
+        Category: "dumplings",
+    },
+    {
+        Price: 312,
+        MenuItemName: "美國牛五花100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 590,
+        MenuItemName: "美國牛五花大200克",
+        Category: "dumplings",
+    },
+    {
+        Price: 336,
+        MenuItemName: "松板豬肉片100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 638,
+        MenuItemName: "松板豬肉片大200克",
+        Category: "dumplings",
+    },
+    {
+        Price: 150,
+        MenuItemName: "豬梅花肉100克",
+        Category: "dumplings",
+    },
+    {
+        Price: 270,
+        MenuItemName: "豬梅花肉大200克",
+        Category: "dumplings",
     }
 ];
 

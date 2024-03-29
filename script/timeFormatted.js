@@ -1,7 +1,8 @@
-// // 使用 Intl.DateTimeFormat 或 Date.prototype.toLocaleString() 進行格式化
-
-// 假設從資料庫中獲取的時間字符串為
-const isoString = '2024-03-23T13:45:47.000Z';
+// 使用 Intl.DateTimeFormat 或
+// Date.prototype.toLocaleString() 進行格式化
+// 原始資料 "2024-03-23T13:45:47.000Z"
+// 輸出格式1 "2024-03-23 21:45:47"
+// 輸出格式2 "2024/03/23 21:45:47"
 
 // 輸出格式為 "2024-03-23 21:45:47"
 function TimeFormat(isoString) {
@@ -43,6 +44,10 @@ function TimeFormat2(isoString) {
   // console.log(formattedDate);
   return formattedDate;
 }
+
+
+// // 假設從資料庫中獲取的時間字符串為
+// const isoString = '2024-03-23T13:45:47.000Z';
 
 // TimeFormat(isoString)
 // // 輸出格式為 "2024-03-23 21:45:47"

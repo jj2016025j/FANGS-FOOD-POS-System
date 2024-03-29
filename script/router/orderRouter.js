@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const dataRep = require('../data_repository');
+const dbOperations = require('../../mynodesql'); 
+
 const { printOrder, printOrderWithQR } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
 const mysql = require('mysql2/promise');
@@ -27,10 +28,10 @@ router.post('/', async (req, res) => {
     const tableNum = formData.seatID
 
     try {
-        var result = await dataRep.addTableOrder(tableNum)
+        var result = await dbOperations.addTableOrder(tableNum)
         // console.log(result.insertId)
-        var orders = await dataRep.getPendingTableOrders();
-        const obj = await dataRep.getTradeNoById(result.insertId)
+        var orders = await dbOperations.getPendingTableOrders();
+        const obj = await dbOperations.getTradeNoById(result.insertId)
         const trade_no = obj.trade_no
         const order_id = result.insertId
         const protocol = req.protocol; // 'http' 或 'https'
@@ -58,8 +59,8 @@ router.post('/', async (req, res) => {
 router.post('/:order_id', async (req, res) => {
     let formData = req.body;
     const orderId = req.params['order_id']
-    await dataRep.appendOrderFoods(orderId, formData)
-    await dataRep.calculateOrder(orderId)
+    await dbOperations.appendOrderFoods(orderId, formData)
+    await dbOperations.calculateOrder(orderId)
     // try {
     const [orders] = await pool.query(
         `SELECT id, trade_no, food_price, service_fee, trade_amt, created_at FROM table_orders WHERE id = ?`,
@@ -70,7 +71,7 @@ router.post('/:order_id', async (req, res) => {
     }
 
     const orderInfo = orders[0];
-    // console.log("orderInfo", orderInfo)
+    console.log("orderInfo", orderInfo)
 
     const [orderItems] = await pool.query(
         `SELECT od.food_id, od.quantity, od.unit_price, f.name 
@@ -79,7 +80,7 @@ router.post('/:order_id', async (req, res) => {
                 WHERE od.order_id = ?`,
         [orderInfo.id]
     );
-    // console.log("orderItems",orderItems)
+    console.log("orderItems",orderItems)
 
     const formattedDate = TimeFormat(orderInfo.created_at)
     // console.log("formattedDate",formattedDate); // 輸出格式可能與上面略有不同，依瀏覽器和地區設定而定
@@ -117,7 +118,7 @@ router.delete('/foods/:order_id/:food_id', async (req, res) => {
     const food_id = req.params['food_id']
 
     try {
-        var result = await dataRep.deleteOrderFood(order_id, food_id)
+        var result = await dbOperations.deleteOrderFood(order_id, food_id)
         // console.log('delete result', result)
         return res.status(200).json(true);
     } catch (e) {
@@ -133,7 +134,7 @@ router.get('/list/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
     // console.log('foods')
     try {
-        var foods = await dataRep.getOrderFoods(orderId)
+        var foods = await dbOperations.getOrderFoods(orderId)
         // console.log('foods', foods)
         return res.status(200).json(foods);
     } catch (e) {

@@ -3,7 +3,7 @@ var fs = require('fs');
 const path = require('path');
 
 // 連接資料庫
-pool.Connection()
+pool.getConnection()
 
 // 如果要重建資料庫就保留這個功能 重建後再備註
 pool.dropDatabase("fang_project2")

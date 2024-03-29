@@ -1,7 +1,6 @@
 const express = require('express');
-const dbOperations = require('../../mynodesql'); // 假設你已經有一個設定好的MySQL連接池
 const router = express.Router();
-const dataRep = require('../data_repository');
+const dbOperations = require('../../mynodesql'); 
 const multer = require('multer')
 const foodsUpload = multer({
     dest: "./public/uploads/tmp"
@@ -94,7 +93,7 @@ const Items = {
 router.post('/', foodsUpload.single('item-img'), async (req, res) => {
     let formData = req.body;
 
-    await dataRep.uploadFood(formData, req.file)
+    await dbOperations.uploadFood(formData, req.file)
 
     return res.status(200).send(formData);
 });
@@ -103,7 +102,7 @@ router.post('/', foodsUpload.single('item-img'), async (req, res) => {
 router.put('/:id', foodsUpload.single('item-img'), async (req, res) => {
     const id = req.params['id']
     let formData = req.body;
-    await dataRep.editFood(id, formData, req.file)
+    await dbOperations.editFood(id, formData, req.file)
 
     return res.status(200).send(true);
 });
@@ -111,7 +110,7 @@ router.put('/:id', foodsUpload.single('item-img'), async (req, res) => {
 //刪除品項
 router.delete('/:id', async (req, res) => {
     const id = req.params['id']
-    await dataRep.deleteFood(id)
+    await dbOperations.deleteFood(id)
 
     return res.status(200).send(true);
 });
