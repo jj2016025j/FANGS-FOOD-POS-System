@@ -128,7 +128,7 @@ const dbOperations = {
   UseMySQL: function (sql, values = "", explain = "") {
     connection.query(sql, values, (err) => {
       if (err) throw err;
-      // console.log(`成功使用SQL :${explain}`)
+      console.log(`成功使用SQL :${explain}`)
     })
   },
 
