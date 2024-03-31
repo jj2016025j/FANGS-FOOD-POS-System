@@ -132,6 +132,9 @@ const dbOperations = {
   async generateMainOrderId() {
     return 'ORD' + new Date().getTime() + Math.random().toString(36).substring(2, 15);
   },
+  async generateSubOrderId(MainOrderId) {
+    return MainOrderId + '-SUB' + Math.floor(Math.random() * 10000) + 1;
+  },
   async makeNewMainOrder(MainOrderId) {
     const TableId = Math.floor(Math.random() * 12) + 1;//隨機生成1~12
     await dbOperations.UseMySQL(`
@@ -263,6 +266,71 @@ const dbOperations = {
       console.log(`主訂單 ${MainOrderId} 的總額驗證成功，數據一致。`);
     } else {
       console.error(`主訂單 ${MainOrderId} 的總額驗證失敗，數據不一致。`);
+    }
+  },
+  async insertMainOrder(order) {
+    const sql = `
+      INSERT INTO MainOrders (MainOrderId, SubTotal, ServiceFee, Total, TableId, OrderStatus)
+      VALUES (?, ?, ?, ?, ?, ?);
+    `;
+    const values = [
+      order.MainOrderId,
+      order.SubTotal,
+      order.ServiceFee,
+      order.Total,
+      order.TableId,
+      order.OrderStatus,
+    ];
+    await dbOperations.UseMySQL(sql, values, "插入主訂單");
+  },
+  async insertMainOrderMappings(MainOrderId, mappings) {
+    for (const mapping of mappings) {
+      // 第一步：根據 MenuItemName 查找 MenuItemId
+      const searchSql = `
+        SELECT Id FROM MenuItems WHERE MenuItemName = ? LIMIT 1;
+      `;
+      const searchResults = await dbOperations.UseMySQL(searchSql, [mapping.MenuItemName], "查找菜品ID");
+      if (searchResults.length > 0) {
+        const MenuItemId = searchResults[0].Id;  // 假設找到了對應的菜品ID
+
+        // 第二步：使用找到的 MenuItemId 進行插入
+        const insertSql = `
+          INSERT INTO MainOrderMappings (MainOrderId, MenuItemId, quantity, unit_price, total_price)
+          VALUES (?, ?, ?, ?, ?);
+        `;
+        const values = [
+          MainOrderId,
+          MenuItemId,  // 使用查找到的 MenuItemId
+          mapping.quantity,
+          mapping.unit_price,
+          mapping.total_price
+        ];
+        await dbOperations.UseMySQL(insertSql, values, `插入主訂單 ${MainOrderId} 映射 ${MenuItemId}`);
+      } else {
+        console.error(`未找到菜品名稱為 "${mapping.MenuItemName}" 的菜品ID`);
+      }
+    }
+  },
+  async processOrder(order) {
+    try {
+      console.log("開始插入主訂單 : ", order.MainOrderId);
+      await this.insertMainOrder(order);
+
+      console.log("開始插入主訂單的映射 : ", order.MainOrderId);
+      await this.insertMainOrderMappings(order.MainOrderId, order.OrderMappings);
+
+      console.log("訂單處理完成:", order.MainOrderId);
+    } catch (error) {
+      console.error("處理訂單時出錯:", error);
+    }
+  },
+  async processGeneratedOrders() {
+    const variousMethods = require("./variousMethods.js")
+
+    const orders = variousMethods.getGeneratedOrders(); // 假設這會返回一個訂單陣列
+  
+    for (const order of orders) {
+      await dbOperations.processOrder(order); // 處理每個訂單
     }
   }
 

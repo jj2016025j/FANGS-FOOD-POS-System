@@ -91,6 +91,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     , "", "建立 MainOrders 資料表")
 
   const MainOrderId = await dbOperations.generateMainOrderId()
+  console.log(`生成新主訂單 ${MainOrderId}`)
 
   await dbOperations.makeNewMainOrder(MainOrderId)
 
@@ -125,11 +126,10 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     )`
     , "", "建立 子訂單 資料表")
 
-  const SubOrderId = MainOrderId + '-SUB' + Math.floor(Math.random() * 10000) + 1;
-
+  const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
+  console.log(`生成新子訂單 ${SubOrderId}`)
 
   await dbOperations.makeNewSubOrder(MainOrderId, SubOrderId)
-
 
   await dbOperations.editSubOrderStatus(SubOrderId, "製作中")
   await dbOperations.editSubOrderStatus(SubOrderId, "已完成")
@@ -174,7 +174,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   }
 
   await sendSubOrder(SubOrderId, SubOrderInfo)
-  
+
   // 處理並提交新子訂單映射的函式
   async function makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo) {
     let subOrderTotal = 0;
@@ -240,41 +240,72 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   `, "", "建立 log 資料表")
 
-  let pool = await dbOperations.getConnection();
+  // await dbOperations.processGeneratedOrders().then(() => {
+  //   console.log('所有訂單已處理完畢');
+  // }).catch(error => {
+  //   console.error('處理訂單過程中發生錯誤:', error);
+  // });
 
-  async function createTriggersForAllTables() {
-    const [tables] = await pool.query(`SHOW TABLES`);
-    const tableNames = tables.map(row => Object.values(row)[0]);
 
-    for (const tableName of tableNames) {
-      // 為每個資料表創建INSERT觸發器
-      const createInsertTrigger = `
-      CREATE TRIGGER before_${tableName}_insert 
-      BEFORE INSERT ON \`${tableName}\` 
-      FOR EACH ROW 
-      BEGIN
-        INSERT INTO table_operations_log(table_name, operation, user, record_id) 
-        VALUES ('${tableName}', 'INSERT', CURRENT_USER(), NEW.id);
-      END;
-    `;
-      await pool.query(createInsertTrigger);
 
-      // 為每個資料表創建UPDATE觸發器
-      const createUpdateTrigger = `
-      CREATE TRIGGER before_${tableName}_update 
-      BEFORE UPDATE ON \`${tableName}\` 
-      FOR EACH ROW 
-      BEGIN
-        INSERT INTO table_operations_log(table_name, operation, user, record_id, before_value) 
-        VALUES ('${tableName}', 'UPDATE', CURRENT_USER(), OLD.id);
-      END;
-    `;
-      await pool.query(createUpdateTrigger);
 
-      // console.log(`Created triggers for ${tableName}`);
+
+
+
+
+
+  async function generateSalesReport(type, startDate, endDate = new Date()) {
+    let sql = '';
+
+    switch (type) {
+      case 'daily':
+        sql = `SELECT DATE(CreateTime) AS Date, COUNT(*) AS TotalOrders, SUM(Total) AS TotalSales, AVG(Total) AS AverageSale FROM MainOrders WHERE CreateTime BETWEEN '${startDate}' AND '${endDate}' GROUP BY Date ORDER BY Date;`;
+        break;
+      case 'hourly':
+        sql = `SELECT HOUR(CreateTime) AS Hour, SUM(Total) AS TotalSales, COUNT(*) AS TotalOrders FROM MainOrders WHERE DATE(CreateTime) = '${startDate}' GROUP BY Hour ORDER BY Hour;`;
+        break;
+      case 'monthly':
+        sql = `SELECT DATE_FORMAT(CreateTime, '%Y-%m') AS Month, SUM(Total) AS TotalSales FROM MainOrders GROUP BY Month ORDER BY Month;`;
+        break;
+      default:
+        throw new Error('Unsupported report type');
     }
+
+    return await dbOperations.UseMySQL(sql);
   }
-  await createTriggersForAllTables();
+  async function generateMenuItemSalesReport(order = 'DESC', limit = 10) {
+    const sql = `SELECT MenuItemId, MenuItems.MenuItemName, SUM(quantity) AS TotalQuantitySold, SUM(total_price) AS TotalRevenue FROM MainOrderMappings JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id GROUP BY MenuItemId ORDER BY TotalQuantitySold ${order} LIMIT ${limit};`;
+
+    return await dbOperations.UseMySQL(sql);
+  }
+  async function generateCategorySalesReport() {
+    const sql = `SELECT Category.Id AS CategoryId, Category.CategoryName, SUM(MainOrderMappings.quantity) AS TotalQuantity, SUM(MainOrderMappings.total_price) AS TotalSales FROM MainOrderMappings JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id JOIN Category ON MenuItems.CategoryId = Category.Id GROUP BY CategoryId ORDER BY TotalSales DESC;`;
+
+    return await dbOperations.UseMySQL(sql);
+  }
+  const monthlyReport = await generateSalesReport('monthly', '2020-01-01', '2024-03-31');
+  console.log(monthlyReport);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   dbOperations.closeConnection()
 })()
@@ -292,4 +323,3 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 //     PageName VARCHAR(255) NOT NULL,
 //     RoleRequired VARCHAR(50) NOT NULL
 //   );`)
-
