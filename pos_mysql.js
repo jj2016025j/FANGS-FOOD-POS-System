@@ -1,10 +1,6 @@
-const fs = require('fs');
-const path = require('path')
-const moment = require('moment');
-const mime = require('mime-types');
-const mysql = require('mysql2/promise');
-
 require('dotenv').config();
+
+const mysql = require('mysql2/promise');
 
 const MYSQL_HOST = process.env.MYSQL_HOST;
 const MYSQL_USER = process.env.MYSQL_USER;
@@ -27,7 +23,6 @@ const dbOperations = {
 
   closeConnection() { pool.end() },
 
-  // dbOperations.UseMySQL(sql語法, 參數陣列, 說明內容)
   async UseMySQL(sql, values = [], explain = "") {
     try {
       const [results] = await pool.query(sql, values);
@@ -35,19 +30,15 @@ const dbOperations = {
 
       // 判断是否是查询操作
       if (sql.trim().toLowerCase().startsWith("select")) {
-        return results; // 对于查询，返回结果数组
+        return results;
       } else {
-        // 对于非查询操作，返回结果对象，包含 affectedRows
-        // 注意：根据您使用的数据库客户端库，可能需要调整 results 对象的访问方式
         return {
-          affectedRows: results.affectedRows, // 假设 results 对象直接包含 affectedRows
-          // 对于 mysql2，可能直接是 results.affectedRows
-          // 如果您使用的是事务或其它包装，可能需要调整这里的路径
+          affectedRows: results.affectedRows,
         };
       }
     } catch (error) {
       console.error('数据库操作失败:', error);
-      throw error; // 抛出错误，让调用者可以捕获
+      throw error;
     }
   },
 
@@ -121,6 +112,17 @@ const dbOperations = {
       VALUES (?)`,
         [i],
         `加入 桌號${i}`)
+    }
+  },
+  async getAllTableStatus() {
+    const sql = 'SELECT * FROM Tables';
+    try {
+      const results = await pool.query(sql);
+      console.log("获取所有桌子状态成功。");
+      return results.rows; // 请根据您使用的数据库客户端调整此处
+    } catch (error) {
+      console.error("获取所有桌子状态失败:", error);
+      throw error;
     }
   },
   async editTableStatus(TableNumber, TablesStatus) {
@@ -212,6 +214,39 @@ const dbOperations = {
         UPDATE SubOrders SET SubTotal = ? WHERE SubOrderId = ?`,
       [subOrderTotal, SubOrderId],
       `更新子訂單 ${SubOrderId} 總金額 為 ${subOrderTotal}`);
+  },
+  async getMainOrderInfoById(MainOrderId) {
+    const sql = 'SELECT * FROM MainOrders WHERE MainOrderId = $1';
+    try {
+      const results = await pool.query(sql, [MainOrderId]);
+      console.log(`获取主订单 ${MainOrderId} 信息成功。`);
+      return results.rows.length ? results.rows[0] : null; // 调整以适应您的数据库
+    } catch (error) {
+      console.error(`获取主订单 ${MainOrderId} 信息失败:`, error);
+      throw error;
+    }
+  },
+  async getMenuItemCateories() {
+    const sql = 'SELECT * FROM Category ORDER BY sort ASC';
+    try {
+      const results = await pool.query(sql);
+      console.log("获取菜单项类别成功。");
+      return results.rows; // 调整以适应您的数据库
+    } catch (error) {
+      console.error("获取菜单项类别失败:", error);
+      throw error;
+    }
+  },
+  async getMenuItems() {
+    const sql = 'SELECT * FROM MenuItems WHERE Insupply = TRUE ORDER BY sort ASC';
+    try {
+      const results = await pool.query(sql);
+      console.log("获取所有菜单项成功。");
+      return results.rows; // 调整以适应您的数据库
+    } catch (error) {
+      console.error("获取所有菜单项失败:", error);
+      throw error;
+    }
   },
   async getMainOrderIdBySubOrderId(SubOrderId) {
     const result = await dbOperations.UseMySQL(`
@@ -341,12 +376,92 @@ const dbOperations = {
     const variousMethods = require("./variousMethods.js")
 
     const orders = variousMethods.getGeneratedOrders(); // 假設這會返回一個訂單陣列
-  
+
     for (const order of orders) {
       await dbOperations.processOrder(order); // 處理每個訂單
+    }
+  },
+  /**
+  * 生成SQL查詢的時間條件
+  * @param {string} timeRange - 時間範圍
+  * @returns {string} SQL的時間條件
+  */
+  generateTimeCondition(timeRange, tableName = 'MainOrders') {
+    switch (timeRange) {
+      case 'last24Hours':
+        return `${tableName}.CreateTime >= NOW() - INTERVAL 24 HOUR`;
+      case 'lastWeek':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 7 DAY`;
+      case 'lastMonth':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 MONTH`;
+      case 'last6Months':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 6 MONTH`;
+      case 'lastYear':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 YEAR`;
+      case 'all':
+        return '1=1'; // 没有时间限制
+      default:
+        throw new Error('Invalid time range');
+    }
+  },
+  async getBackEndData(timeRange, queryType) {
+    const timeCondition = dbOperations.generateTimeCondition(timeRange, 'MainOrders');
+
+    let sql = '';
+    switch (queryType) {
+      case 'all':
+        sql = `SELECT DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrders 
+             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             WHERE ${timeCondition} 
+             GROUP BY OrderDate 
+             ORDER BY OrderDate`;
+        break;
+      case 'byCategory':
+        sql = `SELECT Category.CategoryName, 
+             DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrders 
+             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
+             JOIN Category ON MenuItems.CategoryId = Category.Id 
+             WHERE ${timeCondition} 
+             GROUP BY Category.CategoryName, OrderDate 
+             ORDER BY Category.CategoryName, OrderDate`;
+        break;
+      case 'byItem':
+        sql = `SELECT MenuItemName, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrderMappings 
+             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
+             JOIN MainOrders ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             WHERE ${timeCondition} 
+             GROUP BY MenuItemName 
+             ORDER BY SUM(MainOrderMappings.total_price) DESC`;
+        break;
+      default:
+        throw new Error('Invalid query type');
+    }
+
+    try {
+      const result = await dbOperations.UseMySQL(sql, "", `执行 ${timeRange} 销售信息 ${queryType} 查询`);
+      return result;
+    } catch (error) {
+      console.error('数据库操作失败:', error);
+      throw error;
     }
   }
 
 };
+try {
+  dbOperations.useDatabase(MYSQL_DATABASE)
+} catch {
+  dbOperations.createDatabase(MYSQL_DATABASE)
+  dbOperations.useDatabase(MYSQL_DATABASE)
+}
 
 module.exports = dbOperations;

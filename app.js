@@ -49,11 +49,6 @@ app.get("/index", function (req, res) {
     res.render("index.ejs", { user: req.user });//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
 })
 
-// 官方網站路由
-// http://localhost:3000/
-const webRouter = require('./script/router/webRouter');
-app.use('/', webRouter);
-
 // pos系統路由
 // http://localhost:3000/pos
 const posRouter = require('./script/router/posRouter');
@@ -71,16 +66,9 @@ app.use('/order', orderRouter);
 const payRouter = require('./script/router/payRouter');
 app.use('/pay', payRouter);
 
-// http://localhost:3000/pay
-const authRoutes = require("./script/router/auth_routes.js");
-app.use("/auth", authRoutes);
-
-// http://localhost:3000/pay
-const profileRoutes = require("./script/router/profile_routes");
-app.use("/profile", profileRoutes);
-
-// const dataRouter = require('./script/router/dataRouter');
-// app.use('/data', dataRouter);
+// http://localhost:3000/data
+const dataRouter = require('./script/router/dataRouter');
+app.use('/data', dataRouter);
 
 const connection = mysql.createConnection({
     host: process.env.MYSQL_HOST,

@@ -8,24 +8,22 @@ router.get('/', async (req, res) => {
     console.log("進入pos系統首頁")
     var AllTableStatus = await dbOperations.getAllTableStatus();
     console.log("取得訂單")
-    return res.render('pos', AllTableStatus);
+    return res.json(AllTableStatus);
 });
 
 //進入點餐畫面
 // http://localhost:3000/pos/:mainOrderId
 router.get('/pos/:mainOrderId', async (req, res) => {
     const MainOrderId = req.params['mainOrderId']
-    // console.log("pos")
     var MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId)
-    return res.render('order', MainOrderInfo);
+    return res.json(MainOrderInfo);
 });
 
 // http://localhost:3000/pos/phone/:mainOrderId
 router.get('/pos/:mainOrderId', async (req, res) => {
     const MainOrderId = req.params['mainOrderId']
-    // console.log("pos")
     var MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId)
-    return res.render('phone', MainOrderInfo);
+    return res.json(MainOrderInfo);
 });
 
 // 品項編輯
@@ -34,7 +32,7 @@ router.get('/edit', async (req, res) => {
     // console.log("edit")
     var categories = await dbOperations.getMenuItemCateories()
     var menuItems = await dbOperations.getMenuItems()
-    return res.render('edit', {
+    return res.json({
         categories: categories,
         menuItems: menuItems
     });
@@ -45,7 +43,7 @@ router.get('/edit', async (req, res) => {
 router.get('/report', async (req, res) => {
     // console.log("edit")
     const report = await dbOperations.getBackEndData('all', 'all', 'month')
-    return res.render('report', {
+    return res.json({
         report: report
     });
 });
@@ -58,8 +56,7 @@ router.get('/confirmpayment/:mainOrderId', async (req, res) => {
         return res.status(200).send('此訂單不存在或已完成結帳！');
     } else {
         await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
-
-        return res.render('confirm_payment', {
+        return res.json({
             MainOrderInfo: MainOrderInfo
         });
     }

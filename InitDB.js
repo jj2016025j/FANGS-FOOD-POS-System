@@ -76,18 +76,18 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   // 主訂單
   await dbOperations.UseMySQL(
     `CREATE TABLE IF NOT EXISTS MainOrders (
-  Id INT AUTO_INCREMENT PRIMARY KEY,
-  MainOrderId VARCHAR(255) NOT NULL,
-  SubTotal INT DEFAULT 0,
-  ServiceFee INT DEFAULT 0,
-  Total INT DEFAULT 0,
-  TableId INT NOT NULL,
-  OrderStatus ENUM('未結帳', 已結帳', '已取消') NOT NULL DEFAULT '未結帳',
-  CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  UserId INT,
-  FOREIGN KEY (TableId) REFERENCES Tables(Id)
-  )`
+      Id INT AUTO_INCREMENT PRIMARY KEY,
+      MainOrderId VARCHAR(255) NOT NULL,
+      SubTotal INT DEFAULT 0,
+      ServiceFee INT DEFAULT 0,
+      Total INT DEFAULT 0,
+      TableId INT NOT NULL,
+      OrderStatus ENUM('未結帳', '已結帳', '已取消') NOT NULL DEFAULT '未結帳',
+      CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      UserId INT,
+      FOREIGN KEY (TableId) REFERENCES Tables(Id)
+    )`
     , "", "建立 MainOrders 資料表")
 
   const MainOrderId = await dbOperations.generateMainOrderId()
@@ -236,112 +236,24 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-  /**
- * 生成SQL查詢的時間條件
- * @param {string} timeRange - 時間範圍
- * @returns {string} SQL的時間條件
- */
-  function generateTimeCondition(timeRange, tableName = 'MainOrders') {
-    switch (timeRange) {
-      case 'last24Hours':
-        return `${tableName}.CreateTime >= NOW() - INTERVAL 24 HOUR`;
-      case 'lastWeek':
-        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 7 DAY`;
-      case 'lastMonth':
-        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 MONTH`;
-      case 'last6Months':
-        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 6 MONTH`;
-      case 'lastYear':
-        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 YEAR`;
-      case 'all':
-        return '1=1'; // 没有时间限制
-      default:
-        throw new Error('Invalid time range');
-    }
-  }
-
-  async function getBackEndData(timeRange, queryType, groupByTime = '') {
-    const timeCondition = generateTimeCondition(timeRange, 'MainOrders');
-
-    let sql = '';
-    switch (queryType) {
-      case 'all':
-        sql = `SELECT DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
-             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
-             SUM(MainOrderMappings.total_price) AS TotalSales 
-             FROM MainOrders 
-             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
-             WHERE ${timeCondition} 
-             GROUP BY OrderDate 
-             ORDER BY OrderDate`;
-        break;
-      case 'byCategory':
-        sql = `SELECT Category.CategoryName, 
-             DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
-             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
-             SUM(MainOrderMappings.total_price) AS TotalSales 
-             FROM MainOrders 
-             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
-             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
-             JOIN Category ON MenuItems.CategoryId = Category.Id 
-             WHERE ${timeCondition} 
-             GROUP BY Category.CategoryName, OrderDate 
-             ORDER BY Category.CategoryName, OrderDate`;
-        break;
-      case 'byItem':
-        sql = `SELECT MenuItemName, 
-             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
-             SUM(MainOrderMappings.total_price) AS TotalSales 
-             FROM MainOrderMappings 
-             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
-             JOIN MainOrders ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
-             WHERE ${timeCondition} 
-             GROUP BY MenuItemName 
-             ORDER BY SUM(MainOrderMappings.total_price) DESC`;
-        break;
-      default:
-        throw new Error('Invalid query type');
-    }
-
-    try {
-      const result = await dbOperations.UseMySQL(sql, "", "执行销售信息查询");
-      return result;
-    } catch (error) {
-      console.error('数据库操作失败:', error);
-      throw error;
-    }
-  }
-
   // 查询过去一个月内按品项的销售信息
-  await getBackEndData('lastMonth', 'byItem')
+  await dbOperations.getBackEndData('lastMonth', 'byItem')
     .then(console.log)
     .catch(console.error);
 
   // 查询过去一周内按分类每天的销售信息
   // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await getBackEndData('lastWeek', 'byCategory', 'day')
+  await dbOperations.getBackEndData('lastWeek', 'byCategory')
     .then(console.log)
     .catch(console.error);
 
   // 查询所有时间内每月的总销售信息（全部订单）
   // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await getBackEndData('all', 'all', 'month')
+  await dbOperations.getBackEndData('all', 'all')
     .then(console.log)
     .catch(console.error);
 
-  await dbOperations.closeConnection()
+  dbOperations.closeConnection()
 })()
 
 // await dbOperations.UseMySQL(

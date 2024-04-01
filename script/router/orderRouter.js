@@ -117,8 +117,6 @@ router.get('/:subOrderId', async (req, res) => {
 
 module.exports = router;
 
-// 假設 orders 和 dishes 是從某處獲得的數據，這裡為了簡化直接定義了
-// 實際應用中，這些數據應該從數據庫或其他數據源動態獲取
 const orders = {};
 
 const dishes = [

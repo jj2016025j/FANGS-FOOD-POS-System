@@ -8,14 +8,9 @@ dotenv.config();
 
 const { printInvoice, convertToInvoiceFormat } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
-const mysql = require('mysql2/promise');
-const dbOperations = require('../../mynodesql'); 
+const dbOperations = require('../../mynodesql');
 
 const {
-    MYSQL_HOST,
-    MYSQL_USER,
-    MYSQL_PASSWORD,
-    MYSQL_DATABASE,
     LINEPAY_CHANNEL_ID,
     LINEPAY_RETURN_HOST,
     LINEPAY_SITE,
@@ -27,17 +22,10 @@ const {
 
 // console.log(LINEPAY_CHANNEL_ID, LINEPAY_RETURN_HOST, LINEPAY_SITE, LINEPAY_VERSION, LINEPAY_CHANNEL_SECRET_KEY, LINEPAY_RETURN_CONFIRM_URL, LINEPAY_RETURN_CANCEL_URL)
 // 数据库连接配置
-const pool = mysql.createPool({
-    host: MYSQL_HOST, // 資料庫伺服器地址
-    user: MYSQL_USER, // 資料庫用戶名
-    password: MYSQL_PASSWORD, // 資料庫密碼
-    database: MYSQL_DATABASE, // 要操作的数据库名 庫名不一定要
-    charset: "utf8mb4", // 確保使用 utf8mb4
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
-
+let pool
+(async () => {
+    pool = await dbOperations.getConnection()
+})
 //現金結帳
 router.post('/cash/:order_id', async (req, res) => {
     const orderId = req.params['order_id']
@@ -272,38 +260,3 @@ function createSignature(uri, linePayBody) {
 }
 
 module.exports = router;
-
-
-
-// // 結帳
-// router.post('/pay', (req, res) => {
-//     const { orderId, paymentMethod, amount } = req.body;
-//     const receiptId = `receipt${Object.keys(orders).length + 1}`;
-//     const receipt = {
-//         receiptId,
-//         amount,
-//         paymentMethod,
-//         status: "已支付"
-//     };
-//     orders[orderId].receipt = receipt;
-//     // 返回支付成功或失敗
-//     res.json({ success: true, message: "支付成功", receipt });
-// });
-
-// // 發票開具 X
-// router.post('/invoice', (req, res) => {
-//     const { orderId, receiptId, invoiceType, carrier } = req.body;
-//     const invoiceId = `invoice${Object.keys(orders).length + 1}`;
-//     const invoice = {
-//         invoiceId,
-//         orderId,
-//         receiptId,
-//         invoiceType,
-//         carrier,
-//         status: "已開具"
-//     };
-//     if (orders[orderId]) orders[orderId].invoice = invoice;
-//     const isSuccess = printInvoice(invoiceData);
-
-//     res.json({ success: isSuccess, message: "發票已開具", invoice });
-// });
