@@ -160,20 +160,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     }
   ]
 
-  // 發送子訂單的函式
-  async function sendSubOrder(SubOrderId, SubOrderInfo) {
-    try {
-      const MainOrderId = await dbOperations.getMainOrderIdBySubOrderId(SubOrderId);
-      await makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo);
-      const mainOrderTotal = await dbOperations.calculateMainOrderTotal(MainOrderId);
-      await dbOperations.updateMainOrderTotal(MainOrderId, mainOrderTotal);
-      console.log(`主訂單 ${MainOrderId} 的總金額已更新為 ${mainOrderTotal}`);
-    } catch (error) {
-      console.error("更新主訂單狀態時出錯：", error.message);
-    }
-  }
-
-  await sendSubOrder(SubOrderId, SubOrderInfo)
+  await dbOperations.sendSubOrder(SubOrderId, SubOrderInfo)
 
   // 處理並提交新子訂單映射的函式
   async function makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo) {
@@ -285,7 +272,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     }
   }
 
-  async function fetchSalesInfo(timeRange, queryType, groupByTime = '') {
+  async function getBackEndData(timeRange, queryType, groupByTime = '') {
     const timeCondition = generateTimeCondition(timeRange, 'MainOrders');
 
     let sql = '';
@@ -338,19 +325,19 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   }
 
   // 查询过去一个月内按品项的销售信息
-  await fetchSalesInfo('lastMonth', 'byItem')
+  await getBackEndData('lastMonth', 'byItem')
     .then(console.log)
     .catch(console.error);
 
   // 查询过去一周内按分类每天的销售信息
   // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await fetchSalesInfo('lastWeek', 'byCategory', 'day')
+  await getBackEndData('lastWeek', 'byCategory', 'day')
     .then(console.log)
     .catch(console.error);
 
   // 查询所有时间内每月的总销售信息（全部订单）
   // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await fetchSalesInfo('all', 'all', 'month')
+  await getBackEndData('all', 'all', 'month')
     .then(console.log)
     .catch(console.error);
 

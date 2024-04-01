@@ -170,6 +170,18 @@ const dbOperations = {
       `取得 品項 ${menuItemId} 價格`);
   },
 
+  // 發送子訂單的函式
+  async sendSubOrder(SubOrderId, SubOrderInfo) {
+    try {
+      const MainOrderId = await dbOperations.getMainOrderIdBySubOrderId(SubOrderId);
+      await makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo);
+      const mainOrderTotal = await dbOperations.calculateMainOrderTotal(MainOrderId);
+      await dbOperations.updateMainOrderTotal(MainOrderId, mainOrderTotal);
+      console.log(`主訂單 ${MainOrderId} 的總金額已更新為 ${mainOrderTotal}`);
+    } catch (error) {
+      console.error("更新主訂單狀態時出錯：", error.message);
+    }
+  },
   async processSubOrderMappings(SubOrderId, item, unit_price, total_price) {
     // 處理子訂單映射
     return await dbOperations.UseMySQL(`
