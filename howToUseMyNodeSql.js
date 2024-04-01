@@ -63,6 +63,16 @@ async function updateUser(userId) {
     console.error('更新用户失败:', error);
   }
 }
+// update的回傳:
+// ResultSetHeader {
+//   fieldCount: 0,
+//   affectedRows: 1,
+//   insertId: 0,
+//   info: 'Rows matched: 1  Changed: 1  Warnings: 0',
+//   serverStatus: 34,
+//   warningStatus: 0,
+//   changedRows: 1
+// },
 
 // 删除数据
 async function deleteUser(userId) {

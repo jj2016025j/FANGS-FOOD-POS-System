@@ -71,7 +71,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     , "", "建立 MenuItems 資料表")
 
   const itemData = require("./script/data/fangsFoodData.js")
-  await dbOperations.insertMenuItemsData(itemData, categoryMap)
+  await dbOperations.insertIntoMenuItems(itemData, categoryMap)
 
   // 主訂單
   await dbOperations.UseMySQL(
@@ -93,7 +93,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   const MainOrderId = await dbOperations.generateMainOrderId()
   console.log(`生成新主訂單 ${MainOrderId}`)
 
-  await dbOperations.makeNewMainOrder(MainOrderId)
+  await dbOperations.forTestMakeNewMainOrder(MainOrderId)
 
   await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
   await dbOperations.editMainOrderStatus(MainOrderId, "未結帳")
@@ -129,7 +129,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
   console.log(`生成新子訂單 ${SubOrderId}`)
 
-  await dbOperations.makeNewSubOrder(MainOrderId, SubOrderId)
+  await dbOperations.forTestMakeNewSubOrder(MainOrderId, SubOrderId)
 
   await dbOperations.editSubOrderStatus(SubOrderId, "製作中")
   await dbOperations.editSubOrderStatus(SubOrderId, "已完成")
@@ -167,7 +167,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     let subOrderTotal = 0;
 
     for (const item of SubOrderInfo) {
-      const MenuItemInfo = await dbOperations.fetchMenuItemInfo(item.MenuItemId);
+      const MenuItemInfo = await dbOperations.getMenuItemInfo(item.MenuItemId);
       if (Array.isArray(MenuItemInfo) && MenuItemInfo.length > 0) {
         const unit_price = MenuItemInfo[0].Price;
         const total_price = item.quantity * unit_price;

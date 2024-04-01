@@ -1,7 +1,7 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require('express');
-const mysql = require('mysql');
+const dbOperations = require('./pos_mysql');
 const app = express();
 const bodyParser = require('body-parser')
 const port = 8080;
@@ -44,31 +44,30 @@ app.set('views', path.join(__dirname, 'views'));
 // initPrinter()
 
 // 付款測試用
-// http://localhost:5001/index
-app.get("/index", function (req, res) {
-    res.render("index.ejs", { user: req.user });//不用設定 views 路徑，會自動找到views路徑底下的檔案，有app.set('view engine', 'ejs')的話可以不用打附檔名
+// http://localhost:8080/12
+app.get("/:menuItemId", async function (req, res) {
+    const menuItemId = req.params['menuItemId']
+    const menuItemInfo = await dbOperations.getMenuItemInfo(menuItemId)
+    res.json(menuItemInfo);
 })
 
-// pos系統路由
-// http://localhost:3000/pos
-const posRouter = require('./script/router/posRouter');
-app.use('/pos', posRouter);
-
-// http://localhost:3000/menu
+// http://localhost:8080/menu
 const menuRouter = require('./script/router/menuRouter');
 app.use('/menu', menuRouter);
 
-// http://localhost:3000/order
+// http://localhost:8080/order
 const orderRouter = require('./script/router/orderRouter');
 app.use('/order', orderRouter);
 
-// http://localhost:3000/pay
+// http://localhost:8080/pay
 const payRouter = require('./script/router/payRouter');
 app.use('/pay', payRouter);
 
-// http://localhost:3000/data
+// http://localhost:8080/data
 const dataRouter = require('./script/router/dataRouter');
 app.use('/data', dataRouter);
+
+
 
 (async () => {
     try {

@@ -229,6 +229,56 @@ router.post('/checkout', async (req, res) => {
     // }
 });
 
+router.get('/checkout/:mainOrderId', async (req, res) => {
+    // 確認付款 UNDO 應該要改成function
+    // http://localhost:8080/pos/checkout/ORD-1709679600000-3
+    const MainOrderId = req.params['mainOrderId'];
+    const MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId);
+    if (!MainOrderInfo || MainOrderInfo.OrderStatus != "未結帳") {
+        return res.status(200).json({
+            message: '此訂單不存在、已取消或已完成結帳！',
+            MainOrderInfo: MainOrderInfo
+        });
+    } else {
+        const results = await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
+        if (results) {
+            return res.json({
+                message: `訂單 ${MainOrderId} 已完成結帳`,
+                MainOrderInfo: await dbOperations.getMainOrderInfoById(MainOrderId)
+            });
+        } else {
+            return res.status(500).json({
+                message: `伺服器發生錯誤`
+            });
+        }
+    }
+});
+
+router.get('/cancelCheckout/:mainOrderId', async (req, res) => {
+    // 取消付款
+    // http://localhost:8080/pos/cancelCheckout/ORD-1709679600000-3
+    const MainOrderId = req.params['mainOrderId'];
+    const MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId);
+    if (!MainOrderInfo || MainOrderInfo.OrderStatus != "已結帳") {
+        return res.status(200).json({
+            message: `此訂單 ${MainOrderId} 還未結帳！`,
+            MainOrderInfo: MainOrderInfo
+        });
+    } else {
+        const results = await dbOperations.editMainOrderStatus(MainOrderId, "未結帳")
+        if (results) {
+            return res.json({
+                message: `訂單 ${MainOrderId} 已修改為未結帳`,
+                MainOrderInfo: await dbOperations.getMainOrderInfoById(MainOrderId)
+            });
+        } else {
+            return res.status(500).json({
+                message: `伺服器發生錯誤`
+            });
+        }
+    }
+});
+
 function createLinePayBody(order) {
     return {
         ...order,
