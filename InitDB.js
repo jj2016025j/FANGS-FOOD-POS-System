@@ -82,7 +82,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   ServiceFee INT DEFAULT 0,
   Total INT DEFAULT 0,
   TableId INT NOT NULL,
-  OrderStatus ENUM('未結帳', '以結帳', '已取消') NOT NULL DEFAULT '未結帳',
+  OrderStatus ENUM('未結帳', 已結帳', '已取消') NOT NULL DEFAULT '未結帳',
   CreateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   UpdateTime TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   UserId INT,

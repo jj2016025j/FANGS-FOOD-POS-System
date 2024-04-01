@@ -524,44 +524,7 @@ const dbOperations = {
     })
   },
   //取得用餐中訂單
-  getPendingTableOrders: async () => {
-    console.log("使用取得訂單功能")
-    return new Promise((resolve, reject) => {
-      console.log("正在發送取得訂單請求")
-      pool.query('SELECT * FROM table_orders where order_status = 1', (error, results) => {
 
-        if (error) {
-          reject(error);
-          return;
-        }
-        resolve(results)
-      });
-    })
-  },
-  addTableOrder: async (tableNum) => {
-    return new Promise((resolve, reject) => {
-      pool.query('SELECT * FROM table_orders WHERE order_status = 1 AND table_number = ?', [tableNum], (error, results) => {
-        if (error) {
-          reject(error);
-          return;
-        }
-        if (results.length > 0) {
-          reject('此桌號目前已有訂單');
-        } else {
-          pool.query('INSERT INTO table_orders (trade_no, table_number) VALUES(?,?)', [
-            dbOperations.genearteTradeNo(),
-            tableNum
-          ], (error, results) => {
-            if (error) {
-              reject(error);
-              return;
-            }
-            resolve(results)
-          });
-        }
-      });
-    })
-  },
   clearOrderFoods: async (orderId) => {
     return new Promise((resolve, reject) => {
       pool.query('DELETE FROM orders_items where order_id = ?', [orderId], (error, results) => {
