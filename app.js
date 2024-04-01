@@ -70,22 +70,6 @@ app.use('/pay', payRouter);
 const dataRouter = require('./script/router/dataRouter');
 app.use('/data', dataRouter);
 
-const connection = mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE
-});
-
-connection.connect((err) => {
-    if (err) {
-        console.error('Error connecting to MySQL:', err);
-        return;
-    }
-    // // console.log('Connected to MySQL');
-});
-
-// 因為你不能在最頂層使用 await，所以我們創建一個立即執行的 async 函數
 (async () => {
     try {
         const localIP = getLocalIPAddress();
@@ -104,6 +88,6 @@ connection.connect((err) => {
             // }
         });
     } catch (error) {
-        console.error('無法獲取公網 IP 地址: ', error);
+        console.error('獲取 IP 地址時發生錯誤: ', error);
     }
 })();
