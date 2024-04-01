@@ -240,11 +240,11 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   `, "", "建立 log 資料表")
 
-  // await dbOperations.processGeneratedOrders().then(() => {
-  //   console.log('所有訂單已處理完畢');
-  // }).catch(error => {
-  //   console.error('處理訂單過程中發生錯誤:', error);
-  // });
+  await dbOperations.processGeneratedOrders().then(() => {
+    console.log('所有訂單已處理完畢');
+  }).catch(error => {
+    console.error('處理訂單過程中發生錯誤:', error);
+  });
 
 
 
@@ -254,60 +254,107 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 
 
 
-  async function generateSalesReport(type, startDate, endDate = new Date()) {
+
+
+
+
+
+
+
+  /**
+ * 生成SQL查詢的時間條件
+ * @param {string} timeRange - 時間範圍
+ * @returns {string} SQL的時間條件
+ */
+  function generateTimeCondition(timeRange, tableName = 'MainOrders') {
+    switch (timeRange) {
+      case 'last24Hours':
+        return `${tableName}.CreateTime >= NOW() - INTERVAL 24 HOUR`;
+      case 'lastWeek':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 7 DAY`;
+      case 'lastMonth':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 MONTH`;
+      case 'last6Months':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 6 MONTH`;
+      case 'lastYear':
+        return `${tableName}.CreateTime >= CURDATE() - INTERVAL 1 YEAR`;
+      case 'all':
+        return '1=1'; // 没有时间限制
+      default:
+        throw new Error('Invalid time range');
+    }
+  }
+
+  async function fetchSalesInfo(timeRange, queryType, groupByTime = '') {
+    const timeCondition = generateTimeCondition(timeRange, 'MainOrders');
+
     let sql = '';
-
-    switch (type) {
-      case 'daily':
-        sql = `SELECT DATE(CreateTime) AS Date, COUNT(*) AS TotalOrders, SUM(Total) AS TotalSales, AVG(Total) AS AverageSale FROM MainOrders WHERE CreateTime BETWEEN '${startDate}' AND '${endDate}' GROUP BY Date ORDER BY Date;`;
+    switch (queryType) {
+      case 'all':
+        sql = `SELECT DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrders 
+             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             WHERE ${timeCondition} 
+             GROUP BY OrderDate 
+             ORDER BY OrderDate`;
         break;
-      case 'hourly':
-        sql = `SELECT HOUR(CreateTime) AS Hour, SUM(Total) AS TotalSales, COUNT(*) AS TotalOrders FROM MainOrders WHERE DATE(CreateTime) = '${startDate}' GROUP BY Hour ORDER BY Hour;`;
+      case 'byCategory':
+        sql = `SELECT Category.CategoryName, 
+             DATE_FORMAT(MainOrders.CreateTime, '%Y-%m-%d') AS OrderDate, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrders 
+             JOIN MainOrderMappings ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
+             JOIN Category ON MenuItems.CategoryId = Category.Id 
+             WHERE ${timeCondition} 
+             GROUP BY Category.CategoryName, OrderDate 
+             ORDER BY Category.CategoryName, OrderDate`;
         break;
-      case 'monthly':
-        sql = `SELECT DATE_FORMAT(CreateTime, '%Y-%m') AS Month, SUM(Total) AS TotalSales FROM MainOrders GROUP BY Month ORDER BY Month;`;
+      case 'byItem':
+        sql = `SELECT MenuItemName, 
+             SUM(MainOrderMappings.quantity) AS TotalQuantity, 
+             SUM(MainOrderMappings.total_price) AS TotalSales 
+             FROM MainOrderMappings 
+             JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id 
+             JOIN MainOrders ON MainOrders.MainOrderId = MainOrderMappings.MainOrderId 
+             WHERE ${timeCondition} 
+             GROUP BY MenuItemName 
+             ORDER BY SUM(MainOrderMappings.total_price) DESC`;
         break;
       default:
-        throw new Error('Unsupported report type');
+        throw new Error('Invalid query type');
     }
 
-    return await dbOperations.UseMySQL(sql);
+    try {
+      const result = await dbOperations.UseMySQL(sql, "", "执行销售信息查询");
+      return result;
+    } catch (error) {
+      console.error('数据库操作失败:', error);
+      throw error;
+    }
   }
-  async function generateMenuItemSalesReport(order = 'DESC', limit = 10) {
-    const sql = `SELECT MenuItemId, MenuItems.MenuItemName, SUM(quantity) AS TotalQuantitySold, SUM(total_price) AS TotalRevenue FROM MainOrderMappings JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id GROUP BY MenuItemId ORDER BY TotalQuantitySold ${order} LIMIT ${limit};`;
 
-    return await dbOperations.UseMySQL(sql);
-  }
-  async function generateCategorySalesReport() {
-    const sql = `SELECT Category.Id AS CategoryId, Category.CategoryName, SUM(MainOrderMappings.quantity) AS TotalQuantity, SUM(MainOrderMappings.total_price) AS TotalSales FROM MainOrderMappings JOIN MenuItems ON MainOrderMappings.MenuItemId = MenuItems.Id JOIN Category ON MenuItems.CategoryId = Category.Id GROUP BY CategoryId ORDER BY TotalSales DESC;`;
+  // 查询过去一个月内按品项的销售信息
+  await fetchSalesInfo('lastMonth', 'byItem')
+    .then(console.log)
+    .catch(console.error);
 
-    return await dbOperations.UseMySQL(sql);
-  }
-  const monthlyReport = await generateSalesReport('monthly', '2020-01-01', '2024-03-31');
-  console.log(monthlyReport);
+  // 查询过去一周内按分类每天的销售信息
+  // 注意：这里需要根据实际情况提供SQL语句的具体实现
+  await fetchSalesInfo('lastWeek', 'byCategory', 'day')
+    .then(console.log)
+    .catch(console.error);
 
+  // 查询所有时间内每月的总销售信息（全部订单）
+  // 注意：这里需要根据实际情况提供SQL语句的具体实现
+  await fetchSalesInfo('all', 'all', 'month')
+    .then(console.log)
+    .catch(console.error);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  dbOperations.closeConnection()
+  await dbOperations.closeConnection()
 })()
 
 // await dbOperations.UseMySQL(

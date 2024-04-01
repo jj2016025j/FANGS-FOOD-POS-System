@@ -1,22 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const dbOperations = require('../../mynodesql'); 
+const dbOperations = require('../../pos_mysql'); 
 
 const { printOrder, printOrderWithQR } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
-const mysql = require('mysql2/promise');
-
-// 数据库连接配置
-const pool = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "fang_project",
-    charset: "utf8mb4",
-    waitForConnections: true,
-    connectionLimit: 10,
-    queueLimit: 0
-});
 
 const getIp = require("../getIPAddress.js")
 const LocalIP = getIp.getLocalIPAddress()
@@ -24,9 +11,9 @@ const LocalIP = getIp.getLocalIPAddress()
 //新增訂單
 // http://localhost:3000/order
 router.post('/', async (req, res) => {
-    let formData = req.body;
-    const tableNum = formData.seatID
-
+    const tableNum = req.body.seatID;
+    const OrderId = dbOperations.generateMainOrderId()
+// 
     try {
         var result = await dbOperations.addTableOrder(tableNum)
         // console.log(result.insertId)

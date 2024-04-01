@@ -99,7 +99,7 @@ const variousMethods = {
         const itemTypesRange = { min: 2, max: 10 };
 
         const generatedOrders = variousMethods.generateRandomOrders(
-            '2022-03-01', '2024-03-31', 20, 500, menuItemsData, itemQuantityRange, itemTypesRange
+            '2024-03-01', new Date(), 20, 100, menuItemsData, itemQuantityRange, itemTypesRange
         );
 
         // console.log(generatedOrders[0]);

@@ -270,8 +270,8 @@ const dbOperations = {
   },
   async insertMainOrder(order) {
     const sql = `
-      INSERT INTO MainOrders (MainOrderId, SubTotal, ServiceFee, Total, TableId, OrderStatus)
-      VALUES (?, ?, ?, ?, ?, ?);
+      INSERT INTO MainOrders (MainOrderId, SubTotal, ServiceFee, Total, TableId, OrderStatus, CreateTime)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
     const values = [
       order.MainOrderId,
@@ -280,6 +280,7 @@ const dbOperations = {
       order.Total,
       order.TableId,
       order.OrderStatus,
+      order.CreateTime
     ];
     await dbOperations.UseMySQL(sql, values, "插入主訂單");
   },
