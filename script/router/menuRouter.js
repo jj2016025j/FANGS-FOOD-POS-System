@@ -1,6 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const dbOperations = require('../../mynodesql');
+const dbOperations = require('../../pos_mysql');
+
+
+router.get("/:menuItemId", async function (req, res) {
+    // 測試用
+    // http://localhost:8080/menu/12
+    const menuItemId = req.params['menuItemId']
+    const menuItemInfo = await dbOperations.getMenuItemInfo(menuItemId)
+    res.json(menuItemInfo);
+})
 
 router.get('/', async (req, res) => {
     // 取得所有品項
@@ -20,7 +29,7 @@ router.get('/', async (req, res) => {
 
 router.post('/', async (req, res) => {
     // 新增菜單項目
-    // http://localhost:5001/menu
+    // http://localhost:8080/menu
     const menuItem = req.body;
     try {
         const results = await dbOperations.insertIntoMenuItem(menuItem, menuItem.categoryId, menuItem.index);
@@ -33,7 +42,7 @@ router.post('/', async (req, res) => {
 
 
 // 修改菜單項目
-// http://localhost:5001/:menuitemId
+// http://localhost:8080/:menuitemId
 router.put('/:menuitemId', async (req, res) => {
     const Item = req.body
     try {
@@ -46,7 +55,7 @@ router.put('/:menuitemId', async (req, res) => {
 });
 
 // 刪除菜單項目
-// http://localhost:5001/:menuitemId
+// http://localhost:8080/:menuitemId
 router.delete('/:menuitemId', async (req, res) => {
     const Item = req.body
     try {

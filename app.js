@@ -1,10 +1,9 @@
 const dotenv = require("dotenv");
 dotenv.config();
 const express = require('express');
+const cors = require('cors');
 const dbOperations = require('./pos_mysql');
-const app = express();
 const bodyParser = require('body-parser')
-const port = 8080;
 require("./script/passport");
 const passport = require("passport");
 const session = require("express-session");
@@ -12,6 +11,13 @@ const flash = require("connect-flash");
 const path = require('path');
 const { getLocalIPAddress, getNetIPAddress, getPublicIP } = require('./script/getIPAddress.js');
 
+const app = express();
+app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000'
+}));
+
+const port = 8080;
 //設定middleware跟排版引擎
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -42,14 +48,6 @@ app.set('views', path.join(__dirname, 'views'));
 
 // 初始化打印機
 // initPrinter()
-
-// 付款測試用
-// http://localhost:8080/12
-app.get("/:menuItemId", async function (req, res) {
-    const menuItemId = req.params['menuItemId']
-    const menuItemInfo = await dbOperations.getMenuItemInfo(menuItemId)
-    res.json(menuItemInfo);
-})
 
 // http://localhost:8080/menu
 const menuRouter = require('./script/router/menuRouter');

@@ -8,7 +8,7 @@ dotenv.config();
 
 const { printInvoice, convertToInvoiceFormat } = require('../printer');
 const { TimeFormat } = require('../timeFormatted.js')
-const dbOperations = require('../../mynodesql');
+const dbOperations = require('../../pos_mysql');
 
 const {
     LINEPAY_CHANNEL_ID,

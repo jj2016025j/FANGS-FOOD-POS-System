@@ -9,17 +9,19 @@ const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
 const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 const CURRENT_MYSQL_DATABASE = TEST_MYSQL_DATABASE;
 
-
 const pool = mysql.createPool({
   host: MYSQL_HOST,
   user: MYSQL_USER,
   password: MYSQL_PASSWORD,
+  database: TEST_MYSQL_DATABASE,
   charset: "utf8mb4",
   port: 3306,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0
 });
+
+// console.log(pool)
 
 const dbOperations = {
   getConnection() { return pool },
@@ -114,7 +116,7 @@ const dbOperations = {
     let i = 1;
     for (const MenuItem of MenuItemsData) {
       const categoryId = categoryMap[MenuItem.Category] || 0;
-      await insertIntoMenuItem(MenuItem, categoryId, i);
+      await dbOperations.insertIntoMenuItem(MenuItem, categoryId, i);
       i++;
     }
   },
@@ -447,7 +449,7 @@ const dbOperations = {
     }
   },
   /**
-   * 處理報表
+   * 處理報表查詢
    * @param {*} timeRange 
    * @param {*} queryType 
    * @returns 
@@ -548,11 +550,16 @@ const dbOperations = {
 
 };
 
-try {
-  dbOperations.useDatabase(CURRENT_MYSQL_DATABASE)
-} catch {
-  dbOperations.createDatabase(CURRENT_MYSQL_DATABASE)
-  dbOperations.useDatabase(CURRENT_MYSQL_DATABASE)
-}
+(async () => {
+  try {
+    await dbOperations.useDatabase(CURRENT_MYSQL_DATABASE);
+  } catch (error) {
+    await dbOperations.createDatabase(CURRENT_MYSQL_DATABASE);
+    await dbOperations.useDatabase(CURRENT_MYSQL_DATABASE);
+  }
+  // console.log(pool)
+
+})();
+
 
 module.exports = dbOperations;
