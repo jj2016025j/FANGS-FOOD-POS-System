@@ -17,12 +17,24 @@ router.get('/', async (req, res) => {
     return res.json(AllTableStatus);
 });
 
-router.get('/:mainOrderId', async (req, res) => {
+router.get('/getMainOrder/:mainOrderId', async (req, res) => {
     // 取得訂單資訊
-    // http://localhost:8080/order/ORD1711905767022v0wzjnty398
+    // http://localhost:8080/order/getMainOrder/ORD1711905767022v0wzjnty398
     const MainOrderId = req.params['mainOrderId']
     var MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId)
     return res.json(MainOrderInfo);
+});
+
+router.get('/getrecentorders', async (req, res) => {
+    // 取得最近50筆訂單資訊
+    // http://localhost:8080/order/getrecentorders
+    try {
+        const recentOrders = await dbOperations.getOrders()
+        res.json(recentOrders);
+    } catch (error) {
+        console.error('Failed to fetch recent orders:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
 });
 
 router.post('/', async (req, res) => {
@@ -134,7 +146,17 @@ router.get('/:subOrderId', async (req, res) => {
         });
     }
 });
-
+router.get('/getMainAndSubOrder/:mainOrderId', async (req, res) => {
+    try {
+        const mainOrderId = req.params.mainOrderId;
+        const result = await dbOperations.getMainAndSubOrder(mainOrderId);
+        console.log(result)
+        res.json(result);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send(error.message);
+    }
+});
 module.exports = router;
 
 const orders = {};

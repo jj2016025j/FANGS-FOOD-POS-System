@@ -220,7 +220,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  background-image: url(../image/背景/backgroundY.jpg);
+  /* background-image: url(../image/背景/backgroundY.jpg); */
   background-size: cover;
   background-position: center;
   background-repeat: repeat-x;
@@ -256,7 +256,7 @@ li {
   position: fixed;
   top: 0;
   width: 100%;
-  background-image: url(../image/背景/backgroundY.jpg);
+  /* background-image: url(../image/背景/backgroundY.jpg); */
   background-repeat: repeat-x;
   z-index: 100;
 }
@@ -284,7 +284,7 @@ li {
 
 .formContainer {
   width: 90%;
-  background-image: url(../image/ai圖片/餐廳外觀2.jpg);
+  /* background-image: url(../image/ai圖片/餐廳外觀2.jpg); */
   opacity: 0.8;
   background-size: cover;
   background-position: center;
@@ -308,7 +308,7 @@ li {
 
 
 .footer {
-  background-image: url(../image/背景/footer1.png);
+  /* background-image: url(../image/背景/footer1.png); */
   background-repeat: no-repeat;
   background-size: cover;
   background-position: bottom;

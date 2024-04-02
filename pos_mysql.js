@@ -242,6 +242,10 @@ const dbOperations = {
     const sql = 'SELECT * FROM MainOrders WHERE MainOrderId = ?';
     try {
       const results = await pool.query(sql, [MainOrderId]);
+      if (results[0][0] == null) {
+        console.log(`無此主订单 ${MainOrderId}。`);
+        return results[0][0];
+      }
       console.log(`获取主订单 ${MainOrderId} 信息成功。`);
       return results[0][0];
     } catch (error) {
@@ -262,11 +266,19 @@ const dbOperations = {
       throw new Error(`子订单 ${SubOrderId} 不存在或没有对应的主订单ID`);
     }
   },
-  async currentMainOrderTotal() {
+  async getMainOrderTotalById() {
     await dbOperations.UseMySQL(`
     SELECT Total FROM MainOrders WHERE MainOrderId = ?`,
       [MainOrderId],
       `獲取主訂單 ${MainOrderId} 當前總金額`);
+  },
+  async getOrders() {
+    const result = await pool.query(`
+        SELECT * FROM MainOrders
+        ORDER BY CreateTime DESC
+        LIMIT 50
+      `);
+    return result[0];
   },
   async updateMainOrderTotal(MainOrderId, total) {
     // 更新主订单总金额
@@ -275,7 +287,39 @@ const dbOperations = {
       [total, MainOrderId],
       `更新主訂單 ${MainOrderId} 總金額 為 ${total}`);
   },
+  async getMainAndSubOrder(mainOrderId) {
+    try {
+      // 查询主订单
+      const [mainOrder] = await pool.query(
+          `SELECT * FROM MainOrders WHERE MainOrderId = ?`, [mainOrderId]
+      );
 
+      // 查询子订单
+      const [subOrders] = await pool.query(
+          `SELECT * FROM SubOrders WHERE MainOrderId = ?`, [mainOrderId]
+      );
+
+      // 对于每个子订单，查询关联的菜单项
+      for (let subOrder of subOrders) {
+          const [items] = await pool.query(
+              `SELECT * FROM SubOrderMappings WHERE SubOrderId = ?`, [subOrder.SubOrderId]
+          );
+          subOrder.items = items; // 将查询结果添加到子订单对象中
+          console.log(subOrder.items)
+        }
+      console.log(mainOrder)
+      console.log(subOrders)
+
+      // 整合结果
+      return {
+          mainOrder: mainOrder[0], // 假设主订单ID唯一
+          subOrders: subOrders,
+      };
+    } catch (error) {
+        console.error(error);
+        throw new Error('Internal Server Error');
+    }
+  },
   /**
    * 處理子訂單相關
    * @param {*} MainOrderId 
