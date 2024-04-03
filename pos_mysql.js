@@ -169,11 +169,33 @@ const dbOperations = {
         `加入 桌號${i}`)
     }
   },
+  async getTableInfoBytableNumber(tableNum) {
+    const sql = 'SELECT * FROM Tables WHERE TableNumber = ?';
+    try {
+      const results = await pool.query(sql, [tableNum]);
+      console.log(`获取桌號 ${tableNum} 資訊 ${results[0][0].TablesStatus} 成功。`);
+      return results[0][0];
+    } catch (error) {
+      console.error("获取所有桌子資訊失败:", error);
+      throw error;
+    }
+  },
+  async getTableInfoByMainOrderId(MainOrderId) {
+    const sql = 'SELECT * FROM Tables WHERE MainOrderId = ?';
+    try {
+      const results = await pool.query(sql, [MainOrderId]);
+      console.log(`获取擁有此訂單 ${MainOrderId} 的桌號資訊 ${results[0][0].TableNumber} 成功。`);
+      return results[0][0];
+    } catch (error) {
+      console.error("获取桌號資訊失败:", error);
+      throw error;
+    }
+  },
   async getAllTableStatus() {
     const sql = 'SELECT * FROM Tables';
     try {
       const results = await pool.query(sql);
-      console.log("获取所有桌子状态成功。");
+      console.log("获取所有桌號状态成功。");
       return results[0]; // 请根据您使用的数据库客户端调整此处
     } catch (error) {
       console.error("获取所有桌子状态失败:", error);
@@ -291,33 +313,33 @@ const dbOperations = {
     try {
       // 查询主订单
       const [mainOrder] = await pool.query(
-          `SELECT * FROM MainOrders WHERE MainOrderId = ?`, [mainOrderId]
+        `SELECT * FROM MainOrders WHERE MainOrderId = ?`, [mainOrderId]
       );
 
       // 查询子订单
       const [subOrders] = await pool.query(
-          `SELECT * FROM SubOrders WHERE MainOrderId = ?`, [mainOrderId]
+        `SELECT * FROM SubOrders WHERE MainOrderId = ?`, [mainOrderId]
       );
 
       // 对于每个子订单，查询关联的菜单项
       for (let subOrder of subOrders) {
-          const [items] = await pool.query(
-              `SELECT * FROM SubOrderMappings WHERE SubOrderId = ?`, [subOrder.SubOrderId]
-          );
-          subOrder.items = items; // 将查询结果添加到子订单对象中
-          console.log(subOrder.items)
-        }
+        const [items] = await pool.query(
+          `SELECT * FROM SubOrderMappings WHERE SubOrderId = ?`, [subOrder.SubOrderId]
+        );
+        subOrder.items = items; // 将查询结果添加到子订单对象中
+        console.log(subOrder.items)
+      }
       console.log(mainOrder)
       console.log(subOrders)
 
       // 整合结果
       return {
-          mainOrder: mainOrder[0], // 假设主订单ID唯一
-          subOrders: subOrders,
+        mainOrder: mainOrder[0], // 假设主订单ID唯一
+        subOrders: subOrders,
       };
     } catch (error) {
-        console.error(error);
-        throw new Error('Internal Server Error');
+      console.error(error);
+      throw new Error('Internal Server Error');
     }
   },
   /**

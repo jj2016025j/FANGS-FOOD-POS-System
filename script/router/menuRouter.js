@@ -4,7 +4,7 @@ const dbOperations = require('../../pos_mysql');
 
 
 router.get("/:menuItemId", async function (req, res) {
-    // 測試用
+    // 取得某個品項
     // http://localhost:8080/menu/12
     const menuItemId = req.params['menuItemId']
     const menuItemInfo = await dbOperations.getMenuItemInfo(menuItemId)
