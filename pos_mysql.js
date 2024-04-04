@@ -329,8 +329,6 @@ const dbOperations = {
         subOrder.items = items; // 将查询结果添加到子订单对象中
         console.log(subOrder.items)
       }
-      console.log(mainOrder)
-      console.log(subOrders)
 
       // 整合结果
       return {
