@@ -185,6 +185,17 @@ const dbOperations = {
     try {
       const results = await pool.query(sql, [MainOrderId]);
       console.log(`获取擁有此訂單 ${MainOrderId} 的桌號資訊 ${results[0][0].TableNumber} 成功。`);
+      return results[0][0].TableNumber;
+    } catch (error) {
+      console.error("获取桌號資訊失败:", error);
+      throw error;
+    }
+  },
+  async getTableIdByMainOrderId(MainOrderId) {
+    const sql = 'SELECT Id FROM Tables WHERE MainOrderId = ?';
+    try {
+      const results = await pool.query(sql, [MainOrderId]);
+      console.log(`获取擁有此訂單 ${MainOrderId} 的桌號 ${results[0][0]} 成功。`);
       return results[0][0];
     } catch (error) {
       console.error("获取桌號資訊失败:", error);
@@ -356,6 +367,22 @@ const dbOperations = {
       `加入新的 子訂單${SubOrderId}`
     )
   },
+  async MakeNewSubOrder(MainOrderId) {
+    try {
+      const TableId = await dbOperations.getTableInfoByMainOrderId(MainOrderId);
+      console.log(TableId)
+      const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId);
+      await pool.query(`
+      INSERT INTO SubOrders (SubOrderId, MainOrderId, TableId) 
+      VALUES (?, ?, ?)`, [SubOrderId, MainOrderId, TableId]
+      )
+      console.log(`在訂單 ${MainOrderId} 加入新的 子訂單${SubOrderId} 桌號${TableId}`)
+      return SubOrderId;
+    } catch (error) {
+      console.error(error);
+      throw new Error('建立新訂單失敗');
+    }
+  },
   async editSubOrderStatus(SubOrderId, OrderStatus) {
     await dbOperations.UseMySQL(`
       UPDATE SubOrders SET OrderStatus = ? WHERE SubOrderId = ?`,
@@ -369,11 +396,11 @@ const dbOperations = {
       [subOrderTotal, SubOrderId],
       `更新子訂單 ${SubOrderId} 總金額 為 ${subOrderTotal}`);
   },
-  // 發送子訂單的函式
   async sendSubOrder(SubOrderId, SubOrderInfo) {
+    // 發送子訂單的函式
     try {
       const MainOrderId = await dbOperations.getMainOrderIdBySubOrderId(SubOrderId);
-      await makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo);
+      await dbOperations.makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo);
       const mainOrderTotal = await dbOperations.calculateMainOrderTotal(MainOrderId);
       await dbOperations.updateMainOrderTotal(MainOrderId, mainOrderTotal);
       console.log(`主訂單 ${MainOrderId} 的總金額已更新為 ${mainOrderTotal}`);
@@ -381,6 +408,39 @@ const dbOperations = {
       console.error("更新主訂單狀態時出錯：", error.message);
     }
   },
+  // 處理並提交新子訂單映射的函式
+  async makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo) {
+    let subOrderTotal = 0;
+
+    for (const item of SubOrderInfo) {
+      const MenuItemInfo = await dbOperations.getMenuItemInfo(item.MenuItemId);
+      if (Array.isArray(MenuItemInfo) && MenuItemInfo.length > 0) {
+        const unit_price = MenuItemInfo[0].Price;
+        const total_price = item.quantity * unit_price;
+        subOrderTotal += total_price;
+        await dbOperations.processSubOrderMappings(SubOrderId, item, unit_price, total_price);
+        await dbOperations.updateMainOrderMappings(MainOrderId, item, item.quantity, unit_price, total_price);
+      } else {
+        console.error(`品項 ${item.MenuItemId} 不存在`);
+      }
+    }
+    await dbOperations.verifyTotals(MainOrderId, subOrderTotal);
+    await dbOperations.updateSubOrderTotal(SubOrderId, subOrderTotal);
+  },
+
+  // 驗證總額是否匹配的函式
+  async verifyTotals(MainOrderId) {
+    const totalFromMappings = await dbOperations.calculateTotalFromMainOrderMappings(MainOrderId);
+    const totalFromSubOrders = await dbOperations.calculateMainOrderTotal(MainOrderId);
+
+    // 直接比較計算得出的總額。之前的方法可能不會準確反映即時更改，除非進行額外的步驟將新總額更新到數據庫中，這似乎是缺失的。
+    if (totalFromMappings === totalFromSubOrders) {
+      console.log(`主訂單 ${MainOrderId} 的總額驗證成功，數據一致。`);
+    } else {
+      console.error(`主訂單 ${MainOrderId} 的總額驗證失敗，數據不一致。`);
+    }
+  },
+
   /**
    * 處理映射
    * @param {*} SubOrderId 

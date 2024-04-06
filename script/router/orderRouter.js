@@ -83,11 +83,25 @@ router.get('/getrecentorders', async (req, res) => {
     }
 });
 
+router.post('/addSubOrder/:mainOrderId', async (req, res) => {
+    // 新增子訂單
+    // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    const MainOrderId = req.params['mainOrderId']
+    try {
+        const SubOrderId = await dbOperations.MakeNewSubOrder(MainOrderId)
+        console.log(SubOrderId)
+        res.json({ SubOrderId });
+    } catch (error) {
+        console.error('Failed to fetch add suborder:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+})
+
 //送出訂單
-// http://localhost:8080/order/12
-router.post('/SubOrder/:order_id', async (req, res) => {
+// http://localhost:8080/order/SubOrder/12
+router.post('/SubOrder/:SubOrder_id', async (req, res) => {
     let SubOrderInfo = req.body;
-    const SubOrderId = req.params['SubOrderId']
+    const SubOrderId = req.params['SubOrder_id']
     if (SubOrderInfo.SubOrderId != SubOrderId) return
     try {
         await dbOperations.sendSubOrder(SubOrderId, SubOrderInfo)
@@ -103,7 +117,6 @@ router.post('/SubOrder/:order_id', async (req, res) => {
             subTotal: SubOrderInfo.food_price,
             tax: SubOrderInfo.service_fee,
             total: SubOrderInfo.trade_amt,
-            // specialRequests: '牛肉片請分開盛裝。'
         };
         try {
             printOrder(SubOrderData)

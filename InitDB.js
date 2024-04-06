@@ -126,15 +126,15 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     )`
     , "", "建立 子訂單 資料表")
 
-  const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
-  console.log(`生成新子訂單 ${SubOrderId}`)
+  // const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
+  // console.log(`生成新子訂單 ${SubOrderId}`)
 
-  await dbOperations.forTestMakeNewSubOrder(MainOrderId, SubOrderId)
+  // await dbOperations.forTestMakeNewSubOrder(MainOrderId, SubOrderId)
 
-  await dbOperations.editSubOrderStatus(SubOrderId, "製作中")
-  await dbOperations.editSubOrderStatus(SubOrderId, "已完成")
-  await dbOperations.editSubOrderStatus(SubOrderId, "未製作")
-  await dbOperations.editSubOrderStatus(SubOrderId, "已取消")
+  // await dbOperations.editSubOrderStatus(SubOrderId, "製作中")
+  // await dbOperations.editSubOrderStatus(SubOrderId, "已完成")
+  // await dbOperations.editSubOrderStatus(SubOrderId, "未製作")
+  // await dbOperations.editSubOrderStatus(SubOrderId, "已取消")
 
   await dbOperations.UseMySQL(
     `CREATE TABLE IF NOT EXISTS SubOrderMappings (
@@ -162,39 +162,7 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 
   await dbOperations.sendSubOrder(SubOrderId, SubOrderInfo)
 
-  // 處理並提交新子訂單映射的函式
-  async function makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo) {
-    let subOrderTotal = 0;
 
-    for (const item of SubOrderInfo) {
-      const MenuItemInfo = await dbOperations.getMenuItemInfo(item.MenuItemId);
-      if (Array.isArray(MenuItemInfo) && MenuItemInfo.length > 0) {
-        const unit_price = MenuItemInfo[0].Price;
-        const total_price = item.quantity * unit_price;
-        subOrderTotal += total_price;
-        await dbOperations.processSubOrderMappings(SubOrderId, item, unit_price, total_price);
-        await dbOperations.updateMainOrderMappings(MainOrderId, item, item.quantity, unit_price, total_price);
-      } else {
-        console.error(`品項 ${item.MenuItemId} 不存在`);
-      }
-    }
-
-    await dbOperations.updateSubOrderTotal(SubOrderId, subOrderTotal);
-    await verifyTotals(MainOrderId, subOrderTotal);
-  }
-
-  // 驗證總額是否匹配的函式
-  async function verifyTotals(MainOrderId) {
-    const totalFromMappings = await dbOperations.calculateTotalFromMainOrderMappings(MainOrderId);
-    const totalFromSubOrders = await dbOperations.calculateMainOrderTotal(MainOrderId);
-
-    // 直接比較計算得出的總額。之前的方法可能不會準確反映即時更改，除非進行額外的步驟將新總額更新到數據庫中，這似乎是缺失的。
-    if (totalFromMappings === totalFromSubOrders) {
-      console.log(`主訂單 ${MainOrderId} 的總額驗證成功，數據一致。`);
-    } else {
-      console.error(`主訂單 ${MainOrderId} 的總額驗證失敗，數據不一致。`);
-    }
-  }
 
   await dbOperations.UseMySQL(
     `CREATE TABLE IF NOT EXISTS users (
@@ -227,31 +195,31 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
   `, "", "建立 log 資料表")
 
-  await dbOperations.processGeneratedOrders().then(() => {
-    console.log('所有訂單已處理完畢');
-  }).catch(error => {
-    console.error('處理訂單過程中發生錯誤:', error);
-  });
+  // await dbOperations.processGeneratedOrders().then(() => {
+  //   console.log('所有訂單已處理完畢');
+  // }).catch(error => {
+  //   console.error('處理訂單過程中發生錯誤:', error);
+  // });
 
 
 
 
-  // 查询过去一个月内按品项的销售信息
-  await dbOperations.getBackEndData('lastMonth', 'byItem')
-    .then(console.log)
-    .catch(console.error);
+  // // 查询过去一个月内按品项的销售信息
+  // await dbOperations.getBackEndData('lastMonth', 'byItem')
+  //   .then(console.log)
+  //   .catch(console.error);
 
-  // 查询过去一周内按分类每天的销售信息
-  // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await dbOperations.getBackEndData('lastWeek', 'byCategory')
-    .then(console.log)
-    .catch(console.error);
+  // // 查询过去一周内按分类每天的销售信息
+  // // 注意：这里需要根据实际情况提供SQL语句的具体实现
+  // await dbOperations.getBackEndData('lastWeek', 'byCategory')
+  //   .then(console.log)
+  //   .catch(console.error);
 
-  // 查询所有时间内每月的总销售信息（全部订单）
-  // 注意：这里需要根据实际情况提供SQL语句的具体实现
-  await dbOperations.getBackEndData('all', 'all')
-    .then(console.log)
-    .catch(console.error);
+  // // 查询所有时间内每月的总销售信息（全部订单）
+  // // 注意：这里需要根据实际情况提供SQL语句的具体实现
+  // await dbOperations.getBackEndData('all', 'all')
+  //   .then(console.log)
+  //   .catch(console.error);
 
   dbOperations.closeConnection()
 })()
