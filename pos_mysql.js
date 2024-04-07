@@ -9,17 +9,23 @@ const MYSQL_DATABASE = process.env.MYSQL_DATABASE;
 const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
 const CURRENT_MYSQL_DATABASE = TEST_MYSQL_DATABASE;
 
-const pool = mysql.createPool({
-  host: MYSQL_HOST,
-  user: MYSQL_USER,
-  password: MYSQL_PASSWORD,
-  database: TEST_MYSQL_DATABASE,
-  charset: "utf8mb4",
-  port: 3306,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+let pool
+
+try {
+  pool = mysql.createPool({
+    host: MYSQL_HOST,
+    user: MYSQL_USER,
+    password: MYSQL_PASSWORD,
+    database: TEST_MYSQL_DATABASE,
+    charset: "utf8mb4",
+    port: 3306,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
+  });
+} catch {
+  console.log("MYSQL未啟動")
+}
 
 // console.log(pool)
 
@@ -184,6 +190,17 @@ const dbOperations = {
     const sql = 'SELECT * FROM Tables WHERE MainOrderId = ?';
     try {
       const results = await pool.query(sql, [MainOrderId]);
+      console.log(`获取擁有此訂單 ${MainOrderId} 的桌號資訊 ${results[0][0]} 成功。`);
+      return results[0][0];
+    } catch (error) {
+      console.error("获取桌號資訊失败:", error);
+      throw error;
+    }
+  },
+  async getTableNumberByMainOrderId(MainOrderId) {
+    const sql = 'SELECT TableNumber FROM Tables WHERE MainOrderId = ?';
+    try {
+      const results = await pool.query(sql, [MainOrderId]);
       console.log(`获取擁有此訂單 ${MainOrderId} 的桌號資訊 ${results[0][0].TableNumber} 成功。`);
       return results[0][0].TableNumber;
     } catch (error) {
@@ -226,10 +243,12 @@ const dbOperations = {
   },
   async editTableInfo(TableNumber, TablesStatus, MainOrderId) {
     try {
-      await dbOperations.UseMySQL(`
+      const results = await pool.query(`
       UPDATE Tables SET TablesStatus = ?, MainOrderId = ? WHERE TableNumber = ?`,
-        [TablesStatus, MainOrderId, TableNumber],
-        `更改 桌號 ${TableNumber} 狀態為 ${TablesStatus}`)
+        [TablesStatus, MainOrderId, TableNumber])
+      console.log(`更改 桌號 ${TableNumber} 狀態為 ${TablesStatus}`)
+      if (results[0].affectedRows == 1)
+        return results[0];
     } catch (error) {
       console.error("更改桌號状态失败:", error);
       throw error;
@@ -351,11 +370,26 @@ const dbOperations = {
       throw new Error('Internal Server Error');
     }
   },
+  async checkOutALL() {
+    await pool.query(
+      `UPDATE MainOrders set OrderStatus = ? WHERE OrderStatus = ?`,
+      ['已結帳', '未結帳']
+    );
+    console.log(`更改 所有 主訂單 MainOrders 狀態`)
+    await pool.query(
+      `UPDATE Tables set TablesStatus = ? , MainOrderId = '' WHERE TablesStatus != ?`,
+      ['空桌', '空桌']
+    );
+    console.log(`更改 所有 桌號 Tables 狀態`)
+    var AllTableStatus = await dbOperations.getAllTableStatus();
+    // console.log("取得所有桌號狀態 : ", AllTableStatus)
+    return AllTableStatus;
+  },
   /**
-   * 處理子訂單相關
-   * @param {*} MainOrderId 
-   * @returns 
-   */
+     * 處理子訂單相關
+     * @param {*} MainOrderId 
+     * @returns 
+     */
   async generateSubOrderId(MainOrderId) {
     return MainOrderId + '-SUB' + Math.floor(Math.random() * 10000) + 1;
   },

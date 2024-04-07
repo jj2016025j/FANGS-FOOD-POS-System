@@ -14,11 +14,13 @@ router.post('/new-order', async (req, res) => {
     try {
         const MainOrderId = await dbOperations.generateMainOrderId()
         let tableInfo = await dbOperations.getTableInfoBytableNumber(TableNumber)
+        console.log(tableInfo)
         if (tableInfo.TablesStatus != "空桌")
-            return res.status(200).json({ message: "此桌目前已有訂單" });
+            return res.status(500).json({ message: "此桌目前已有訂單" });
         await dbOperations.makeNewMainOrder(MainOrderId, TableNumber)
         await dbOperations.editTableInfo(TableNumber, "點餐中", MainOrderId)
         tableInfo = await dbOperations.getTableInfoByMainOrderId(MainOrderId)
+        console.log(tableInfo)
 
         const protocol = req.protocol; // 'http' 或 'https'
         const fullUrl = `${protocol}://${LocalIP}:8080/pos/phone/${MainOrderId}`;
@@ -28,7 +30,7 @@ router.post('/new-order', async (req, res) => {
         } catch (e) {
             console.log("打印機未啟動或發生錯誤 :", e)
         }
-        console.log(`回傳MainOrderId :${MainOrderId}`);
+        console.log(`回傳 tableInfo :${tableInfo}`);
         return res.status(200).json(tableInfo);
     } catch (e) {
         console.log(e)
@@ -39,7 +41,6 @@ router.post('/new-order', async (req, res) => {
 });
 
 router.post('/printQRcode', async (req, res) => {
-    // 取得所有桌號狀態
     // http://localhost:8080/order/printQRcode
     const { MainOrderId, TableNumber } = req.body;
     const protocol = req.protocol; // 'http' 或 'https'
@@ -54,17 +55,17 @@ router.post('/printQRcode', async (req, res) => {
     }
 });
 
-router.get('/getAllMainOrder', async (req, res) => {
-    // 取得所有桌號狀態
-    // http://localhost:8080/order/getAllMainOrder
-    console.log("取得訂單")
+router.get('/getAllTableStatus', async (req, res) => {
+    // 取得所有桌號狀態(首頁)
+    // http://localhost:8080/order/getAllTableStatus
+    console.log("取得所有桌號狀態")
     var AllTableStatus = await dbOperations.getAllTableStatus();
-    console.log("取得所有訂單 : ", AllTableStatus)
+    console.log("取得所有桌號狀態 : ", AllTableStatus)
     return res.json(AllTableStatus);
 });
 
 router.get('/getMainOrder/:mainOrderId', async (req, res) => {
-    // 取得訂單資訊
+    // 取得訂單資訊(結帳用)
     // http://localhost:8080/order/getMainOrder/ORD1711905767022v0wzjnty398
     const MainOrderId = req.params['mainOrderId']
     var MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId)
@@ -72,7 +73,7 @@ router.get('/getMainOrder/:mainOrderId', async (req, res) => {
 });
 
 router.get('/getrecentorders', async (req, res) => {
-    // 取得最近50筆訂單資訊
+    // 取得最近50筆訂單資訊(訂單歷史)
     // http://localhost:8080/order/getrecentorders
     try {
         const recentOrders = await dbOperations.getOrders()
@@ -85,7 +86,6 @@ router.get('/getrecentorders', async (req, res) => {
 
 router.post('/addSubOrder/:mainOrderId', async (req, res) => {
     // 新增子訂單
-    // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     const MainOrderId = req.params['mainOrderId']
     try {
         const SubOrderId = await dbOperations.MakeNewSubOrder(MainOrderId)
@@ -97,9 +97,9 @@ router.post('/addSubOrder/:mainOrderId', async (req, res) => {
     }
 })
 
-//送出訂單
-// http://localhost:8080/order/SubOrder/12
 router.post('/SubOrder/:SubOrder_id', async (req, res) => {
+    //送出訂單
+    // http://localhost:8080/order/SubOrder/12
     let SubOrderInfo = req.body;
     const SubOrderId = req.params['SubOrder_id']
     if (SubOrderInfo.SubOrderId != SubOrderId) return

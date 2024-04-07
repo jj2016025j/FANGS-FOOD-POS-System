@@ -201,8 +201,7 @@ router.get("/success/:orderId", async (req, res) => {
         `SELECT id, trade_no, trade_amt FROM table_orders WHERE trade_no = ?`,
         [orderId]
     );
-    // console.log(orders);
-    // console.log(orders.id);
+
     await dbOperations.confirmPaymentByCash(orders[0].id);
     res.redirect("/pos");
 });
@@ -219,38 +218,55 @@ router.post('/creditcard/:order_id', async (req, res) => {
 
 // 一鍵結帳全部
 // http://localhost:5000/pay/checkout
-router.post('/checkout', async (req, res) => {
-    // try {
-    var results = await dbOperations.OneClickCheckoutAll();
-    return res.status(200).json(results);
-    // } catch (error) {
-    //     console.error(error);
-    //     return res.status(500).json({ message: "Internal server error" });
-    // }
+router.put('/checkoutAll', async (req, res) => {
+    try {
+        var results = await dbOperations.checkOutALL();
+        return res.status(200).json(results);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: "Internal server error" });
+    }
 });
 
-router.get('/checkout/:mainOrderId', async (req, res) => {
+router.post('/checkout/:mainOrderId', async (req, res) => {
     // 確認付款 UNDO 應該要改成function
-    // http://localhost:8080/pos/checkout/ORD-1709679600000-3
-    const MainOrderId = req.params['mainOrderId'];
-    const MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId);
-    if (!MainOrderInfo || MainOrderInfo.OrderStatus != "未結帳") {
-        return res.status(200).json({
-            message: '此訂單不存在、已取消或已完成結帳！',
-            MainOrderInfo: MainOrderInfo
-        });
-    } else {
-        const results = await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
-        if (results) {
-            return res.json({
-                message: `訂單 ${MainOrderId} 已完成結帳`,
-                MainOrderInfo: await dbOperations.getMainOrderInfoById(MainOrderId)
+    // http://localhost:8080/pay/checkout/ORD-1709679600000-3
+    try {
+        const MainOrderId = req.params['mainOrderId'];
+        const MainOrderInfo = await dbOperations.getMainOrderInfoById(MainOrderId);
+        console.log(MainOrderInfo)
+        if (!MainOrderInfo) {
+            return res.status(500).json({
+                message: '此訂單不存在',
+                MainOrderInfo: MainOrderInfo
+            });
+
+        } else if (MainOrderInfo.OrderStatus != "未結帳") {
+            return res.status(500).json({
+                message: `訂單 ${MainOrderId} 已結帳`,
+                MainOrderInfo: MainOrderInfo
             });
         } else {
-            return res.status(500).json({
-                message: `伺服器發生錯誤`
-            });
+            const TableId = await dbOperations.getTableIdByMainOrderId(MainOrderId)
+            console.log(TableId)
+            await dbOperations.editTableInfo(TableId, "清潔中", MainOrderId)
+            const results = await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
+            console.log(results)
+            if (results) {
+                return res.json({
+                    message: `訂單 ${MainOrderId} 已完成結帳`
+                });
+            } else {
+                return res.status(501).json({
+                    message: `伺服器發生錯誤`
+                });
+            }
         }
+
+    } catch {
+        return res.status(501).json({
+            message: `伺服器發生錯誤`
+        });
     }
 });
 

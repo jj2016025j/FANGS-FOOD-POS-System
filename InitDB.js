@@ -126,8 +126,8 @@ const TEST_MYSQL_DATABASE = process.env.TEST_MYSQL_DATABASE;
     )`
     , "", "建立 子訂單 資料表")
 
-  // const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
-  // console.log(`生成新子訂單 ${SubOrderId}`)
+  const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId)
+  console.log(`生成新子訂單 ${SubOrderId}`)
 
   // await dbOperations.forTestMakeNewSubOrder(MainOrderId, SubOrderId)
 
