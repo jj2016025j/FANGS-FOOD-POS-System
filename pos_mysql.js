@@ -403,14 +403,15 @@ const dbOperations = {
   },
   async MakeNewSubOrder(MainOrderId) {
     try {
-      const TableId = await dbOperations.getTableInfoByMainOrderId(MainOrderId);
-      console.log(TableId)
+      const TableInfo = await dbOperations.getTableInfoByMainOrderId(MainOrderId);
+      console.log(TableInfo.TableNumber)
+      const TableNumber = TableInfo.TableNumber
       const SubOrderId = await dbOperations.generateSubOrderId(MainOrderId);
       await pool.query(`
       INSERT INTO SubOrders (SubOrderId, MainOrderId, TableId) 
-      VALUES (?, ?, ?)`, [SubOrderId, MainOrderId, TableId]
+      VALUES (?, ?, ?)`, [SubOrderId, MainOrderId, TableNumber]
       )
-      console.log(`在訂單 ${MainOrderId} 加入新的 子訂單${SubOrderId} 桌號${TableId}`)
+      console.log(`在訂單 ${MainOrderId} 加入新的 子訂單${SubOrderId} 桌號${TableNumber}`)
       return SubOrderId;
     } catch (error) {
       console.error(error);
