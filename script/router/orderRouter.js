@@ -97,40 +97,51 @@ router.post('/addSubOrder/:mainOrderId', async (req, res) => {
     }
 })
 
-router.post('/SubOrder/:SubOrder_id', async (req, res) => {
+router.post('/SubOrder/:SubOrderId', async (req, res) => {
     //送出訂單
     // http://localhost:8080/order/SubOrder/12
-    let SubOrderInfo = req.body;
-    const SubOrderId = req.params['SubOrder_id']
-    if (SubOrderInfo.SubOrderId != SubOrderId) return
-    try {
-        await dbOperations.sendSubOrder(SubOrderId, SubOrderInfo)
+    const SubOrderInfo = req.body;
+    const { SubOrderId } = req.params;
 
+    // 验证请求体中的SubOrderId是否与URL参数中的SubOrderId相匹配
+    if (SubOrderInfo.SubOrderId !== SubOrderId) {
+        return res.status(400).json({ error: "SubOrder ID mismatch." });
+    }
+
+    try {
+        // 假设 sendSubOrder 是一个异步函数
+        await dbOperations.sendSubOrder(SubOrderId, SubOrderInfo);
+
+        // 构造SubOrderData
         const SubOrderData = {
             SubOrderId: SubOrderId,
-            MenuItems: orderItems.map(MenuItem => ({
-                MenuItemName: MenuItem.name,
-                quantity: MenuItem.quantity,
-                unit_price: MenuItem.unit_price,
-                total_price: MenuItem.quantity * MenuItem.unit_price
+            MenuItems: SubOrderInfo.items.map(item => ({
+                MenuItemName: item.menuItemName,
+                quantity: item.quantity,
+                unit_price: item.price,
+                total_price: item.quantity * item.price
             })),
             subTotal: SubOrderInfo.food_price,
             tax: SubOrderInfo.service_fee,
             total: SubOrderInfo.trade_amt,
         };
+
+        // 尝试打印订单，printOrder 也假设是一个异步操作
         try {
-            printOrder(SubOrderData)
-        } catch (e) {
-            console.log(e)
+            await printOrder(SubOrderData);
+        } catch (printError) {
+            console.error(printError);
+            // 即使打印失败，也决定继续响应成功（这取决于您的业务逻辑是否需要这样处理）
         }
-        return res.status(200).send(true);
-    } catch (e) {
-        return res.status(500).json({
-            error: e
-        });
+
+        // 订单处理成功，返回成功响应
+        return res.status(200).json({ success: true, message: "SubOrder processed successfully." });
+    } catch (error) {
+        console.error(error);
+        // 数据库操作失败，返回错误响应
+        return res.status(500).json({ error: "Failed to process SubOrder." });
     }
 });
-
 router.post('/clean-table', async (req, res) => {
     const { TableNumber, TablesStatus } = req.body;
     try {
