@@ -242,14 +242,15 @@ router.post('/checkout/:mainOrderId', async (req, res) => {
             });
 
         } else if (MainOrderInfo.OrderStatus != "未結帳") {
-            return res.status(500).json({
+            await dbOperations.editTableInfo(TableId, "清潔中", "")
+            return res.status(200).json({
                 message: `訂單 ${MainOrderId} 已結帳`,
                 MainOrderInfo: MainOrderInfo
             });
         } else {
             const TableId = await dbOperations.getTableIdByMainOrderId(MainOrderId)
             console.log(TableId)
-            await dbOperations.editTableInfo(TableId, "清潔中", MainOrderId)
+            await dbOperations.editTableInfo(TableId, "清潔中", "")
             const results = await dbOperations.editMainOrderStatus(MainOrderId, "已結帳")
             console.log(results)
             if (results) {

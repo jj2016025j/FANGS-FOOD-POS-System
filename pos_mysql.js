@@ -126,14 +126,15 @@ const dbOperations = {
       i++;
     }
   },
-  async getMenuItemInfo(menuItemId) {
+  async getMenuItemInfo(Id) {
     // 取得選單項目信息
-    console.log(`取得 品項 ${menuItemId} 資訊`);
+    console.log(`取得 品項 ${Id} 資訊`);
     const result = await pool.query(
       `SELECT * FROM MenuItems WHERE Id = ?`,
-      [menuItemId]
+      [Id]
     )
-    return result[0][0]
+    console.log(result[0])
+    return result[0]
   },
   async getMenuItems() {
     const sql = 'SELECT * FROM MenuItems WHERE Insupply = TRUE ORDER BY sort ASC';
@@ -212,8 +213,8 @@ const dbOperations = {
     const sql = 'SELECT Id FROM Tables WHERE MainOrderId = ?';
     try {
       const results = await pool.query(sql, [MainOrderId]);
-      console.log(`获取擁有此訂單 ${MainOrderId} 的桌號 ${results[0][0]} 成功。`);
-      return results[0][0];
+      console.log(`获取擁有此訂單 ${MainOrderId} 的桌號 ${results[0][0].Id} 成功。`);
+      return results[0][0].Id;
     } catch (error) {
       console.error("获取桌號資訊失败:", error);
       throw error;
@@ -277,7 +278,7 @@ const dbOperations = {
     try {
       const results = await pool.query(`
         UPDATE MainOrders SET OrderStatus = ? WHERE MainOrderId = ?`,
-        [`${OrderStatus}`, MainOrderId]);
+        [OrderStatus, MainOrderId]);
       console.log(`更改 主訂單 ${MainOrderId} 狀態為 ${OrderStatus}`);
       if (results[0].affectedRows == 1)
         return results[0];
@@ -309,9 +310,9 @@ const dbOperations = {
     const result = await dbOperations.UseMySQL(`
       SELECT MainOrderId FROM SubOrders WHERE SubOrderId = ?`,
       [SubOrderId],
-      `查询子订单 ${SubOrderId} 的主订单ID`);
+      `開始查询 子订单 ${SubOrderId} 的主订单ID`);
     if (Array.isArray(result) && result.length > 0) {
-      console.log(`子订单 ${SubOrderId} 的 主订单ID 為 ${result[0].MainOrderId}`);
+      console.log(`取得 子订单 ${SubOrderId} 的 主订单ID 為 ${result[0].MainOrderId}`);
       return result[0].MainOrderId;
     } else {
       console.log(`查询结果:`, result);
@@ -447,8 +448,8 @@ const dbOperations = {
   async makeNewSubOrderMappings(MainOrderId, SubOrderId, SubOrderInfo) {
     let subOrderTotal = 0;
 
-    for (const item of SubOrderInfo) {
-      const MenuItemInfo = await dbOperations.getMenuItemInfo(item.MenuItemId);
+    for (const item of SubOrderInfo.items) {
+      const MenuItemInfo = await dbOperations.getMenuItemInfo(item.Id);
       if (Array.isArray(MenuItemInfo) && MenuItemInfo.length > 0) {
         const unit_price = MenuItemInfo[0].Price;
         const total_price = item.quantity * unit_price;
@@ -456,24 +457,11 @@ const dbOperations = {
         await dbOperations.processSubOrderMappings(SubOrderId, item, unit_price, total_price);
         await dbOperations.updateMainOrderMappings(MainOrderId, item, item.quantity, unit_price, total_price);
       } else {
-        console.error(`品項 ${item.MenuItemId} 不存在`);
+        console.error(`品項 ${item.Id} 不存在`);
       }
     }
     await dbOperations.verifyTotals(MainOrderId, subOrderTotal);
     await dbOperations.updateSubOrderTotal(SubOrderId, subOrderTotal);
-  },
-
-  // 驗證總額是否匹配的函式
-  async verifyTotals(MainOrderId) {
-    const totalFromMappings = await dbOperations.calculateTotalFromMainOrderMappings(MainOrderId);
-    const totalFromSubOrders = await dbOperations.calculateMainOrderTotal(MainOrderId);
-
-    // 直接比較計算得出的總額。之前的方法可能不會準確反映即時更改，除非進行額外的步驟將新總額更新到數據庫中，這似乎是缺失的。
-    if (totalFromMappings === totalFromSubOrders) {
-      console.log(`主訂單 ${MainOrderId} 的總額驗證成功，數據一致。`);
-    } else {
-      console.error(`主訂單 ${MainOrderId} 的總額驗證失敗，數據不一致。`);
-    }
   },
 
   /**
@@ -489,22 +477,22 @@ const dbOperations = {
     return await dbOperations.UseMySQL(`
       INSERT INTO SubOrderMappings (SubOrderId, MenuItemId, quantity, unit_price, total_price) 
       VALUES (?, ?, ?, ?, ?)`,
-      [SubOrderId, item.MenuItemId, item.quantity, unit_price, total_price],
-      `加入 子訂單 ${SubOrderId} 與品項 ${item.MenuItemId} 對照表 數量 ${item.quantity} 價格 ${unit_price} 總價 ${total_price}`);
+      [SubOrderId, item.Id, item.quantity, unit_price, total_price],
+      `加入 子訂單 ${SubOrderId} 與品項 ${item.Id} 對照表 數量 ${item.quantity} 價格 ${unit_price} 總價 ${total_price}`);
   },
   async updateMainOrderMappings(MainOrderId, item, totalQuantity, unit_price, total_price) {
     // 更新主訂單映射
     const updateResult = await dbOperations.UseMySQL(`
       UPDATE MainOrderMappings SET quantity = quantity + ?, total_price = total_price + ? 
       WHERE MainOrderId = ? AND MenuItemId = ?`,
-      [totalQuantity, total_price, MainOrderId, item.MenuItemId],
-      `更新 主訂單 ${MainOrderId} 與品項 ${item.MenuItemId} 對照表 數量 ${totalQuantity} 價格 ${unit_price} 總價 ${total_price}`);
+      [totalQuantity, total_price, MainOrderId, item.Id],
+      `更新 主訂單 ${MainOrderId} 與品項 ${item.Id} 對照表 數量 ${totalQuantity} 價格 ${unit_price} 總價 ${total_price}`);
     if (updateResult.affectedRows === 0) {
       await dbOperations.UseMySQL(`
         INSERT INTO MainOrderMappings (MainOrderId, MenuItemId, quantity, unit_price, total_price) 
         VALUES (?, ?, ?, ?, ?)`,
-        [MainOrderId, item.MenuItemId, totalQuantity, unit_price, total_price],
-        `加入 主訂單 ${MainOrderId} 與品項 ${item.MenuItemId} 對照表 數量 ${totalQuantity} 價格 ${unit_price} 總價 ${total_price}`);
+        [MainOrderId, item.Id, totalQuantity, unit_price, total_price],
+        `加入 主訂單 ${MainOrderId} 與品項 ${item.Id} 對照表 數量 ${totalQuantity} 價格 ${unit_price} 總價 ${total_price}`);
     }
   },
   async insertMainOrderMappings(MainOrderId, mappings) {

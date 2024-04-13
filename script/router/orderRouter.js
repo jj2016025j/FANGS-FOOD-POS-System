@@ -100,13 +100,10 @@ router.post('/addSubOrder/:mainOrderId', async (req, res) => {
 router.post('/SubOrder/:SubOrderId', async (req, res) => {
     //送出訂單
     // http://localhost:8080/order/SubOrder/12
-    const SubOrderInfo = req.body;
+    const SubOrderInfo = req.body.SubOrderInfo;
     const { SubOrderId } = req.params;
-
-    // 验证请求体中的SubOrderId是否与URL参数中的SubOrderId相匹配
-    if (SubOrderInfo.SubOrderId !== SubOrderId) {
-        return res.status(400).json({ error: "SubOrder ID mismatch." });
-    }
+    console.log('SubOrderInfo', SubOrderInfo)
+    console.log('SubOrderId', SubOrderId)
 
     try {
         // 假设 sendSubOrder 是一个异步函数

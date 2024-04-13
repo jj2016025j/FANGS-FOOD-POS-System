@@ -75,7 +75,7 @@ app.use('/data', dataRouter);
 
         app.listen(port, () => {
             console.log(`官方網站: http://localhost:${port}`);
-            console.log(`pos系統: http://localhost:${port}/pos`);
+            // console.log(`pos系統: http://localhost:${port}/pos`);
             console.log(`局域網 IPv4 地址:  http://${localIP}:${port}`);
             // if (publicIPOld) {
             //     // // console.log(`公網 IPv4 地址:  http://${publicIPOld}:${port}`);
