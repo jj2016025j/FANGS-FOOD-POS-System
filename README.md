@@ -62,7 +62,7 @@ pos系統: http://localhost:8080/pos
 
 ```bash
 TypeError: usb.on is not a function
-at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
+at new USB (path/to/FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
 ```
 
 需要把腳本裡面的以下程式碼刪除
