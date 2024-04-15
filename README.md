@@ -7,8 +7,6 @@
 ## 功能特點
 
 - **線上點餐**：顧客可通過網站瀏覽菜單，選擇心儀的餐點並在線支付。
-- **預約訂位**：提供線上預約訂位服務，顧客可選擇心儀的時間和座位進行預訂。
-- **即時客服**：整合即時通訊功能，顧客可通過網站直接與客服溝通。
 - **POS系統**：為店內工作人員提供強大的點餐、結帳和訂單管理功能。
 
 ## 技術棧
@@ -20,16 +18,19 @@
 
 ## 安裝指南
 
-```bash
 # 克隆項目
+```bash
 git clone https://github.com/jj2016025j/FANGS-FOOD-POS-System.git
+```
 
 # 建立.env檔案 並貼上以下內容
+```bash
 MYSQL_HOST = 'localhost'
 MYSQL_USER = 'root'
 MYSQL_PASSWORD = ''
 MYSQL_DATABASE = 'fang_pos_system'
 TEST_MYSQL_DATABASE = 'fang_pos_system'
+```
 
 # 安裝依賴
 npm i
@@ -39,6 +40,25 @@ node initDB
 
 # 運行項目
 npm start
+
+
+# 錯誤修正
+
+因為打印機操作庫有版本問題
+會發生以下錯誤
+TypeError: usb.on is not a function
+at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
+
+需要把腳本裡面的以下程式碼刪除
+// usb.on('detach', function(device){
+//   if(device == self.device) {
+//     self.emit('detach'    , device);
+//     self.emit('disconnect', device);
+//     self.device = null;
+//   }
+// });
+
+
 
 ## **使用說明**
 
@@ -65,22 +85,3 @@ npm start
 
 - 郵件：jj2016025j@gmail.com
 - 電話：0971-003-199
-
-## **錯誤修正**
-
-因為打印機操作庫有版本問題
-會發生以下錯誤
-TypeError: usb.on is not a function
-at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
-
-需要把腳本裡面的以下程式碼刪除
-// usb.on('detach', function(device){
-//   if(device == self.device) {
-//     self.emit('detach'    , device);
-//     self.emit('disconnect', device);
-//     self.device = null;
-//   }
-// });
-
-
-```
