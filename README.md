@@ -33,30 +33,40 @@ TEST_MYSQL_DATABASE = 'fang_pos_system'
 ```
 
 # 安裝依賴
+```bash
 npm i
+```
 
 # 執行初始化資料表
+```bash
 node initDB
+```
 
 # 運行項目
+```bash
 npm start
+```
 
 
 # 錯誤修正
-
 因為打印機操作庫有版本問題
 會發生以下錯誤
+
+```bash
 TypeError: usb.on is not a function
 at new USB (C:\Users\樺\GitHub\FANGS-FOOD-POS-System\node_modules\escpos-usb\index.js:52:7)
+```
 
 需要把腳本裡面的以下程式碼刪除
-// usb.on('detach', function(device){
-//   if(device == self.device) {
-//     self.emit('detach'    , device);
-//     self.emit('disconnect', device);
-//     self.device = null;
-//   }
-// });
+```bash
+usb.on('detach', function(device){
+  if(device == self.device) {
+    self.emit('detach'    , device);
+    self.emit('disconnect', device);
+    self.device = null;
+  }
+});
+```
 
 
 
